@@ -24,6 +24,8 @@
 //
 // ############################################
 
+using System;
+
 namespace IGNQuery
 {
     public class FieldValue
@@ -33,5 +35,13 @@ namespace IGNQuery
         public long? LongValue { get; set; }
 
         public bool? BooleanValue { get; set; }
+
+        public FieldValue()
+        {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
+            }
+        }
     }
 }

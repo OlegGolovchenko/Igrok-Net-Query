@@ -24,6 +24,8 @@
 //
 // ############################################
 
+using System;
+
 namespace IGNQuery
 {
     public class ParameterValue
@@ -32,9 +34,16 @@ namespace IGNQuery
 
         public string ParamValue { get; private set; }
 
-        public ParameterValue(int number)
+        public ParameterValue(int number):this()
         {
             ParamNumber = number;
+        }
+        public ParameterValue()
+        {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
+            }
         }
 
         public ParameterValue(int number, string value) : this(number)

@@ -24,10 +24,12 @@
 //
 // ############################################
 
+using System;
+
 namespace IGNQuery
 {
     public class TableField
-    {
+    { 
         public string Name { get; set; }
         public string Type { get; set; }
         public bool CanHaveNull { get; set; }
@@ -45,6 +47,14 @@ namespace IGNQuery
         public static string TypeNvarchar(int length)
         {
             return $"nvarchar({length})";
+        }
+
+        public TableField()
+        {
+            if(!Activation.IsActive)
+            {
+                throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
+            }
         }
     }
 }
