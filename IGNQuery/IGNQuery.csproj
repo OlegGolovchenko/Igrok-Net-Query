@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://igrok-net.org/products</PackageProjectUrl>
+    <Copyright>Oleg Golovchenko</Copyright>
+    <Description>Query building library based on ADO.NET for simple querying without need to know specific syntax for different sql servers, use connector packages for implementation</Description>
+  </PropertyGroup>
+
+</Project>
