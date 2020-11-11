@@ -6,6 +6,8 @@
     <PackageProjectUrl>https://igrok-net.org/products</PackageProjectUrl>
     <Copyright>Oleg Golovchenko</Copyright>
     <Description>Query building library based on ADO.NET for simple querying without need to know specific syntax for different sql servers, use connector packages for implementation</Description>
+    <RepositoryUrl>https://github.com/OlegGolovchenko/Igrok-Net-Query</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
   </PropertyGroup>
 
 </Project>
