@@ -19,12 +19,17 @@ namespace IGNQuery.SqlServer
 
         public MsSqlDataProvider(ILogger logger, string email)
         {
+            Activation.Activate(email);
             _logger = logger;
             _connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING");
         }
 
         public void ExecuteNonQuery(IQueryResult query)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -41,6 +46,10 @@ namespace IGNQuery.SqlServer
 
         public void ExecuteNonQueryWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -61,6 +70,10 @@ namespace IGNQuery.SqlServer
 
         public void ExecuteStoredProcedure(string procname, IEnumerable<ParameterValue> parameters = null)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -85,6 +98,10 @@ namespace IGNQuery.SqlServer
 
         public DbDataReader ExecuteReader(IQueryResult query)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -102,6 +119,10 @@ namespace IGNQuery.SqlServer
 
         public DbDataReader ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -123,6 +144,10 @@ namespace IGNQuery.SqlServer
 
         public DbDataReader ExecuteStoredProcedureReader(string procname, IEnumerable<ParameterValue> parameters = null)
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -148,11 +173,19 @@ namespace IGNQuery.SqlServer
 
         public IQuery Query()
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             return new SqlQuery() { Dialect = DialectEnum.MSSQL };
         }
 
         public void ResetConnection()
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             try
             {
                 _connection.Close();
@@ -167,6 +200,10 @@ namespace IGNQuery.SqlServer
 
         public void Dispose()
         {
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             try
             {
                 _connection.Close();
