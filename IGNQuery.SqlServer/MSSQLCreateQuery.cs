@@ -83,7 +83,7 @@ namespace IGNQuery.SqlServer
                     query.Append(", ");
                 }
             }
-            query.Append(")GO");
+            query.Append(")");
 
             _query += query;
 
