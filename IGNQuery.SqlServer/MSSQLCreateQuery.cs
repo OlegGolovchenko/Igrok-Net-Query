@@ -1,5 +1,6 @@
 ﻿using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IGNQuery.SqlServer
@@ -60,6 +61,7 @@ namespace IGNQuery.SqlServer
             query.Append("CREATE TABLE ");
             query.Append(name);
             query.Append("(");
+            var last = fields.LastOrDefault();
             foreach (var col in fields)
             {
                 query.Append(col.Name);
@@ -76,7 +78,10 @@ namespace IGNQuery.SqlServer
                 {
                     query.Append(" IDENTITY(1,1)");
                 }
-                query.Append(", ");
+                if (col != last)
+                {
+                    query.Append(", ");
+                }
             }
             query.Append(")GO");
 
