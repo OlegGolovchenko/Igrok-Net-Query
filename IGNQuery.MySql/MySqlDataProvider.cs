@@ -203,7 +203,7 @@ namespace IGNQuery.MySql
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            return new SqlQuery() { Dialect = DialectEnum.MSSQL };
+            return new SqlQuery() { Dialect = DialectEnum.MySQL };
         }
 
         public void ResetConnection()
