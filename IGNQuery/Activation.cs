@@ -2,7 +2,7 @@
 
 namespace IGNQuery
 {
-    internal static class Activation
+    public static class Activation
     {
         private static ActivationClient _activationClient;
 
@@ -12,7 +12,7 @@ namespace IGNQuery
             _activationClient.ActivateAsync();
         }
 
-        internal static bool IsActive 
+        public static bool IsActive 
         { 
             get 
             {
