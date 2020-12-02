@@ -25,7 +25,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition BoolEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
 
         public ICondition BoolNotEqual(bool value)
@@ -36,7 +37,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition BoolNotEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
 
         public ICondition Field(string name)
@@ -59,7 +61,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition LongEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
 
         public ICondition LongNotEqual(long value)
@@ -70,7 +73,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition LongNotEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
 
         public ICondition Or()
@@ -87,7 +91,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition StringEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
 
         public ICondition StringNotEqual(string value)
@@ -98,7 +103,8 @@ namespace IGNQuery.SqlServer
 
         public ICondition StringNotEqualToParam(int paramNb)
         {
-            throw new System.NotImplementedException();
+            _query += $" = @p{paramNb}";
+            return new Condition(_query);
         }
     }
 }

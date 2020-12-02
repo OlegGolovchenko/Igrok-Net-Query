@@ -45,5 +45,9 @@ namespace IGNQuery.Interfaces.QueryProvider
         IQueryResult SetBooleanFieldFalse(string field);
 
         IConditionalQuery SetBooleanFieldFalseWithCondition(string field);
+
+        IQueryResult SetFieldWithParam(string fieldName, int paramNb);
+
+        IConditionalQuery SetFieldWithConditionWithParam(string fieldName, int paramNb);
     }
 }

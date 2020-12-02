@@ -58,7 +58,7 @@ namespace IGNQuery.SqlServer
 
         public IDropQuery Drop()
         {
-            throw new NotImplementedException();
+            return new DropQuery(_query);
         }
     }
 }

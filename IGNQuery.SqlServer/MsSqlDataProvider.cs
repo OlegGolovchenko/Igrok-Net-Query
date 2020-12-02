@@ -54,7 +54,7 @@ namespace IGNQuery.SqlServer
             var command = new SqlCommand(query.GetResultingString(), _connection);
             foreach (var param in parameters)
             {
-                command.Parameters.AddWithValue($"@{param.ParamNumber}", param.ParamValue);
+                command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
             }
             command.ExecuteNonQuery();
         }
@@ -77,7 +77,7 @@ namespace IGNQuery.SqlServer
             {
                 foreach (var param in parameters)
                 {
-                    command.Parameters.AddWithValue($"@{param.ParamNumber}", param.ParamValue);
+                    command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
                 }
             }
             command.ExecuteNonQuery();
@@ -115,7 +115,7 @@ namespace IGNQuery.SqlServer
             var command = new SqlCommand(query.GetResultingString(), _connection);
             foreach (var param in parameters)
             {
-                command.Parameters.AddWithValue($"@{param.ParamNumber}", param.ParamValue);
+                command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
             }
             DbDataReader result = command.ExecuteReader();
             return result;
@@ -139,7 +139,7 @@ namespace IGNQuery.SqlServer
             {
                 foreach (var param in parameters)
                 {
-                    command.Parameters.AddWithValue($"@{param.ParamNumber}", param.ParamValue);
+                    command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
                 }
             }
             DbDataReader result = command.ExecuteReader();
