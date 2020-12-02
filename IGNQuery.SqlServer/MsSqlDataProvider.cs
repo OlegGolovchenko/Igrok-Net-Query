@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SqlClient;
+#if !NETFULL
 using Microsoft.Extensions.Logging;
+#endif
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
@@ -13,14 +15,21 @@ namespace IGNQuery.SqlServer
     {
         private readonly string _connectionString;
         private SqlConnection _connection;
+#if !NETFULL
         private ILogger _logger;
-
+#endif
         public bool queryToOutput = false;
 
-        public MsSqlDataProvider(ILogger logger, string email)
+        public MsSqlDataProvider(
+#if !NETFULL
+            ILogger logger, 
+#endif
+            string email)
         {
             Activation.Activate(email);
+#if !NETFULL
             _logger = logger;
+#endif
             _connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING");
         }
 

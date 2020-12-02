@@ -17,7 +17,9 @@
 //###########################################################################
 using System;
 using System.Data.Common;
+#if !NETFULL
 using Microsoft.Extensions.Logging;
+#endif
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
@@ -30,14 +32,21 @@ namespace IGNQuery.MySql
     {
         private readonly string _connectionString;
         private MySqlConnection _connection;
+#if !NETFULL
         private ILogger _logger;
+#endif
 
         public bool queryToOutput = false;
-
-        public MySqlDataProvider(ILogger logger, string email)
+        public MySqlDataProvider(
+#if !NETFULL
+            ILogger logger,
+#endif
+            string email)
         {
             Activation.Activate(email);
+#if !NETFULL
             _logger = logger;
+#endif
             _connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
         }
 
