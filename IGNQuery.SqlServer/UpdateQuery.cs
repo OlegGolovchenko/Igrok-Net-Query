@@ -18,7 +18,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult SetBooleanFieldFalse(string field)
         {
-            _query += $"SET {field} = 0;";
+            _query += $"SET {field} = 0 GO";
             return new UpdateQuery(_query);
         }
 
@@ -30,7 +30,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult SetBooleanFieldTrue(string field)
         {
-            _query += $"SET {field} = 1;";
+            _query += $"SET {field} = 1 GO";
             return new UpdateQuery(_query);
         }
 
@@ -40,9 +40,21 @@ namespace IGNQuery.SqlServer
             return new ConditionalQuery(_query);
         }
 
+        public IConditionalQuery SetFieldWithConditionWithParam(string fieldName, int paramNb)
+        {
+            _query += $"SET {fieldName} = @p{paramNb}";
+            return new ConditionalQuery(_query);
+        }
+
+        public IQueryResult SetFieldWithParam(string fieldName, int paramNb)
+        {
+            _query += $"SET {fieldName} = @p{paramNb} GO";
+            return new UpdateQuery(_query);
+        }
+
         public IQueryResult SetLongField(string field, long value)
         {
-            _query += $"SET {field} = {value};";
+            _query += $"SET {field} = {value} GO";
             return new UpdateQuery(_query);
         }
 
@@ -54,7 +66,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult SetStringField(string field, string value)
         {
-            _query += $"SET {field} = '{value}';";
+            _query += $"SET {field} = '{value}' GO";
             return new UpdateQuery(_query);
         }
 

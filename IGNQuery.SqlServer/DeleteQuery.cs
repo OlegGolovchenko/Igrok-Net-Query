@@ -13,7 +13,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult From(string table)
         {
-            _query += $"DELETE FROM {table};";
+            _query += $"DELETE FROM {table} GO";
             return new QueryResult(_query);
         }
 

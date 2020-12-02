@@ -17,7 +17,7 @@ namespace IGNQuery.SqlServer
 
         public bool queryToOutput = false;
 
-        public MsSqlDataProvider(ILogger logger)
+        public MsSqlDataProvider(ILogger logger, string email)
         {
             _logger = logger;
             _connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING");
