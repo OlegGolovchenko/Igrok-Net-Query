@@ -36,14 +36,10 @@ namespace IGNQuery.MySql
             return _query;
         }
 
-        public IQueryResult StoredProcedureIfNotExists(string name, IQueryResult content, IEnumerable<TableField> parameters = null)
+        public IQueryResult StoredProcedure(string name, IQueryResult content, IEnumerable<TableField> parameters = null)
         {
             var query = new StringBuilder();
-            query.Append("DROP PROCEDURE IF EXISTS ");
-            query.Append(name);
-            query.Append(";");
-            query.AppendLine();
-            query.Append("CREATE STORED PROCEDURE ");
+            query.Append("CREATE PROCEDURE ");
             query.Append(name);
             query.Append("(");
             if (parameters != null)
