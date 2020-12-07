@@ -33,6 +33,13 @@ namespace IGNQuery.Interfaces.QueryProvider
     {
         IQueryResult TableIfNotExists(string name, IEnumerable<TableField> fields);
 
-        IQueryResult StoredProcedureIfNotExists(string name, IQueryResult content, [Optional] IEnumerable<TableField> parameters);
+        /// <summary>
+        /// Creates stored procedure You should drop stored procedure if it exists before doing this
+        /// </summary>
+        /// <param name="name">Stored procedure name</param>
+        /// <param name="content">body of stored procedure</param>
+        /// <param name="parameters">parameters of stored procedure</param>
+        /// <returns>QueryResult</returns>
+        IQueryResult StoredProcedure(string name, IQueryResult content, [Optional] IEnumerable<TableField> parameters);
     }
 }

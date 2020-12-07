@@ -61,7 +61,7 @@ namespace IGNQuery
 
         private void SetStringValue(string value)
         {
-            ParamValue = $"'{value}'";
+            ParamValue = $"{value}";
         }
 
         private void SetLongValueValue(long value)

@@ -49,7 +49,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult Go()
         {
-            _query += "GO";
+            _query += "";
             return new QueryResult(_query);
         }
 

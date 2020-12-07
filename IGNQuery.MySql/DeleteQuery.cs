@@ -30,7 +30,7 @@ namespace IGNQuery.MySql
 
         public IQueryResult From(string table)
         {
-            _query += $"DELETE FROM {table};";
+            _query += $"DELETE FROM {table} ";
             return new QueryResult(_query);
         }
 

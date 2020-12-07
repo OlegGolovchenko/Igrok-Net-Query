@@ -14,7 +14,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult AllFrom(string table)
         {
-            _query += $"SELECT * FROM {table} GO";
+            _query += $"SELECT * FROM {table} ";
             return new QueryResult(_query);
         }
 
@@ -26,7 +26,7 @@ namespace IGNQuery.SqlServer
 
         public IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames)
         {
-            _query += $"SELECT {string.Join(",", fieldNames)} FROM {table} GO";
+            _query += $"SELECT {string.Join(",", fieldNames)} FROM {table} ";
             return new QueryResult(_query);
         }
 

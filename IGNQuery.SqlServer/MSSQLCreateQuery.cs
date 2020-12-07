@@ -19,18 +19,10 @@ namespace IGNQuery.SqlServer
             return _query;
         }
 
-        public IQueryResult StoredProcedureIfNotExists(string name, IQueryResult content, IEnumerable<TableField> parameters = null)
+        public IQueryResult StoredProcedure(string name, IQueryResult content, IEnumerable<TableField> parameters = null)
         {
             var query = new StringBuilder();
-            query.Append("IF OBJECT_ID('");
-            query.Append(name);
-            query.Append("', 'P') IS NOT NULL");
-            query.AppendLine();
-            query.Append("DROP PROCEDURE ");
-            query.Append(name);
-            query.Append("GO");
-            query.AppendLine();
-            query.Append("CREATE STORED PROCEDURE ");
+            query.Append("CREATE PROCEDURE ");
             query.Append(name);
             query.Append(" ");
             if (parameters != null)
@@ -45,7 +37,7 @@ namespace IGNQuery.SqlServer
             }
             query.AppendLine();
             query.Append(" AS ");
-            query.Append(content);
+            query.Append(content.GetResultingString());
             query.Append("GO");
             _query += query;
             return new QueryResult(_query);
@@ -83,7 +75,7 @@ namespace IGNQuery.SqlServer
                     query.Append(", ");
                 }
             }
-            query.Append(")GO");
+            query.Append(")");
 
             _query += query;
 
