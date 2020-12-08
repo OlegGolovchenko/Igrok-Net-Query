@@ -97,8 +97,10 @@ namespace IGNQuery.MySql
             {
                 Console.WriteLine($"calling stored procedure [{procname}]");
             }
-            var command = new MySqlCommand(procname, _connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
+            var command = new MySqlCommand(procname, _connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -171,8 +173,10 @@ namespace IGNQuery.MySql
             {
                 Console.WriteLine($"calling stored procedure [{procname}]");
             }
-            var command = new MySqlCommand(procname, _connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
+            var command = new MySqlCommand(procname, _connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -206,7 +210,7 @@ namespace IGNQuery.MySql
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             _connection = null;
         }
@@ -223,7 +227,7 @@ namespace IGNQuery.MySql
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             finally
             {

@@ -80,8 +80,10 @@ namespace IGNQuery.SqlServer
             {
                 Console.WriteLine($"calling stored procedure [{procname}]");
             }
-            var command = new SqlCommand(procname, _connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
+            var command = new SqlCommand(procname, _connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -154,8 +156,10 @@ namespace IGNQuery.SqlServer
             {
                 Console.WriteLine($"calling stored procedure [{procname}]");
             }
-            var command = new SqlCommand(procname, _connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
+            var command = new SqlCommand(procname, _connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -189,7 +193,7 @@ namespace IGNQuery.SqlServer
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             _connection = null;
         }
@@ -206,7 +210,7 @@ namespace IGNQuery.SqlServer
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             finally
             {
