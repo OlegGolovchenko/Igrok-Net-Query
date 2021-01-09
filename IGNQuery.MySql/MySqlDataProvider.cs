@@ -33,16 +33,16 @@ namespace IGNQuery.MySql
         public bool queryToOutput = false;
         public MySqlDataProvider(string email)
         {
-            //Activation.Activate(email);
+            Activation.Activate(email);
             _connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
         }
 
         public void ExecuteNonQuery(IQueryResult query)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -59,10 +59,10 @@ namespace IGNQuery.MySql
 
         public void ExecuteNonQueryWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -83,10 +83,10 @@ namespace IGNQuery.MySql
 
         public void ExecuteStoredProcedure(string procname, IEnumerable<ParameterValue> parameters = null)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -113,10 +113,10 @@ namespace IGNQuery.MySql
 
         public DbDataReader ExecuteReader(IQueryResult query)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -134,10 +134,10 @@ namespace IGNQuery.MySql
 
         public DbDataReader ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -159,10 +159,10 @@ namespace IGNQuery.MySql
 
         public DbDataReader ExecuteStoredProcedureReader(string procname, IEnumerable<ParameterValue> parameters = null)
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             ResetConnection();
             if (_connection == null)
             {
@@ -190,19 +190,19 @@ namespace IGNQuery.MySql
 
         public IQuery Query()
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             return new SqlQuery() { Dialect = DialectEnum.MySQL };
         }
 
         public void ResetConnection()
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             try
             {
                 _connection.Close();
@@ -217,10 +217,10 @@ namespace IGNQuery.MySql
 
         public void Dispose()
         {
-            //if (!Activation.IsActive)
-            //{
-            //    throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            //}
+            if (!Activation.IsActive)
+            {
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
+            }
             try
             {
                 _connection.Close();
