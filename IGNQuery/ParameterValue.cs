@@ -25,6 +25,7 @@
 // ############################################
 
 using System;
+using System.Globalization;
 
 namespace IGNQuery
 {
@@ -59,6 +60,11 @@ namespace IGNQuery
             SetBooleanValue(value);
         }
 
+        public ParameterValue(int number, DateTime value) : this(number)
+        {
+            SetDateTimeValue(value);
+        }
+
         private void SetStringValue(string value)
         {
             ParamValue = $"{value}";
@@ -72,6 +78,11 @@ namespace IGNQuery
         private void SetBooleanValue(bool value)
         {
             ParamValue = $"{(value ? 1 : 0)}";
+        }
+
+        private void SetDateTimeValue(DateTime value)
+        {
+            ParamValue = $"{value.ToUniversalTime().ToString(CultureInfo.InvariantCulture)}";
         }
     }
 }

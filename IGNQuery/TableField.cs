@@ -44,6 +44,8 @@ namespace IGNQuery
 
         public const string TYPE_BOOLEAN = "bit";
 
+        public const string TYPE_DATE = "datetime";
+
         public static string TypeNvarchar(int length)
         {
             return $"nvarchar({length})";

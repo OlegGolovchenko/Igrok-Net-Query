@@ -24,26 +24,22 @@
 //
 // ############################################
 
-using System;
-
-namespace IGNQuery
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public class FieldValue
+    public interface IAlterQuery
     {
-        public string StringValue { get; set; }
+        IAlterQuery TableIfExists(string tableName);
 
-        public long? LongValue { get; set; }
+        IAlterQuery Add();
 
-        public bool? BooleanValue { get; set; }
+        IAlterQuery Column(TableField column);
 
-        public DateTime DateValue { get; set; }
+        IAlterQuery Next();
 
-        public FieldValue()
-        {
-            if (!Activation.IsActive)
-            {
-                throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
-            }
-        }
+        IAlterQuery Go();
+
+        IAlterQuery Drop();
+
+        IAlterQuery Alter();
     }
 }
