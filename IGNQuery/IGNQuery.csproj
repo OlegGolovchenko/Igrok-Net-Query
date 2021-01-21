@@ -10,7 +10,7 @@
     <RepositoryType>github</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.9</Version>
+    <Version>1.1.1</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
   </PropertyGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IgnActivator" Version="1.0.7" />
+    <PackageReference Include="IgnActivator" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
