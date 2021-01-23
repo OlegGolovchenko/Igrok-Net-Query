@@ -24,11 +24,26 @@
 //
 // ############################################
 
-namespace IGNQuery.Enums
+using System;
+
+namespace IGNQuery.Attributes
 {
-    public enum DialectEnum
+    [AttributeUsage(AttributeTargets.Class)]
+    public class DatabaseTable:Attribute
     {
-        MySQL = 1,
-        MSSQL = 2
+        private readonly string tableName;
+
+        public string TableName
+        {
+            get
+            {
+                return this.tableName;
+            }
+        }
+
+        public DatabaseTable(string dbTableName)
+        {
+            this.tableName = dbTableName;
+        }
     }
 }

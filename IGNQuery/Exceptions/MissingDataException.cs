@@ -24,11 +24,14 @@
 //
 // ############################################
 
-namespace IGNQuery.Enums
+using System;
+
+namespace IGNQuery.Exceptions
 {
-    public enum DialectEnum
+    public class MissingDataException: Exception
     {
-        MySQL = 1,
-        MSSQL = 2
+        public MissingDataException(string message):base($"Some data needed to create query is missing: {message}")
+        {
+        }
     }
 }

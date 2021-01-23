@@ -60,5 +60,21 @@ namespace IGNQuery.SqlServer
         {
             return new DropQuery(_query);
         }
+
+        public IAlterQuery Alter()
+        {
+            if (Dialect == DialectEnum.MySQL)
+            {
+                throw new InvalidOperationException("Please use IGNQuery.MySQL to use mysql support");
+            }
+            else if (Dialect == DialectEnum.MSSQL)
+            {
+                return new MsSqlAlterQuery(_query);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

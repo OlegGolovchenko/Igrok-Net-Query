@@ -110,5 +110,10 @@ namespace IGNQuery.MySql
 
             return new QueryResult(_query);
         }
+
+        public IQueryResult TableIfNotExists(string name, IEnumerable<string> filedDefinitions)
+        {
+            throw new System.NotImplementedException("Not implemented in current version");
+        }
     }
 }
