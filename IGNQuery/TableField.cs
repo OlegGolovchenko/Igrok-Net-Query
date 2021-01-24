@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.Attributes;
 using System;
 
 namespace IGNQuery
@@ -57,6 +58,19 @@ namespace IGNQuery
             {
                 throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
             }
+        }
+
+        internal static TableField FromDatabaseColumnAttribute(DatabaseColumn columnAttribute)
+        {
+            return new TableField
+            {
+                Name = columnAttribute.Column,
+                Type = columnAttribute.FullColumn.Split(' ')[1],
+                CanHaveNull = columnAttribute.CanHaveNull,
+                Generated = columnAttribute.IsGenerated,
+                Primary = columnAttribute.IsPrimary,
+                DefValue = columnAttribute.DefValue
+            };
         }
     }
 }

@@ -112,6 +112,29 @@ namespace IGNQuery.BaseClasses
             }
         }
 
+        private IEnumerable<TableField> TableFields
+        {
+            get
+            {
+                var result = new List<TableField>();
+                var fields = GetType().GetFields();
+                foreach (var field in fields)
+                {
+
+                    var attribs = field.GetCustomAttributes(true);
+                    if (attribs.Any(ca => ca is DatabaseColumn))
+                    {
+                        var attrib = attribs.Where(ca => ca is DatabaseColumn).Cast<DatabaseColumn>().FirstOrDefault();
+                        if (attrib != null)
+                        {
+                            result.Add(TableField.FromDatabaseColumnAttribute(attrib));
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
         internal IQueryResult GetInsertQuery(IDataProvider dataProvider)
         {
             var tableName = "";
@@ -151,17 +174,13 @@ namespace IGNQuery.BaseClasses
         internal IQueryResult GetInitTableQuery(IDataProvider dataProvider)
         {
             var tableName = "";
-            IEnumerable<string> columnNames = null;
-
             DatabaseTable tableAttribute = null;
 
             IQueryResult result = null;
 #if NETFULL 
             tableAttribute = GetType().GetCustomAttributes(true).Where(ca => ca is DatabaseTable).Cast<DatabaseTable>().SingleOrDefault();
-            columnNames = GetType().GetCustomAttributes(true).Where(ca => ca is DatabaseColumn).Cast<DatabaseColumn>().Select(dbc => dbc.FullColumn).ToList();
 #else
             tableAttribute = (DatabaseTable)GetType().GetTypeInfo().GetCustomAttribute(typeof(DatabaseTable));
-            columnNames = GetType().GetTypeInfo().GetCustomAttributes(true).Where(ca => ca is DatabaseColumn).Cast<DatabaseColumn>().Select(dbc => dbc.FullColumn).ToList();
 #endif
             if (tableAttribute != null)
             {
@@ -172,14 +191,14 @@ namespace IGNQuery.BaseClasses
                 throw new MissingDataException("Please annotate class with DatabaseTable attribute");
             }
 
-            if (columnNames.Count() <= 0)
+            if (TableFields.Count() <= 0)
             {
                 throw new MissingDataException("Please annotate at least propertiy with DatabaseColumn attribute");
             }
 
             if(dataProvider != null)
             {
-                result = dataProvider.Query().Create().TableIfNotExists(tableName, columnNames);
+                result = dataProvider.Query().Create().TableIfNotExists(tableName, TableFields);
             }
             return result;
         }

@@ -26,7 +26,7 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAlterQuery
+    public interface IAlterQuery: IQueryResult
     {
         IAlterQuery TableIfExists(string tableName);
 

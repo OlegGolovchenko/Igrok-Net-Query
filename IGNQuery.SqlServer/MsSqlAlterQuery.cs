@@ -46,6 +46,11 @@ namespace IGNQuery.SqlServer
             return new MsSqlAlterQuery(_query);
         }
 
+        public string GetResultingString()
+        {
+            return _query;
+        }
+
         public IAlterQuery Go()
         {
             _query += ";";

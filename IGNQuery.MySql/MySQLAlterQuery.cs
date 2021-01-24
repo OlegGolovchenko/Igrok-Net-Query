@@ -46,6 +46,11 @@ namespace IGNQuery.MySql
             return new MySQLAlterQuery(_query);
         }
 
+        public string GetResultingString()
+        {
+            return _query;
+        }
+
         public IAlterQuery Go()
         {
             _query += ";";
