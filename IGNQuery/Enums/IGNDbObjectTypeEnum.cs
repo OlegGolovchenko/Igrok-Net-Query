@@ -24,14 +24,20 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using System.ComponentModel;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Enums
 {
-    public interface IQueryResult
-    {
-        string GetResultingString();
 
-        IGNQueriable AsIgnQueriable();
+    public enum IGNDbObjectTypeEnum
+    {
+        None = 0,
+        Database = 1,
+        Table = 2,
+        StoredProcedure = 3,
+        View = 4,
+        Index = 5,
+        UniqueIndex = 6,
+        Column = 7
     }
 }

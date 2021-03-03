@@ -29,12 +29,16 @@ namespace IGNQuery.MySql
     {
         private readonly string _connectionString;
         private MySqlConnection _connection;
+        private IDataDriver dataDriver;
+        private readonly string email;
 
         public bool queryToOutput = false;
         public MySqlDataProvider(string email)
         {
             Activation.Activate(email);
             _connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
+            this.dataDriver = new MySqlDataDriver(email, _connectionString);
+            this.email = email;
         }
 
         public void ExecuteNonQuery(IQueryResult query)
@@ -194,7 +198,7 @@ namespace IGNQuery.MySql
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            return new SqlQuery() { Dialect = DialectEnum.MySQL };
+            return new SqlQuery(this.email, this.dataDriver) { Dialect = DialectEnum.MySQL };
         }
 
         public void ResetConnection()

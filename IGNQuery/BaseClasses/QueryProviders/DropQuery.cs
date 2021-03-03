@@ -25,57 +25,41 @@
 // ############################################
 
 using IGNQuery.Interfaces;
+using IGNQuery.Interfaces.QueryProvider;
 using System;
-using System.Collections.Generic;
 
-namespace IGNQuery.BaseClasses
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class DataTable<T> where T : DataEntity
+    public class DropQuery : IDropQuery
     {
-        private readonly IDataProvider dataProvider;
-        private readonly string tableName;
 
-        internal DataTable(IDataProvider dataProvider)
+        private IGNQueriable queriable;
+
+        public DropQuery(string email, IDataDriver dataDriver)
         {
-            this.tableName = Activator.CreateInstance<T>().TableName;
-            this.dataProvider = dataProvider;
+            queriable = IGNQueriable.Begin(email, dataDriver);
         }
 
-        internal void Init()
+        public IGNQueriable AsIgnQueriable()
         {
-            if (dataProvider != null)
-            {
-                dataProvider.ExecuteNonQuery(Activator.CreateInstance<T>().GetInitTableQuery(dataProvider));
-            }
+            return this.queriable;
         }
 
-        internal void Drop()
+        public string GetResultingString()
         {
-            if (dataProvider != null)
-            {
-                dataProvider.ExecuteNonQuery(Activator.CreateInstance<T>().GetDropQuery(dataProvider));
-            }
+            return this.queriable.ToString();
         }
 
-        public List<T> ListAll()
+        public IQueryResult StoredProcedureIfExists(string name)
         {
-            var query = this.dataProvider.Query().Select().AllFrom(this.tableName);
-            var reader = this.dataProvider.ExecuteReader(query);
-            var result = new List<T>();
-            if (reader.HasRows)
-            {
-                DataEntity row = (DataEntity)Activator.CreateInstance(typeof(T),true);
-                row.ReadFromDataReader(reader);
-            }
-            return result;
+            this.queriable.Drop().StoredProcedure(name).IfExists();
+            return this;
         }
 
-        public void Add(T entity)
+        public IQueryResult TableIfExists(string name)
         {
-            if (dataProvider != null)
-            {
-                dataProvider.ExecuteNonQuery(entity.GetInsertQuery(dataProvider));
-            }
+            this.queriable.Drop().Table(name).IfExists();
+            return this;
         }
     }
 }

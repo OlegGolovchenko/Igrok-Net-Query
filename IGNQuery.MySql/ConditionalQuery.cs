@@ -15,6 +15,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
+using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.MySql
@@ -22,10 +24,19 @@ namespace IGNQuery.MySql
     internal class ConditionalQuery : IConditionalQuery
     {
         private string _query;
+        private readonly string email;
+        private IDataDriver dataDriver;
 
-        public ConditionalQuery(string query)
+        public ConditionalQuery(string query, string email, IDataDriver dataDriver)
         {
             _query = query;
+            this.email = email;
+            this.dataDriver = dataDriver;
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
 
         public string GetResultingString()
@@ -36,7 +47,7 @@ namespace IGNQuery.MySql
         public ICondition Where()
         {
             _query += "WHERE ";
-            return new Condition(_query);
+            return new Condition(_query, this.email, this.dataDriver);
         }
     }
 }

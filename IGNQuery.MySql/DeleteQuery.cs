@@ -15,6 +15,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
+using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.MySql
@@ -22,22 +24,31 @@ namespace IGNQuery.MySql
     internal class DeleteQuery : IDeleteQuery
     {
         private string _query;
+        private readonly string email;
+        private IDataDriver dataDriver;
 
-        public DeleteQuery(string query)
+        public DeleteQuery(string query, string email, IDataDriver dataDriver)
         {
             _query = query;
+            this.email = email;
+            this.dataDriver = dataDriver;
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
 
         public IQueryResult From(string table)
         {
             _query += $"DELETE FROM {table} ";
-            return new QueryResult(_query);
+            return new QueryResult(_query, this.email, this.dataDriver);
         }
 
         public IConditionalQuery FromWithCondition(string table)
         {
             _query += $"DELETE FROM {table} ";
-            return new ConditionalQuery(_query);
+            return new ConditionalQuery(_query, this.email, this.dataDriver);
         }
 
         public string GetResultingString()

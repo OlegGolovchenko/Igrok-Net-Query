@@ -24,14 +24,36 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IQueryResult
+    public partial class IGNQueriable
     {
-        string GetResultingString();
+        public IGNQueriable StoredProcedure(string name)
+        {
+            if (string.IsNullOrWhiteSpace(this.format))
+            {
+                throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
+            }
+            this.objectType = IGNDbObjectTypeEnum.StoredProcedure;
+            this.objectName = name;
+            return this;
+        }
 
-        IGNQueriable AsIgnQueriable();
+        public IGNQueriable StoredProcedure(string name, IGNQueriable query, Func<IEnumerable<Tuple<string, Type, int>>> fields)
+        {
+            if (string.IsNullOrWhiteSpace(this.format))
+            {
+                throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
+            }
+            this.objectType = IGNDbObjectTypeEnum.StoredProcedure;
+            this.objectName = name;
+            this.querySpecificPart = $" {GetParams(fields)}\nAS\n{query}";
+            return this;
+        }
     }
 }

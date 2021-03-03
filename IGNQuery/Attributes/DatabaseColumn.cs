@@ -36,11 +36,11 @@ namespace IGNQuery.Attributes
     public class DatabaseColumn: Attribute
     {
         private readonly string column;
-        private readonly string type;
         private readonly string defValue;
         private readonly bool canHaveNull;
         private readonly bool isGenerated;
         private readonly bool primary;
+        private readonly string length;
 
         /// <summary>
         /// Column Name
@@ -50,17 +50,6 @@ namespace IGNQuery.Attributes
             {
                 return this.column;
             } 
-        }
-
-        /// <summary>
-        /// Column Name used for create table query
-        /// </summary>
-        public string FullColumn
-        {
-            get
-            {
-                return $"{this.column} {this.type}";
-            }
         }
 
         /// <summary>
@@ -108,22 +97,33 @@ namespace IGNQuery.Attributes
         }
 
         /// <summary>
+        /// Length of column if applicable
+        /// </summary>
+        public string Length
+        {
+            get
+            {
+                return length;
+            }
+        }
+
+        /// <summary>
         /// Mark field as databound
         /// </summary>
         /// <param name="column">column name</param>
-        /// <param name="dbType">column type</param>
         /// <param name="primary">primary key</param>
         /// <param name="isGenerated">generated column</param>
         /// <param name="canHaveNull">can have null value</param>
         /// <param name="defValue">default value</param>
-        public DatabaseColumn(string column, string dbType, bool primary, bool isGenerated, bool canHaveNull, string defValue)
+        /// <param name="length">length of column if applicable</param>
+        public DatabaseColumn(string column, bool primary, bool isGenerated, bool canHaveNull, string defValue, string length)
         {
             this.column = column;
-            this.type = dbType;
             this.primary = primary;
             this.isGenerated = isGenerated;
             this.canHaveNull = canHaveNull;
             this.defValue = defValue;
+            this.length = length;
         }
     }
 }

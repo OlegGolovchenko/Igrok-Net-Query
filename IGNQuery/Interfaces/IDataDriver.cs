@@ -25,13 +25,44 @@
 // ############################################
 
 using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Interfaces
 {
-    public interface IQueryResult
+    public interface IDataDriver:IDisposable
     {
-        string GetResultingString();
+        DialectEnum Dialect { get; }
 
-        IGNQueriable AsIgnQueriable();
+        void Execute(IGNQueriable query);
+
+        void IfTableNotExists(string name, IGNQueriable queriable);
+
+        void IfDatabaseNotExists(string name, IGNQueriable queriable);
+
+        void IfStoredProcedureNotExists(string name, IGNQueriable queriable);
+
+        void IfViewNotExists(string name, IGNQueriable queriable);
+
+        void IfIndexNotExists(string name, IGNQueriable queriable);
+
+        void IfColumnNotExists(string name, IGNQueriable queriable);
+
+        void IfTableExists(string name, IGNQueriable queriable);
+
+        void IfDatabaseExists(string name, IGNQueriable queriable);
+
+        void IfStoredProcedureExists(string name, IGNQueriable queriable);
+
+        void IfViewExists(string name, IGNQueriable queriable);
+
+        void IfIndexExists(string name, IGNQueriable queriable);
+
+        void IfColumnExists(string name, IGNQueriable queriable);
+
+        string GoTerminator();
+        string GetDbAutoGenFor(Type clrType, int length);
     }
 }

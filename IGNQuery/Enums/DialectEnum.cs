@@ -24,6 +24,8 @@
 //
 // ############################################
 
+using System.ComponentModel;
+
 namespace IGNQuery.Enums
 {
     public enum DialectEnum

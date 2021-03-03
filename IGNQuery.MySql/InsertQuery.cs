@@ -15,6 +15,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
+using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,23 +27,32 @@ namespace IGNQuery.MySql
     internal class InsertQuery : IInsertQuery
     {
         private string _query;
+        private readonly string email;
+        private IDataDriver dataDriver;
 
-        public InsertQuery(string query)
+        public InsertQuery(string query, string email, IDataDriver dataDriver)
         {
             _query = query;
+            this.email = email;
+            this.dataDriver = dataDriver;
         }
 
         public IInsertQuery AddRow(IEnumerable<FieldValue> values)
         {
 
             _query += $" ({string.Join(",", GetValuesAsString(values))}) ";
-            return new InsertQuery(_query);
+            return new InsertQuery(_query, this.email, this.dataDriver);
         }
 
         public IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers)
         {
             _query += $" ({string.Join(",", paramNumbers.Select(x=>$"@p{x}"))}) ";
-            return new InsertQuery(_query);
+            return new InsertQuery(_query, this.email, this.dataDriver);
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
 
         public string GetResultingString()
@@ -52,19 +63,19 @@ namespace IGNQuery.MySql
         public IInsertQuery Into(string table, IEnumerable<string> fields)
         {
             _query += $"INSERT INTO {table}({string.Join(",", fields)}) ";
-            return new InsertQuery(_query);
+            return new InsertQuery(_query, this.email, this.dataDriver);
         }
 
         public IInsertQuery Next()
         {
             _query += ",";
-            return new InsertQuery(_query);
+            return new InsertQuery(_query, this.email, this.dataDriver);
         }
 
         public IInsertQuery Values()
         {
             _query += "VALUES";
-            return new InsertQuery(_query);
+            return new InsertQuery(_query, this.email, this.dataDriver);
         }
 
         private IEnumerable<string> GetValuesAsString(IEnumerable<FieldValue> values)

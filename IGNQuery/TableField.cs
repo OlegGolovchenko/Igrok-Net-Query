@@ -52,25 +52,67 @@ namespace IGNQuery
             return $"nvarchar({length})";
         }
 
+        public Type FromStringToType()
+        {
+            if(Type == TYPE_LONG)
+            {
+                return typeof(long);
+            }
+            if(Type == TYPE_BOOLEAN)
+            {
+                return typeof(bool);
+            }
+            if(Type == TYPE_DATE)
+            {
+                return typeof(DateTime);
+            }
+            if (Type.Contains("nvarchar"))
+            {
+                return typeof(string);
+            }
+            throw new Exception("Unknown type");
+        }
+
+        public int StringLengthFromType()
+        {
+            if (Type.Contains("nvarchar"))
+            {
+                int.TryParse(Type.TrimEnd(')').Split('(')[1],out var result);
+                return result;
+            }
+            return 0;
+        }
+
+        public object DefValueFromString()
+        {
+            if (Type == TYPE_LONG)
+            {
+                long.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type == TYPE_BOOLEAN)
+            {
+                bool.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type == TYPE_DATE)
+            {
+                DateTime.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type.Contains("nvarchar"))
+            {
+                return DefValue.TrimStart('\'').TrimEnd('\'');
+            }
+            throw new Exception("Unknown type");
+        }
+
         public TableField()
         {
             if (!Activation.IsActive)
             {
                 throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
             }
-        }
-
-        internal static TableField FromDatabaseColumnAttribute(DatabaseColumn columnAttribute)
-        {
-            return new TableField
-            {
-                Name = columnAttribute.Column,
-                Type = columnAttribute.FullColumn.Split(' ')[1],
-                CanHaveNull = columnAttribute.CanHaveNull,
-                Generated = columnAttribute.IsGenerated,
-                Primary = columnAttribute.IsPrimary,
-                DefValue = columnAttribute.DefValue
-            };
         }
     }
 }

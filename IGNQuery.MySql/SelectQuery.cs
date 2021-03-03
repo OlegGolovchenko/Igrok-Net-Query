@@ -15,6 +15,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
+using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
 
@@ -23,34 +25,43 @@ namespace IGNQuery.MySql
     internal class SelectQuery : ISelectQuery
     {
         private string _query;
+        private readonly string email;
+        private IDataDriver dataDriver;
 
-        public SelectQuery(string query)
+        public SelectQuery(string query, string email, IDataDriver dataDriver)
         {
             _query = query;
+            this.email = email;
+            this.dataDriver = dataDriver;
         }
 
         public IQueryResult AllFrom(string table)
         {
             _query += $"SELECT * FROM {table};";
-            return new QueryResult(_query);
+            return new QueryResult(_query, this.email, this.dataDriver);
         }
 
         public IConditionalQuery AllFromWithCondition(string table)
         {
             _query += $"SELECT * FROM {table} ";
-            return new ConditionalQuery(_query);
+            return new ConditionalQuery(_query, this.email, this.dataDriver);
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
 
         public IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames)
         {
             _query += $"SELECT {string.Join(",", fieldNames)} FROM {table};";
-            return new QueryResult(_query);
+            return new QueryResult(_query, this.email, this.dataDriver);
         }
 
         public IConditionalQuery FieldsFromWithCondition(string table, IEnumerable<string> fieldNames)
         {
             _query += $"SELECT {string.Join(",", fieldNames)} FROM {table} ";
-            return new ConditionalQuery(_query);
+            return new ConditionalQuery(_query, this.email, this.dataDriver);
         }
 
         public string GetResultingString()
