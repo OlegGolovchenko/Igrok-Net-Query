@@ -5,6 +5,8 @@ using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
 using IGNQuery.Enums;
+using System.Linq;
+using System.Data;
 
 namespace IGNQuery.SqlServer
 {
@@ -39,22 +41,8 @@ namespace IGNQuery.SqlServer
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine(query.GetResultingString());
-            }
-            var command = new SqlCommand(query.GetResultingString(), _connection);
-            foreach (var param in parameters)
-            {
-                command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
-            }
-            command.ExecuteNonQuery();
+            this.dataDriver.ExecuteWithParameters(query.AsIgnQueriable(), 
+                parameters.Select(x=> Tuple.Create<int, object>(x.ParamNumber,x.ParamValue)));
         }
 
         public void ExecuteStoredProcedure(string procname, IEnumerable<ParameterValue> parameters = null)
@@ -63,105 +51,37 @@ namespace IGNQuery.SqlServer
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine($"calling stored procedure [{procname}]");
-            }
-            var command = new SqlCommand(procname, _connection)
-            {
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
-            if (parameters != null)
-            {
-                foreach (var param in parameters)
-                {
-                    command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
-                }
-            }
-            command.ExecuteNonQuery();
+            this.dataDriver.ExecuteStoredProcedure(procname,
+                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
         }
 
-        public DbDataReader ExecuteReader(IQueryResult query)
+        public DataTable ExecuteReader(IQueryResult query)
         {
             if (!Activation.IsActive)
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine(query.GetResultingString());
-            }
-            var command = new SqlCommand(query.GetResultingString(), _connection);
-            DbDataReader result = command.ExecuteReader();
-            return result;
+            return this.dataDriver.ReadData(query.AsIgnQueriable());
         }
 
-        public DbDataReader ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
+        public DataTable ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
         {
             if (!Activation.IsActive)
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine(query.GetResultingString());
-            }
-            var command = new SqlCommand(query.GetResultingString(), _connection);
-            foreach (var param in parameters)
-            {
-                command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
-            }
-            DbDataReader result = command.ExecuteReader();
-            return result;
+            return this.dataDriver.ReadDataWithParameters(query.AsIgnQueriable(),
+                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
         }
 
-        public DbDataReader ExecuteStoredProcedureReader(string procname, IEnumerable<ParameterValue> parameters = null)
+        public DataTable ExecuteStoredProcedureReader(string procname, IEnumerable<ParameterValue> parameters = null)
         {
             if (!Activation.IsActive)
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine($"calling stored procedure [{procname}]");
-            }
-            var command = new SqlCommand(procname, _connection)
-            {
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
-            if (parameters != null)
-            {
-                foreach (var param in parameters)
-                {
-                    command.Parameters.AddWithValue($"@p{param.ParamNumber}", param.ParamValue);
-                }
-            }
-            DbDataReader result = command.ExecuteReader();
-            return result;
+            return this.dataDriver.ReadDataFromStoredProcedure(procname,
+                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
         }
 
         public IQuery Query()

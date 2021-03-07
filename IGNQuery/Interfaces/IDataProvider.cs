@@ -27,7 +27,7 @@
 using IGNQuery.Interfaces.QueryProvider;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Data;
 using System.Runtime.InteropServices;
 
 namespace IGNQuery.Interfaces
@@ -35,9 +35,9 @@ namespace IGNQuery.Interfaces
     public interface IDataProvider: IDisposable
     {
         IQuery Query();
-        DbDataReader ExecuteReader(IQueryResult query);
-        DbDataReader ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters);
-        DbDataReader ExecuteStoredProcedureReader(string procname, [Optional] IEnumerable<ParameterValue> parameters);
+        DataTable ExecuteReader(IQueryResult query);
+        DataTable ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters);
+        DataTable ExecuteStoredProcedureReader(string procname, [Optional] IEnumerable<ParameterValue> parameters);
         void ExecuteNonQuery(IQueryResult query);
         void ExecuteNonQueryWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters);
         void ExecuteStoredProcedure(string procname, [Optional] IEnumerable<ParameterValue> parameters);

@@ -28,6 +28,8 @@ using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Text;
 
 namespace IGNQuery.Interfaces
@@ -37,6 +39,16 @@ namespace IGNQuery.Interfaces
         DialectEnum Dialect { get; }
 
         void Execute(IGNQueriable query);
+
+        void ExecuteWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args);
+
+        void ExecuteStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args);
+
+        DataTable ReadData(IGNQueriable query);
+
+        DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args);
+
+        DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args);
 
         void IfTableNotExists(string name, IGNQueriable queriable);
 

@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.Common;
 using IGNQuery.Enums;
+using System.Data;
 
 namespace IGNQuery.BaseClasses
 {
@@ -88,6 +89,16 @@ namespace IGNQuery.BaseClasses
         protected virtual DbCommand PrepareDbCommand(
             string query, DbConnection connection
         )
+        {
+            throw new NotImplementedException(this.nonSpecDriverErr);
+        }
+
+        protected virtual void AddParameters(DbCommand dbc, IEnumerable<Tuple<int, object>> args)
+        {
+            throw new NotImplementedException(this.nonSpecDriverErr);
+        }
+
+        protected virtual DataTable InitDataTable(DbDataReader reader)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
@@ -165,6 +176,72 @@ namespace IGNQuery.BaseClasses
         public virtual string GetDbAutoGenFor(Type clrType, int length)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
+        }
+
+        public void ExecuteWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args)
+        {
+            using (var connection = OpenConnection())
+            {
+                var dbc = PrepareDbCommand(query.ToString(), connection);
+                AddParameters(dbc, args);
+                dbc.ExecuteNonQuery();
+            }
+        }
+
+        public void ExecuteStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args)
+        {
+            using (var connection = OpenConnection())
+            {
+                var dbc = PrepareDbCommand("EXEC procName", connection);
+                dbc.CommandType = CommandType.StoredProcedure;
+                AddParameters(dbc, args);
+                dbc.ExecuteNonQuery();
+            }
+        }
+
+        public DataTable ReadData(IGNQueriable query)
+        {
+            DataTable result = null;
+            using (var connection = OpenConnection())
+            {
+                var dbc = PrepareDbCommand(query.ToString(), connection);
+                using (var dbReader = dbc.ExecuteReader())
+                {
+                    InitDataTable(dbReader);
+                }
+            }
+            return result;
+        }
+
+        public DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args)
+        {
+            DataTable result = null;
+            using (var connection = OpenConnection())
+            {
+                var dbc = PrepareDbCommand(query.ToString(), connection);
+                AddParameters(dbc, args);
+                using (var dbReader = dbc.ExecuteReader())
+                {
+                    InitDataTable(dbReader);
+                }
+            }
+            return result;
+        }
+
+        public DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args)
+        {
+            DataTable result = null;
+            using (var connection = OpenConnection())
+            {
+                var dbc = PrepareDbCommand("EXEC procName", connection);
+                dbc.CommandType = CommandType.StoredProcedure;
+                AddParameters(dbc, args);
+                using (var dbReader = dbc.ExecuteReader())
+                {
+                    InitDataTable(dbReader);
+                }
+            }
+            return result;
         }
     }
 }
