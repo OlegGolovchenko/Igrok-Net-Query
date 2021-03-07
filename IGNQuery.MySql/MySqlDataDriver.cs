@@ -20,6 +20,8 @@ using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Interfaces;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 
 namespace IGNQuery.MySql
@@ -68,6 +70,21 @@ namespace IGNQuery.MySql
             {
                 Connection = (MySqlConnection)connection
             };
+        }
+
+        protected override void AddParameters(DbCommand dbc, IEnumerable<Tuple<int, object>> args)
+        {
+            foreach (var arg in args)
+            {
+                ((MySqlCommand)dbc).Parameters.AddWithValue($"@p{arg.Item1}", arg.Item2);
+            }
+        }
+
+        protected override DataTable InitDataTable(DbDataReader reader)
+        {
+            var result = new DataTable();
+            result.Load(reader);
+            return result;
         }
 
         public override string GetDbAutoGenFor(Type clrType, int length)
