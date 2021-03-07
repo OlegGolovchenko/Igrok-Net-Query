@@ -40,7 +40,7 @@ namespace IGNQuery.SqlServer
 
         public IDeleteQuery Delete()
         {
-            return new DeleteQuery(_query, this.email, this.dataDriver);
+            return new DeleteQuery(this.email, this.dataDriver);
         }
 
         public string GetResultingString()
@@ -50,17 +50,17 @@ namespace IGNQuery.SqlServer
 
         public IInsertQuery Insert()
         {
-            return new InsertQuery(_query, this.email, this.dataDriver);
+            return new InsertQuery(this.email, this.dataDriver);
         }
 
         public ISelectQuery Select()
         {
-            return new SelectQuery(_query, this.email, this.dataDriver);
+            return new SelectQuery(this.email, this.dataDriver);
         }
 
         public IUpdateQuery Update()
         {
-            return new UpdateQuery(_query, this.email, this.dataDriver);
+            return new UpdateQuery(this.email, this.dataDriver);
         }
 
         public IDropQuery Drop()

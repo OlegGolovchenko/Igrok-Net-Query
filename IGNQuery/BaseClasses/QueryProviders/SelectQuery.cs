@@ -26,19 +26,29 @@
 
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
+using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-
-    public class DropQuery : IDropQuery
+    public class SelectQuery : ISelectQuery
     {
 
         private IGNQueriable queriable;
 
-        public DropQuery(string email, IDataDriver dataDriver)
+        public SelectQuery(string email, IDataDriver dataDriver)
         {
             queriable = IGNQueriable.Begin(email, dataDriver);
+        }
+        public IQueryResult AllFrom(string table)
+        {
+            this.queriable.Select().From(table);
+            return this;
+        }
+
+        public IConditionalQuery AllFromWithCondition(string table)
+        {
+            this.queriable.Select().From(table);
+            return new ConditionalQuery(this.queriable);
         }
 
         public IGNQueriable AsIgnQueriable()
@@ -46,21 +56,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this.queriable;
         }
 
+        public IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames)
+        {
+            this.queriable.Select(fieldNames).From(table);
+            return this;
+        }
+
+        public IConditionalQuery FieldsFromWithCondition(string table, IEnumerable<string> fieldNames)
+        {
+            this.queriable.Select(fieldNames).From(table);
+            return new ConditionalQuery(this.queriable);
+        }
+
         public string GetResultingString()
         {
             return this.queriable.ToString();
-        }
-
-        public IQueryResult StoredProcedureIfExists(string name)
-        {
-            this.queriable.Drop().StoredProcedure(name).IfExists();
-            return this;
-        }
-
-        public IQueryResult TableIfExists(string name)
-        {
-            this.queriable.Drop().Table(name).IfExists();
-            return this;
         }
     }
 }

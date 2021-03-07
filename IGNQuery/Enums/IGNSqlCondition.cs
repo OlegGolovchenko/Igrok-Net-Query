@@ -24,19 +24,18 @@
 //
 // ############################################
 
-using System.ComponentModel;
-
 namespace IGNQuery.Enums
 {
-    public enum IGNDbObjectTypeEnum
+    public enum IGNSqlCondition
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7
+        Between = 1,
+        Like = 2,
+        In = 3,
+        Eq = 4,
+        Gt = 5,
+        Lt = 6,
+        Ge = 7,
+        Le = 8,
+        Ne = 9
     }
 }

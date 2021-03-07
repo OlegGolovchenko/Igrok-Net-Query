@@ -187,5 +187,49 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 this.querySpecificPart
             );
         }
+
+        private void BuildUpdateQuery()
+        {
+            this.query = string.Format(
+                this.format,
+                this.objectName,
+                this.querySpecificPart,
+                this.conditional);
+        }
+
+        private void BuildInsertQuery()
+        {
+            this.query = string.Format(
+                this.format,
+                this.querySpecificPart,
+                this.insertValuesQueryPart);
+        }
+
+        private void BuildSelectQuery()
+        {
+            var fields = "";
+            if(fieldNames.Count() == 0)
+            {
+                fields = "*";
+            }
+            else
+            {
+                fields = string.Join(",", this.fieldNames);
+            }
+            this.query = string.Format(
+                this.format,
+                fields,
+                this.objectName,
+                this.querySpecificPart,
+                this.conditional);
+        }
+
+        private void BuildDeleteQuery()
+        {
+            this.query = string.Format(
+                this.format,
+                this.objectName,
+                this.conditional);
+        }
     }
 }

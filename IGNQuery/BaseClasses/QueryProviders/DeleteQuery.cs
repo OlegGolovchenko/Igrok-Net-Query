@@ -24,19 +24,41 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using IGNQuery.Interfaces;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public enum IGNDbObjectTypeEnum
+    public class DeleteQuery : IDeleteQuery
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7
+
+        private IGNQueriable queriable;
+
+        public DeleteQuery(string email, IDataDriver dataDriver)
+        {
+            queriable = IGNQueriable.Begin(email, dataDriver);
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return this.queriable;
+        }
+
+        public IQueryResult From(string table)
+        {
+            this.queriable.Delete().From(table);
+            return this;
+        }
+
+        public IConditionalQuery FromWithCondition(string table)
+        {
+            this.queriable.Delete().From(table);
+            return new ConditionalQuery(this.queriable);
+        }
+
+        public string GetResultingString()
+        {
+            return this.queriable.ToString();
+        }
     }
 }

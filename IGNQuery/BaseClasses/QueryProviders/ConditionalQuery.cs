@@ -24,19 +24,34 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public enum IGNDbObjectTypeEnum
+    public class ConditionalQuery : IConditionalQuery
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7
+
+        private IGNQueriable queriable;
+
+        internal ConditionalQuery(IGNQueriable queriable)
+        {
+            this.queriable = queriable;
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return this.queriable;
+        }
+
+        public string GetResultingString()
+        {
+            return this.queriable.ToString();
+        }
+
+        public ICondition Where()
+        {
+            this.queriable.Where();
+            return new Condition(this.queriable);
+        }
     }
 }

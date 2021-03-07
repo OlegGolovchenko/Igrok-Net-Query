@@ -37,6 +37,29 @@ namespace IGNQuery
         public bool? BooleanValue { get; set; }
 
         public DateTime DateValue { get; set; }
+        public object ObjectValue
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(StringValue))
+                {
+                    return StringValue;
+                }
+                if (LongValue.HasValue)
+                {
+                    return LongValue.Value;
+                }
+                if (BooleanValue.HasValue)
+                {
+                    return BooleanValue.Value;
+                }
+                if (DateValue != default(DateTime))
+                {
+                    return DateValue;
+                }
+                return null;
+            }
+        }
 
         public FieldValue()
         {

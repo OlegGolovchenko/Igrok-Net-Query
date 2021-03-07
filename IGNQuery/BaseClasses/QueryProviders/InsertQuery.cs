@@ -26,19 +26,47 @@
 
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-
-    public class DropQuery : IDropQuery
+    public class InsertQuery : IInsertQuery
     {
 
         private IGNQueriable queriable;
+        private bool firstRow;
 
-        public DropQuery(string email, IDataDriver dataDriver)
+        public InsertQuery(string email, IDataDriver dataDriver)
         {
             queriable = IGNQueriable.Begin(email, dataDriver);
+            this.firstRow = true;
+        }
+
+        public IInsertQuery AddRow(IEnumerable<FieldValue> values)
+        {
+            if (this.firstRow)
+            {
+                this.queriable.Values(values.Select(x => x.ObjectValue));
+            }
+            else
+            {
+                this.queriable.AddRow(values.Select(x => x.ObjectValue));
+            }
+            return this;
+        }
+
+        public IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers)
+        {
+            if (this.firstRow)
+            {
+                this.queriable.ValuesWithParams(paramNumbers);
+            }
+            else
+            {
+                this.queriable.AddRowWithParams(paramNumbers);
+            }
+            return this;
         }
 
         public IGNQueriable AsIgnQueriable()
@@ -51,15 +79,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this.queriable.ToString();
         }
 
-        public IQueryResult StoredProcedureIfExists(string name)
+        public IInsertQuery Into(string table, IEnumerable<string> fields)
         {
-            this.queriable.Drop().StoredProcedure(name).IfExists();
+            this.queriable.Insert().Into(table, fields);
             return this;
         }
 
-        public IQueryResult TableIfExists(string name)
+        public IInsertQuery Next()
         {
-            this.queriable.Drop().Table(name).IfExists();
+            this.firstRow = false;
+            return this;
+        }
+
+        public IInsertQuery Values()
+        {
+            this.firstRow = true;
             return this;
         }
     }
