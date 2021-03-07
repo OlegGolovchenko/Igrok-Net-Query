@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.Attributes;
 using System;
 
 namespace IGNQuery
@@ -44,9 +45,66 @@ namespace IGNQuery
 
         public const string TYPE_BOOLEAN = "bit";
 
+        public const string TYPE_DATE = "datetime";
+
         public static string TypeNvarchar(int length)
         {
             return $"nvarchar({length})";
+        }
+
+        public Type FromStringToType()
+        {
+            if(Type == TYPE_LONG)
+            {
+                return typeof(long);
+            }
+            if(Type == TYPE_BOOLEAN)
+            {
+                return typeof(bool);
+            }
+            if(Type == TYPE_DATE)
+            {
+                return typeof(DateTime);
+            }
+            if (Type.Contains("nvarchar"))
+            {
+                return typeof(string);
+            }
+            throw new Exception("Unknown type");
+        }
+
+        public int StringLengthFromType()
+        {
+            if (Type.Contains("nvarchar"))
+            {
+                int.TryParse(Type.TrimEnd(')').Split('(')[1],out var result);
+                return result;
+            }
+            return 0;
+        }
+
+        public object DefValueFromString()
+        {
+            if (Type == TYPE_LONG)
+            {
+                long.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type == TYPE_BOOLEAN)
+            {
+                bool.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type == TYPE_DATE)
+            {
+                DateTime.TryParse(DefValue, out var result);
+                return result;
+            }
+            if (Type.Contains("nvarchar"))
+            {
+                return DefValue.TrimStart('\'').TrimEnd('\'');
+            }
+            throw new Exception("Unknown type");
         }
 
         public TableField()

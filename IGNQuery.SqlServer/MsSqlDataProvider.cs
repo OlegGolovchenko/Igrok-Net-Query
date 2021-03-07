@@ -12,12 +12,16 @@ namespace IGNQuery.SqlServer
     {
         private readonly string _connectionString;
         private SqlConnection _connection;
+        private IDataDriver dataDriver;
+        private readonly string email;
         public bool queryToOutput = false;
 
         public MsSqlDataProvider(string email)
         {
             Activation.Activate(email);
             _connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING");
+            this.dataDriver = new MsSqlDataDriver(email, _connectionString);
+            this.email = email;
         }
 
         public void ExecuteNonQuery(IQueryResult query)
@@ -26,18 +30,7 @@ namespace IGNQuery.SqlServer
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            ResetConnection();
-            if (_connection == null)
-            {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-            }
-            if (queryToOutput)
-            {
-                Console.WriteLine(query.GetResultingString());
-            }
-            var command = new SqlCommand(query.GetResultingString(), _connection);
-            command.ExecuteNonQuery();
+            this.dataDriver.Execute(query.AsIgnQueriable());
         }
 
         public void ExecuteNonQueryWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters)
@@ -177,7 +170,7 @@ namespace IGNQuery.SqlServer
             {
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
-            return new SqlQuery() { Dialect = DialectEnum.MSSQL };
+            return new SqlQuery(this.email, this.dataDriver) { Dialect = DialectEnum.MSSQL };
         }
 
         public void ResetConnection()

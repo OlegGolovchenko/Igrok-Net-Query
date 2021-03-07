@@ -10,9 +10,10 @@
     <RepositoryType>github</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.1</Version>
+    <Version>1.1.6.49</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
+    <PackageIcon>IGNQuery-1.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -20,6 +21,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="icons\IGNQuery-1.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -28,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IgnActivator" Version="1.1.0" />
+    <PackageReference Include="IgnActivator" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -37,6 +42,15 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp10'">
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="icons\IGNQuery-1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

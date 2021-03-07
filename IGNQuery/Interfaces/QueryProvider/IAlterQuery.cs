@@ -24,14 +24,22 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
-
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IQueryResult
+    public interface IAlterQuery: IQueryResult
     {
-        string GetResultingString();
+        IAlterQuery TableIfExists(string tableName);
 
-        IGNQueriable AsIgnQueriable();
+        IAlterQuery Add();
+
+        IAlterQuery Column(TableField column);
+
+        IAlterQuery Next();
+
+        IAlterQuery Go();
+
+        IAlterQuery Drop();
+
+        IAlterQuery Alter();
     }
 }

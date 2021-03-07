@@ -8,3 +8,8 @@ Base class library will be under MIT.
 Database specific implementations will be licensed under separate licenses
  * MYSQL: GPLV3 to be compatible with community version and connector for mysql
  * Microsoft SQL server: MIT license
+
+If you want to build dev version with prerelease package versions, please add bin\releae folder of your IGNQuery project to package sources.
+Otherwise you may run into problems with package versions.
+
+If you need to use this package it is adwisable to use official nuget packages from NuGet.org

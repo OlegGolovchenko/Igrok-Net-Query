@@ -15,7 +15,9 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
+using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
 
@@ -24,19 +26,23 @@ namespace IGNQuery.MySql
     internal class SqlQuery : IQuery
     {
         private readonly string _query;
+        private readonly string email;
+        private IDataDriver dataDriver;
 
         public DialectEnum Dialect { get; set; }
 
-        public SqlQuery()
+        public SqlQuery(string email, IDataDriver dataDriver)
         {
             _query = string.Empty;
+            this.email = email;
+            this.dataDriver = dataDriver;
         }
 
         public ICreateQuery Create()
         {
             if (Dialect == DialectEnum.MySQL)
             {
-                return new MySQLCreateQuery(_query);
+                return new CreateQuery(this.email, this.dataDriver);
             }
             else if(Dialect == DialectEnum.MSSQL)
             {
@@ -50,7 +56,7 @@ namespace IGNQuery.MySql
 
         public IDeleteQuery Delete()
         {
-            return new DeleteQuery(_query);
+            return new DeleteQuery(this.email, this.dataDriver);
         }
 
         public string GetResultingString()
@@ -60,22 +66,43 @@ namespace IGNQuery.MySql
 
         public IInsertQuery Insert()
         {
-            return new InsertQuery(_query);
+            return new InsertQuery(this.email, this.dataDriver);
         }
 
         public ISelectQuery Select()
         {
-            return new SelectQuery(_query);
+            return new SelectQuery(this.email, this.dataDriver);
         }
 
         public IUpdateQuery Update()
         {
-            return new UpdateQuery(_query);
+            return new UpdateQuery(this.email, this.dataDriver);
         }
 
         public IDropQuery Drop()
         {
-            return new DropQuery(_query);
+            return new DropQuery(this.email, this.dataDriver);
+        }
+
+        public IAlterQuery Alter()
+        {
+            if (Dialect == DialectEnum.MySQL)
+            {
+                return new AlterQuery(this.email, this.dataDriver);
+            }
+            else if (Dialect == DialectEnum.MSSQL)
+            {
+                throw new InvalidOperationException("Please use IGNQuery.SQLServer to use ms sql server support");
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
     }
 }

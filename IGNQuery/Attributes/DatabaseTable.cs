@@ -24,14 +24,26 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using System;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Attributes
 {
-    public interface IQueryResult
+    [AttributeUsage(AttributeTargets.Class)]
+    public class DatabaseTable:Attribute
     {
-        string GetResultingString();
+        private readonly string tableName;
 
-        IGNQueriable AsIgnQueriable();
+        public string TableName
+        {
+            get
+            {
+                return this.tableName;
+            }
+        }
+
+        public DatabaseTable(string dbTableName)
+        {
+            this.tableName = dbTableName;
+        }
     }
 }

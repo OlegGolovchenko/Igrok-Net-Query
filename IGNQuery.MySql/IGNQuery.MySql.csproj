@@ -9,9 +9,10 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/OlegGolovchenko/Igrok-Net-Query</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.0.9</Version>
+    <Version>1.1.6.1</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
+    <PackageIcon>IGNQuery-1.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -19,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IGNQuery" Version="1.1.1" />
+    <PackageReference Include="IGNQuery" Version="1.1.6.49" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -27,13 +28,23 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp20'">
-    <PackageReference Include="MySql.Data" Version="8.0.22" />
+    <PackageReference Include="MySql.Data" Version="8.0.23" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="icons\IGNQuery-1.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="icons\IGNQuery-1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

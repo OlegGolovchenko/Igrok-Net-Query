@@ -39,5 +39,7 @@ namespace IGNQuery.Interfaces.QueryProvider
         IInsertQuery Insert();
 
         IDropQuery Drop();
+
+        IAlterQuery Alter();
     }
 }

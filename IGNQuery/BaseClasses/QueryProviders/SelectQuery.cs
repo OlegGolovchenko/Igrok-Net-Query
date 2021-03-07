@@ -24,49 +24,53 @@
 //
 // ############################################
 
-using System;
+using IGNQuery.Interfaces;
+using IGNQuery.Interfaces.QueryProvider;
+using System.Collections.Generic;
 
-namespace IGNQuery
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class FieldValue
+    public class SelectQuery : ISelectQuery
     {
-        public string StringValue { get; set; }
 
-        public long? LongValue { get; set; }
+        private IGNQueriable queriable;
 
-        public bool? BooleanValue { get; set; }
-
-        public DateTime DateValue { get; set; }
-        public object ObjectValue
+        public SelectQuery(string email, IDataDriver dataDriver)
         {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(StringValue))
-                {
-                    return StringValue;
-                }
-                if (LongValue.HasValue)
-                {
-                    return LongValue.Value;
-                }
-                if (BooleanValue.HasValue)
-                {
-                    return BooleanValue.Value;
-                }
-                if (DateValue != default(DateTime))
-                {
-                    return DateValue;
-                }
-                return null;
-            }
+            queriable = IGNQueriable.Begin(email, dataDriver);
+        }
+        public IQueryResult AllFrom(string table)
+        {
+            this.queriable.Select().From(table);
+            return this;
         }
 
-        public FieldValue()
+        public IConditionalQuery AllFromWithCondition(string table)
         {
-            if (!Activation.IsActive)
-            {
-                throw new Exception("Product is not activated, please call Activation.Activate([email]) to activate product. This product is totally free. Your info will be used only for licensing purposes. to read more visit https://igrok-net.org");
-            }
+            this.queriable.Select().From(table);
+            return new ConditionalQuery(this.queriable);
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return this.queriable;
+        }
+
+        public IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames)
+        {
+            this.queriable.Select(fieldNames).From(table);
+            return this;
+        }
+
+        public IConditionalQuery FieldsFromWithCondition(string table, IEnumerable<string> fieldNames)
+        {
+            this.queriable.Select(fieldNames).From(table);
+            return new ConditionalQuery(this.queriable);
+        }
+
+        public string GetResultingString()
+        {
+            return this.queriable.ToString();
         }
     }
 }

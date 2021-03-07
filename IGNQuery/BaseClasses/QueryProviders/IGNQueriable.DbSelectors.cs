@@ -24,14 +24,24 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IQueryResult
+    public partial class IGNQueriable
     {
-        string GetResultingString();
-
-        IGNQueriable AsIgnQueriable();
+        public IGNQueriable Database(string name)
+        {
+            if (string.IsNullOrWhiteSpace(this.format))
+            {
+                throw new Exception("Please call table after Create Update or Alter ddl query");
+            }
+            this.objectType = IGNDbObjectTypeEnum.Database;
+            this.objectName = name;
+            return this;
+        }
     }
 }

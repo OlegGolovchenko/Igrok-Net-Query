@@ -1,3 +1,4 @@
+using IGNQuery.BaseClasses;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,80 @@ namespace IGNQuery.SqlServer.Test
                 Delete().
                 From("ignusers");
 
+            dataProvider.ExecuteNonQuery(query);
+        }
+
+
+        [Test]
+        public void BAlterTableIfExists()
+        {
+            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var query = dataProvider.Query().
+                Alter().
+                TableIfExists("ignusers").
+                Add().
+                Column(new TableField
+                {
+                    Name = "test1",
+                    CanHaveNull = true,
+                    Primary = false,
+                    Type = TableField.TypeNvarchar(25),
+                    Generated = false,
+                    DefValue = ""
+                }).
+                Next().
+                Add().
+                Column(new TableField
+                {
+                    Name = "test2",
+                    CanHaveNull = true,
+                    Primary = false,
+                    Type = TableField.TypeNvarchar(25),
+                    Generated = false,
+                    DefValue = ""
+                }).
+                Go();
+            dataProvider.ExecuteNonQuery(query);
+            query = dataProvider.Query().
+                Alter().
+                TableIfExists("ignusers").
+                Alter().
+                Column(new TableField
+                {
+                    Name = "test1",
+                    CanHaveNull = true,
+                    Primary = false,
+                    Type = TableField.TypeNvarchar(50),
+                    Generated = false,
+                    DefValue = ""
+                }).
+                Go();
+            dataProvider.ExecuteNonQuery(query);
+            query = dataProvider.Query().
+                Alter().
+                TableIfExists("ignusers").
+                Drop().
+                Column(new TableField
+                {
+                    Name = "test1",
+                    CanHaveNull = true,
+                    Primary = false,
+                    Type = TableField.TypeNvarchar(25),
+                    Generated = false,
+                    DefValue = ""
+                }).
+                Next().
+                Drop().
+                Column(new TableField
+                {
+                    Name = "test2",
+                    CanHaveNull = true,
+                    Primary = false,
+                    Type = TableField.TypeNvarchar(25),
+                    Generated = false,
+                    DefValue = ""
+                }).
+                Go();
             dataProvider.ExecuteNonQuery(query);
         }
 

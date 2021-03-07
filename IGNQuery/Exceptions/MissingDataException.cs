@@ -24,14 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using System;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Exceptions
 {
-    public interface IQueryResult
+    public class MissingDataException: Exception
     {
-        string GetResultingString();
-
-        IGNQueriable AsIgnQueriable();
+        public MissingDataException(string message):base($"Some data needed to create query is missing: {message}")
+        {
+        }
     }
 }

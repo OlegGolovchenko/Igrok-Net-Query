@@ -24,14 +24,27 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IQueryResult
+    public class QueryResult : IQueryResult
     {
-        string GetResultingString();
+        private IGNQueriable queriable;
 
-        IGNQueriable AsIgnQueriable();
+        public QueryResult(IGNQueriable queriable)
+        {
+            this.queriable = queriable;
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return this.queriable;
+        }
+
+        public string GetResultingString()
+        {
+           return this.queriable.ToString();
+        }
     }
 }

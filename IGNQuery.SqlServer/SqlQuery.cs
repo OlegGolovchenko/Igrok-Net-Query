@@ -1,4 +1,6 @@
-﻿using IGNQuery.Enums;
+﻿using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
 
@@ -10,9 +12,14 @@ namespace IGNQuery.SqlServer
 
         public DialectEnum Dialect { get; set; }
 
-        public SqlQuery()
+        private readonly string email;
+        private readonly IDataDriver dataDriver;
+
+        public SqlQuery(string email, IDataDriver dataDriver)
         {
             _query = string.Empty;
+            this.email = email;
+            this.dataDriver = dataDriver;
         }
 
         public ICreateQuery Create()
@@ -23,7 +30,7 @@ namespace IGNQuery.SqlServer
             }
             else if(Dialect == DialectEnum.MSSQL)
             {
-                return new MSSQLCreateQuery(_query);
+                return new CreateQuery(this.email,this.dataDriver);
             }
             else
             {
@@ -33,7 +40,7 @@ namespace IGNQuery.SqlServer
 
         public IDeleteQuery Delete()
         {
-            return new DeleteQuery(_query);
+            return new DeleteQuery(this.email, this.dataDriver);
         }
 
         public string GetResultingString()
@@ -43,22 +50,43 @@ namespace IGNQuery.SqlServer
 
         public IInsertQuery Insert()
         {
-            return new InsertQuery(_query);
+            return new InsertQuery(this.email, this.dataDriver);
         }
 
         public ISelectQuery Select()
         {
-            return new SelectQuery(_query);
+            return new SelectQuery(this.email, this.dataDriver);
         }
 
         public IUpdateQuery Update()
         {
-            return new UpdateQuery(_query);
+            return new UpdateQuery(this.email, this.dataDriver);
         }
 
         public IDropQuery Drop()
         {
-            return new DropQuery(_query);
+            return new DropQuery(this.email, this.dataDriver);
+        }
+
+        public IAlterQuery Alter()
+        {
+            if (Dialect == DialectEnum.MySQL)
+            {
+                throw new InvalidOperationException("Please use IGNQuery.MySQL to use mysql support");
+            }
+            else if (Dialect == DialectEnum.MSSQL)
+            {
+                return new AlterQuery(this.email, this.dataDriver);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return IGNQueriable.FromQueryString(this._query, this.email, this.dataDriver);
         }
     }
 }

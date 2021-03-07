@@ -24,14 +24,43 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
+using IGNQuery.Interfaces.QueryProvider;
+using System;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IQueryResult
-    {
-        string GetResultingString();
 
-        IGNQueriable AsIgnQueriable();
+    public class DropQuery : IDropQuery
+    {
+
+        private IGNQueriable queriable;
+
+        public DropQuery(string email, IDataDriver dataDriver)
+        {
+            queriable = IGNQueriable.Begin(email, dataDriver);
+        }
+
+        public IGNQueriable AsIgnQueriable()
+        {
+            return this.queriable;
+        }
+
+        public string GetResultingString()
+        {
+            return this.queriable.ToString();
+        }
+
+        public IQueryResult StoredProcedureIfExists(string name)
+        {
+            this.queriable.Drop().StoredProcedure(name).IfExists();
+            return this;
+        }
+
+        public IQueryResult TableIfExists(string name)
+        {
+            this.queriable.Drop().Table(name).IfExists();
+            return this;
+        }
     }
 }

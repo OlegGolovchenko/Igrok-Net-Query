@@ -24,14 +24,18 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
-
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Enums
 {
-    public interface IQueryResult
+    public enum IGNSqlCondition
     {
-        string GetResultingString();
-
-        IGNQueriable AsIgnQueriable();
+        Between = 1,
+        Like = 2,
+        In = 3,
+        Eq = 4,
+        Gt = 5,
+        Lt = 6,
+        Ge = 7,
+        Le = 8,
+        Ne = 9
     }
 }

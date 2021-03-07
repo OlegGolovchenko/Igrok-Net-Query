@@ -9,9 +9,10 @@
     <PackageProjectUrl>https://igrok-net.org/products</PackageProjectUrl>
     <RepositoryUrl>https://github.com/OlegGolovchenko/Igrok-Net-Query</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.1.1</Version>
+    <Version>1.1.6.1</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
+    <PackageIcon>IGNQuery-1.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -19,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IGNQuery" Version="1.1.1" />
+    <PackageReference Include="IGNQuery" Version="1.1.6.49" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -32,8 +33,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="icons\IGNQuery-1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="icons\IGNQuery-1.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
     <None Include="LICENSE">
       <Pack>True</Pack>
