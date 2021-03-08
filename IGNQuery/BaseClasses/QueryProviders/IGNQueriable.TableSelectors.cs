@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using System;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         }
 
         public IGNQueriable Table(string name,
-            Func<IEnumerable<Tuple<string, Type, int, bool, bool, bool, object>>> fields)
+            Func<IEnumerable<TableColumnConfiguration>> fields)
         {
             if (string.IsNullOrWhiteSpace(this.format))
             {

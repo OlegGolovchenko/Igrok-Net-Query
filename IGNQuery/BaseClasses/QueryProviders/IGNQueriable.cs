@@ -26,13 +26,9 @@
 
 using IGNQuery.Enums;
 using IGNQuery.Interfaces;
-using IGNQuery.Interfaces.QueryProvider;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
@@ -190,6 +186,17 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             this.fieldNames = new List<string>();
             this.format = SELECT_QUERY_FORMAT;
+            return this;
+        }
+
+        public IGNQueriable Join(string sourceTableName,
+            string destTableName,
+            string sourceKeyName, 
+            string destKeyName)
+        {
+            this.querySpecificPart = $"INNER JOIN {destTableName} ON " +
+                $"{sourceTableName}.{sourceKeyName} = " +
+                $"{destTableName}.{destKeyName}";
             return this;
         }
 

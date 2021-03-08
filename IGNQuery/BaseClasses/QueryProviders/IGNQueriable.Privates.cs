@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,12 +41,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
         }
 
         private IEnumerable<string> CompileFieldsInfo(string tableName,
-            IEnumerable<Tuple<string, Type, int, bool, bool, bool, object>> fieldsInfo)
+            IEnumerable<TableColumnConfiguration> fieldsInfo)
         {
-            var fieldDescs = fieldsInfo.Select(x =>
-                $"{x.Item1} {GetDbType(x.Item2, x.Item3)} " +
-                $"{FormatFieldOptionals(x.Item2,x.Item3,x.Item4,x.Item5,x.Item7)}"
-                ).ToList();
+            var fieldDescs = fieldsInfo.Select(x => x.AsCreateTableQueryField(
+                GetDbType, GetDefaultValue, GetDbAutoGenFunc)).ToList();
             fieldDescs.Add(GetPrimaryKey(tableName, fieldsInfo));
             return fieldDescs;
         }
@@ -58,13 +57,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
                    $"{GetDbAutoGenFunc(generated, colType, length)}";
         }
 
-        private string GetPrimaryKey(string tableName, IEnumerable<Tuple<string, Type, int, bool, bool, bool, object>> fieldsInfo)
+        private string GetPrimaryKey(string tableName, IEnumerable<TableColumnConfiguration> fieldsInfo)
         {
-            var pkFields = fieldsInfo.Where(x => x.Item6).Select(x => x.Item1);
+            var pkFields = fieldsInfo.Where(x => x.Primary).Select(x => x.ColumnName);
             return $"CONSTRAINT PK_{tableName} PRIMARY KEY({string.Join(",", pkFields)})";
         }
 
-        private object GetDefaultValue(bool isRequired,
+        private string GetDefaultValue(bool isRequired,
             bool isGenerated, object defValue)
         {
             var defVal = defValue?.ToString();
