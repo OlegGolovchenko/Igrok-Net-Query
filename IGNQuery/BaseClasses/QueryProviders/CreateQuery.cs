@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
@@ -71,15 +72,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             this.queriable.Create().Table(name,
                 ()=>fields.Select(
-                    x=>Tuple.Create(
-                        x.Name,
-                        x.FromStringToType(),
-                        x.StringLengthFromType(),
-                        !x.CanHaveNull,
-                        x.Generated,
-                        x.Primary,
-                        x.DefValueFromString()
-                        )
+                    x=>TableColumnConfiguration.FromTableField(x)
                     )
                 ).IfNotExists();
             return this;

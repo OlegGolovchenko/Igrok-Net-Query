@@ -1,4 +1,5 @@
 using IGNQuery.BaseClasses;
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Interfaces;
 using Moq;
@@ -198,10 +199,10 @@ namespace IGNQuery.Test
             var dbDriverMock = new Mock<IDataDriver>();
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             dbDriverMock.Setup(x => x.GetDbAutoGenFor(It.IsAny<Type>(),It.IsAny<int>())).Returns(" IDENTITY(1,1)");
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com",dbDriverMock.Object).Create().Table("test", ()=> new List<Tuple<string,Type,int,bool,bool,bool,object>>()
+            var query = IGNQueriable.Begin("igrok_be@hotmail.com",dbDriverMock.Object).Create().Table("test", ()=> new List<TableColumnConfiguration>()
             {
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("id",typeof(long),0,true,true,true,null),
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("name",typeof(string),255,false,false,false,null)
+                TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
+                TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
             });
             var expected = "CREATE TABLE test(id BIGINT NOT NULL IDENTITY(1,1),name NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY(id))\nGO";
             Assert.AreEqual(expected,query.ToString());
@@ -286,10 +287,10 @@ namespace IGNQuery.Test
                    IGNQueriable.PrefixWith(prefix, y);
                    IGNQueriable.SuffixWith("END", y);
                });
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).Create().Table("test", () => new List<Tuple<string, Type, int, bool, bool, bool, object>>()
+            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).Create().Table("test", () => new List<TableColumnConfiguration>()
             {
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("id",typeof(long),0,true,true,true,null),
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("name",typeof(string),255,false,false,false,null)
+                TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
+                TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
             }).IfNotExists();
             var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='test' AND xtype='U')\nBEGIN\nCREATE TABLE test(id BIGINT NOT NULL IDENTITY(1,1),name NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY(id))\nEND\nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -301,10 +302,10 @@ namespace IGNQuery.Test
             var dbDriverMock = new Mock<IDataDriver>();
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             dbDriverMock.Setup(x => x.GetDbAutoGenFor(It.IsAny<Type>(), It.IsAny<int>())).Returns(" IDENTITY(1,1)");
-            Assert.Throws<Exception>(()=>IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).Table("test", () => new List<Tuple<string, Type, int, bool, bool, bool, object>>()
+            Assert.Throws<Exception>(()=>IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).Table("test", () => new List<TableColumnConfiguration>()
             {
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("id",typeof(long),0,true,true,true,null),
-                Tuple.Create<string,Type,int,bool,bool,bool,object>("name",typeof(string),255,false,false,false,null)
+                TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
+                TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
             }));            
         }
     }
