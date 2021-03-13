@@ -40,7 +40,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.StoredProcedure;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             return this;
         }
 
@@ -51,7 +51,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.StoredProcedure;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             this.querySpecificPart = $" {GetParams(fields)}\nAS\n{query}";
             return this;
         }

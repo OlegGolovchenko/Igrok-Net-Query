@@ -33,7 +33,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public partial class IGNQueriable
     {
-
         private object GetParams(Func<IEnumerable<Tuple<string, Type, int>>> fields)
         {
             var parameterList = fields?.Invoke();
@@ -44,7 +43,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             IEnumerable<TableColumnConfiguration> fieldsInfo)
         {
             var fieldDescs = fieldsInfo.Select(x => x.AsCreateTableQueryField(
-                GetDbType, GetDefaultValue, GetDbAutoGenFunc)).ToList();
+                this.dataDriver.Dialect, GetDbType, GetDefaultValue, GetDbAutoGenFunc)).ToList();
             fieldDescs.Add(GetPrimaryKey(tableName, fieldsInfo));
             return fieldDescs;
         }
@@ -59,7 +58,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         private string GetPrimaryKey(string tableName, IEnumerable<TableColumnConfiguration> fieldsInfo)
         {
-            var pkFields = fieldsInfo.Where(x => x.Primary).Select(x => x.ColumnName);
+            var pkFields = fieldsInfo.Where(x => x.Primary).Select(x => SanitizeName(x.ColumnName));
             return $"CONSTRAINT PK_{tableName} PRIMARY KEY({string.Join(",", pkFields)})";
         }
 

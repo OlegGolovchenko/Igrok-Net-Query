@@ -42,7 +42,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call table after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Table;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call table after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Table;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             this.querySpecificPart = alterQuery.ToString();
             this.subquery = alterQuery;
             return this;
@@ -67,7 +67,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call table after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Table;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             var fieldsInfo = fields?.Invoke();
             this.querySpecificPart = $"({string.Join(",", CompileFieldsInfo(name, fieldsInfo))})";
             return this;
