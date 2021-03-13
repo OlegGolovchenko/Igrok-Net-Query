@@ -40,7 +40,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Index;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             return this;
         }
 
@@ -51,7 +51,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.UniqueIndex;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             return this;
         }
 
@@ -62,8 +62,8 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call stored procedure after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Index;
-            this.objectName = name;
-            this.querySpecificPart = $"\nON\n{table}({string.Join(",", fields?.Invoke())})";
+            this.objectName = SanitizeName(name);
+            this.querySpecificPart = $"\nON\n{SanitizeName(table)}({string.Join(",", fields?.Invoke()?.Select(colname=>SanitizeName(colname)))})";
             return this;
         }
 
@@ -75,7 +75,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
             this.objectType = IGNDbObjectTypeEnum.Index;
             this.objectName = name;
-            this.querySpecificPart = $"\nON\n{table}({string.Join(",", fields?.Invoke())})";
+            this.querySpecificPart = $"\nON\n{SanitizeName(table)}({string.Join(",", fields?.Invoke()?.Select(colname=> SanitizeName(colname)))})";
             return this;
         }
 

@@ -26,7 +26,7 @@ using System.Data.Common;
 
 namespace IGNQuery.MySql
 {
-    internal class MySqlDataDriver : IGNDbDriver
+    public class MySqlDataDriver : IGNDbDriver
     {
              
         public MySqlDataDriver(string email, string connectionString):base(connectionString)

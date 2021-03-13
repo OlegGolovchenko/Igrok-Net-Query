@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.Enums;
 using System;
 
 namespace IGNQuery.BaseClasses.Business
@@ -110,11 +111,14 @@ namespace IGNQuery.BaseClasses.Business
         }
 
         public string AsCreateTableQueryField(
+            DialectEnum dialect,
             GetDbTypeFunc getDbType,
             GetDefaultValueFunc getDefaultValue,
             GetDbAutoGenFunc getDbAutoGen)
         {
-            return $"{ColumnName} {getDbType(ColumnType, Length)} " +
+            var columnNamePrefix = dialect == DialectEnum.MSSQL ? "[":"'";
+            var columnNameSuffix = dialect == DialectEnum.MSSQL ? "]" : "'";
+            return $"{columnNamePrefix}{ColumnName}{columnNameSuffix} {getDbType(ColumnType, Length)} " +
                 $"{(Required ? "NOT NULL" : "NULL")}" +
                 $"{getDefaultValue(Required, Generated, DefValue)}" +
                 $"{getDbAutoGen(Required, ColumnType, Length)}";

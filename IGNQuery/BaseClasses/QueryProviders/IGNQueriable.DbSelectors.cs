@@ -40,7 +40,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 throw new Exception("Please call table after Create Update or Alter ddl query");
             }
             this.objectType = IGNDbObjectTypeEnum.Database;
-            this.objectName = name;
+            this.objectName = SanitizeName(name);
             return this;
         }
     }
