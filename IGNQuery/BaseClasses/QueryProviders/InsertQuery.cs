@@ -34,7 +34,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     public class InsertQuery : IInsertQuery
     {
 
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
         private bool firstRow;
 
         public InsertQuery(string email, IDataDriver dataDriver)

@@ -27,7 +27,7 @@ namespace IGNQuery.MySql
     {
         private readonly string _query;
         private readonly string email;
-        private IDataDriver dataDriver;
+        private readonly IDataDriver dataDriver;
 
         public DialectEnum Dialect { get; set; }
 

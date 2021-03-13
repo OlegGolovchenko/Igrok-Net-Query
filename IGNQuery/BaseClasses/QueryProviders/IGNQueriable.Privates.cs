@@ -66,9 +66,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             bool isGenerated, object defValue)
         {
             var defVal = defValue?.ToString();
-            if (defValue is bool)
+            if (defValue is bool boolean)
             {
-                defVal = ((bool)defValue) ? "''1''" : "''0''";
+                defVal = boolean ? "''1''" : "''0''";
             }
             if (defValue is string)
             {
@@ -156,7 +156,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             );
         }
 
-        private void BuildAddQuery(string objType)
+        private void BuildAddQuery()
         {
             this.query = string.Format(
                 this.format,
@@ -205,8 +205,8 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         private void BuildSelectQuery()
         {
-            var fields = "";
-            if(fieldNames.Count() == 0)
+            string fields;
+            if (fieldNames.Count() == 0)
             {
                 fields = "*";
             }

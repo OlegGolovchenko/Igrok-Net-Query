@@ -36,7 +36,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class CreateQuery : ICreateQuery
     {
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
 
         public CreateQuery(string email,IDataDriver dataDriver)
         {

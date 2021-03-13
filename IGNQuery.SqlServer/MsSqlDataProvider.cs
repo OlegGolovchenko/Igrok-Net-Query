@@ -14,7 +14,7 @@ namespace IGNQuery.SqlServer
     {
         private readonly string _connectionString;
         private SqlConnection _connection;
-        private IDataDriver dataDriver;
+        private readonly IDataDriver dataDriver;
         private readonly string email;
         public bool queryToOutput = false;
 

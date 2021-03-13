@@ -34,7 +34,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     public class DropQuery : IDropQuery
     {
 
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
 
         public DropQuery(string email, IDataDriver dataDriver)
         {

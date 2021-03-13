@@ -34,9 +34,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class AlterQuery : IAlterQuery
     {
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
         private IGNQueriable subquery;
-        private IList<string> preppedSubqueries;
+        private readonly IList<string> preppedSubqueries;
         private readonly string email;
         private readonly IDataDriver dataDriver;
 
