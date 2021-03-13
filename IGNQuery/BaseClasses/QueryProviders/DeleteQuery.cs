@@ -32,7 +32,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     public class DeleteQuery : IDeleteQuery
     {
 
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
 
         public DeleteQuery(string email, IDataDriver dataDriver)
         {

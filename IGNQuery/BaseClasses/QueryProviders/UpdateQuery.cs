@@ -26,14 +26,13 @@
 
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class UpdateQuery : IUpdateQuery
     {
 
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
 
         public UpdateQuery(string email, IDataDriver dataDriver)
         {

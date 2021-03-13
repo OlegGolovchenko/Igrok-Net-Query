@@ -31,7 +31,7 @@ namespace IGNQuery.MySql
     {
         private readonly string _connectionString;
         private MySqlConnection _connection;
-        private IDataDriver dataDriver;
+        private readonly IDataDriver dataDriver;
         private readonly string email;
 
         public bool queryToOutput = false;

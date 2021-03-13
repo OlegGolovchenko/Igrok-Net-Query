@@ -32,7 +32,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class Condition : ICondition
     {
-        private IGNQueriable queriable;
+        private readonly IGNQueriable queriable;
         private string fieldName;
 
         public Condition(IGNQueriable queriable)

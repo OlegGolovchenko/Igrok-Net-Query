@@ -34,7 +34,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public partial class IGNQueriable
     {
-        private IDataDriver dataDriver = null;
+        private readonly IDataDriver dataDriver = null;
         private string query = "";
         private string format = "";
         private IGNDbObjectTypeEnum objectType = IGNDbObjectTypeEnum.None;
@@ -378,11 +378,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
                     operation = "<>";
                     break;
             }
-            var value = $"{result.Item3}";
-            if (result.Item3.GetType() == typeof(string))
-            {
-                value = "'" + value + "'";
-            }
             this.conditional += $"{SanitizeName(result.Item1)} {operation} @p{result.Item3}";
             return this;
         }
@@ -511,7 +506,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                             BuildDropQuery(objType);
                             break;
                         case ADD_QUERY_FORMAT:
-                            BuildAddQuery(objType);
+                            BuildAddQuery();
                             break;
                         case ALTER_QUERY_FORMAT:
                             BuildAlterQuery(objType);
@@ -555,7 +550,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         internal string SanitizeName(string objName)
         {
-            var sanitizedFormat = "'{0}'";
+            var sanitizedFormat = "`{0}`";
             if(this.dataDriver.Dialect == DialectEnum.MSSQL)
             {
                 sanitizedFormat = "[{0}]";
