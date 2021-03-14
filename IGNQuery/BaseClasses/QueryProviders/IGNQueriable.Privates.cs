@@ -84,7 +84,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 defVal = string.Format(valQuotesFormat, defVal);
             }
-            return isRequired && !isGenerated ? $" DEFAULT {defVal}" : "";
+            return isRequired && !isGenerated && defValue != null ? $" DEFAULT {defVal}" : "";
         }
 
         private string GetDbAutoGenFunc(bool generated, Type clrType, int length)
