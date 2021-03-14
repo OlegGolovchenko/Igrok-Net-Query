@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.MySql", "IGNQuery.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.SqlServer.Test", "IGNQuery.SqlServer.Test\IGNQuery.SqlServer.Test.csproj", "{F209F4A6-BD45-4389-910F-A373354427C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IGNQuery.Test", "IGNQuery.Test\IGNQuery.Test.csproj", "{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.Test", "IGNQuery.Test\IGNQuery.Test.csproj", "{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IGNQuery.MySql.Test", "IGNQuery.MySql.Test\IGNQuery.MySql.Test.csproj", "{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

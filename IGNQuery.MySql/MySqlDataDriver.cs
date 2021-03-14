@@ -145,7 +145,7 @@ namespace IGNQuery.MySql
 
         public override void IfStoredProcedureNotExists(string name, IGNQueriable queriable)
         {
-            IGNQueriable.SetAfterObjectString(" IF NOT EXISTS", queriable);
+            //IGNQueriable.SetAfterObjectString(" IF NOT EXISTS", queriable);
         }
 
         public override void IfTableExists(string name, IGNQueriable queriable)

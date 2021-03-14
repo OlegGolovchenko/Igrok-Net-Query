@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp20;net40</TargetFrameworks>
+    <TargetFrameworks>netcoreapp20;net40;netstandard20</TargetFrameworks>
     <Description>IGNQuery Implementation for MySQL Server</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -9,7 +9,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/OlegGolovchenko/Igrok-Net-Query</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.1.7.6</Version>
+    <Version>1.1.7.21</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
     <PackageIcon>IGNQuery-1.png</PackageIcon>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IGNQuery" Version="1.1.7.5" />
+    <PackageReference Include="IGNQuery" Version="1.1.7.21" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp20'">
+    <PackageReference Include="MySql.Data" Version="8.0.23" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20'">
     <PackageReference Include="MySql.Data" Version="8.0.23" />
   </ItemGroup>
 
