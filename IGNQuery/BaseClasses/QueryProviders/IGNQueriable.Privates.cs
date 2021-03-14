@@ -106,6 +106,22 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 return $"NVARCHAR({length})";
             }
+            else if (clrType.Equals(typeof(DateTime)))
+            {
+                return "DATETIME";
+            }
+            else if (clrType.Equals(typeof(int)))
+            {
+                return "INT";
+            }
+            else if (clrType.Equals(typeof(short)))
+            {
+                return "SMALLINT";
+            }
+            else if (clrType.Equals(typeof(byte)))
+            {
+                return "TINYINT";
+            }
             return null;
         }
         private object FormatSuffix(string suffix)
