@@ -32,6 +32,15 @@ namespace IGNQuery.SqlServer.Test
                 },
                 new TableField
                 {
+                    Name = "userId",
+                    Type = TableField.TYPE_LONG,
+                    CanHaveNull = false,
+                    Generated = false,
+                    DefValue = string.Empty,
+                    Primary = false
+                },
+                new TableField
+                {
                     Name = "mail",
                     Type = TableField.TypeNvarchar(254),
                     CanHaveNull = false,

@@ -119,7 +119,7 @@ namespace IGNQuery.BaseClasses.Business
             return $"{SanitizeName(ColumnName, dialect)} {getDbType(ColumnType, Length)} " +
                 $"{(Required ? "NOT NULL" : "NULL")}" +
                 $"{getDefaultValue(Required, Generated, DefValue)}" +
-                $"{getDbAutoGen(Required, ColumnType, Length)}";
+                $"{getDbAutoGen(Generated, ColumnType, Length)}";
         }
 
         internal string SanitizeName(string objName, DialectEnum dialect)

@@ -296,12 +296,16 @@ namespace IGNQuery.Test
                    IGNQueriable.PrefixWith(prefix, y);
                    IGNQueriable.SuffixWith("END", y);
                });
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).Create().Table("test", () => new List<TableColumnConfiguration>()
-            {
-                TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
-                TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
-            }).IfNotExists();
-            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='test' AND xtype='U')\nBEGIN\nCREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[name] NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY([id]))\nEND\nGO";
+            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).
+                Create().
+                Table("test", () => new List<TableColumnConfiguration>()
+                {
+                    TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
+                    TableColumnConfiguration.FromConfig("userId",typeof(long),0,true,false,false,null),
+                    TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
+                }).
+                IfNotExists();
+            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='test' AND xtype='U')\nBEGIN\nCREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[userId] BIGINT NOT NULL,[name] NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY([id]))\nEND\nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 
