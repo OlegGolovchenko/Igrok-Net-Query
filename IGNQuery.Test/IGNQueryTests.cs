@@ -302,10 +302,11 @@ namespace IGNQuery.Test
                 {
                     TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
                     TableColumnConfiguration.FromConfig("userId",typeof(long),0,true,false,false,null),
-                    TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
+                    TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null),
+                    TableColumnConfiguration.FromConfig("testDate",typeof(DateTime),0,false,false,false,null)
                 }).
                 IfNotExists();
-            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='test' AND xtype='U')\nBEGIN\nCREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[userId] BIGINT NOT NULL,[name] NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY([id]))\nEND\nGO";
+            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='test' AND xtype='U')\nBEGIN\nCREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[userId] BIGINT NOT NULL,[name] NVARCHAR(255) NULL,[testDate] DATETIME NULL,CONSTRAINT PK_test PRIMARY KEY([id]))\nEND\nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 
