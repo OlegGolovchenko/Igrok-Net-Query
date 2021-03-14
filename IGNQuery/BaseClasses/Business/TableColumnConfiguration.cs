@@ -116,12 +116,20 @@ namespace IGNQuery.BaseClasses.Business
             GetDefaultValueFunc getDefaultValue,
             GetDbAutoGenFunc getDbAutoGen)
         {
-            var columnNamePrefix = dialect == DialectEnum.MSSQL ? "[":"'";
-            var columnNameSuffix = dialect == DialectEnum.MSSQL ? "]" : "'";
-            return $"{columnNamePrefix}{ColumnName}{columnNameSuffix} {getDbType(ColumnType, Length)} " +
+            return $"{SanitizeName(ColumnName, dialect)} {getDbType(ColumnType, Length)} " +
                 $"{(Required ? "NOT NULL" : "NULL")}" +
                 $"{getDefaultValue(Required, Generated, DefValue)}" +
                 $"{getDbAutoGen(Required, ColumnType, Length)}";
+        }
+
+        internal string SanitizeName(string objName, DialectEnum dialect)
+        {
+            var sanitizedFormat = "`{0}`";
+            if (dialect == DialectEnum.MSSQL)
+            {
+                sanitizedFormat = "[{0}]";
+            }
+            return string.Format(sanitizedFormat, objName);
         }
     }
 }

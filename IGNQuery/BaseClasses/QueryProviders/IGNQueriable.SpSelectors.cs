@@ -52,7 +52,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
             this.objectType = IGNDbObjectTypeEnum.StoredProcedure;
             this.objectName = SanitizeName(name);
-            this.querySpecificPart = $" {GetParams(fields)}\nAS\n{query}";
+            if (this.dataDriver.Dialect == DialectEnum.MSSQL)
+            {
+                this.querySpecificPart = $" {GetParams(fields)}\nAS\n{query}";
+            }
+            else if(this.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                this.querySpecificPart = $" ({GetParams(fields)})\nBEGIN\n{query};\nEND";
+            }
             return this;
         }
     }

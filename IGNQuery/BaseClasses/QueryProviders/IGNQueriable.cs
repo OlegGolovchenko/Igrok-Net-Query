@@ -83,6 +83,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
         /// </summary>
         private const string ALTER_COLUMN_QUERY_FORMAT = "ALTER {0} {1} {2}";
         /// <summary>
+        /// Format for alter column query
+        /// ALTER {0:objtype(always column)} {1:name} {2:definition}
+        /// </summary>
+        private const string ALTER_COLUMN_QUERY_FORMAT_MYSQL = "MODIFY {0} {1} {2}";
+        /// <summary>
         /// Format for drop column query
         /// DROP {0:objtype(always column)} {1:name} {2:definition}
         /// </summary>
@@ -233,6 +238,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             if(this.format == ALTER_QUERY_FORMAT)
             {
                 this.format = ALTER_COLUMN_QUERY_FORMAT;
+                if(this.dataDriver.Dialect == DialectEnum.MySQL)
+                {
+                    this.format = ALTER_COLUMN_QUERY_FORMAT_MYSQL;
+                }
             }
             this.objectType = IGNDbObjectTypeEnum.Column;
             this.objectName = SanitizeName(name);

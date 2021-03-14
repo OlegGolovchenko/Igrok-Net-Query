@@ -33,7 +33,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public partial class IGNQueriable
     {
-        private object GetParams(Func<IEnumerable<Tuple<string, Type, int>>> fields)
+        private string GetParams(Func<IEnumerable<Tuple<string, Type, int>>> fields)
         {
             var parameterList = fields?.Invoke();
             return string.Join(",", parameterList.Select(x => $"@{x.Item1} {GetDbType(x.Item2, x.Item3)}"));
@@ -65,14 +65,24 @@ namespace IGNQuery.BaseClasses.QueryProviders
         private string GetDefaultValue(bool isRequired,
             bool isGenerated, object defValue)
         {
+            var valQuotesFormat = "('{0}')";
+            var valNoQuotesFormat = "({0})";
+            if(this.dataDriver.Dialect == Enums.DialectEnum.MSSQL)
+            {
+                valQuotesFormat = "''{0}''";
+            }
             var defVal = defValue?.ToString();
             if (defValue is bool boolean)
             {
-                defVal = boolean ? "''1''" : "''0''";
+                defVal = boolean ? string.Format(valQuotesFormat,"1") : string.Format(valQuotesFormat, "0");
+                if(this.dataDriver.Dialect == Enums.DialectEnum.MySQL)
+                {
+                    defVal = boolean ? string.Format(valNoQuotesFormat, "1") : string.Format(valNoQuotesFormat, "0");
+                }
             }
             if (defValue is string)
             {
-                defVal = $"''{defVal}''";
+                defVal = string.Format(valQuotesFormat, defVal);
             }
             return isRequired && !isGenerated ? $" DEFAULT {defVal}" : "";
         }

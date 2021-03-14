@@ -155,7 +155,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public IAlterQuery TableIfExists(string tableName)
         {
-            this.queriable.Alter().Table(tableName, this.subquery).IfExists();
+            if (this.dataDriver.Dialect == DialectEnum.MSSQL)
+            {
+                this.queriable.Alter().Table(tableName, this.subquery).IfExists();
+            }
+            else if(this.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                this.queriable.Alter().Table(tableName, this.subquery);
+            }
             return this;
         }
     }
