@@ -207,7 +207,7 @@ namespace IGNQuery.BaseClasses
                 var dbc = PrepareDbCommand(query.ToString(), connection);
                 using (var dbReader = dbc.ExecuteReader())
                 {
-                    InitDataTable(dbReader);
+                    result = InitDataTable(dbReader);
                 }
             }
             return result;
@@ -222,7 +222,7 @@ namespace IGNQuery.BaseClasses
                 AddParameters(dbc, args);
                 using (var dbReader = dbc.ExecuteReader())
                 {
-                    InitDataTable(dbReader);
+                    result = InitDataTable(dbReader);
                 }
             }
             return result;
@@ -238,7 +238,7 @@ namespace IGNQuery.BaseClasses
                 AddParameters(dbc, args);
                 using (var dbReader = dbc.ExecuteReader())
                 {
-                    InitDataTable(dbReader);
+                    result = InitDataTable(dbReader);
                 }
             }
             return result;
