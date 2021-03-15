@@ -16,6 +16,7 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //###########################################################################
 using IGNQuery.BaseClasses;
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Interfaces;
 using MySql.Data.MySqlClient;
@@ -72,11 +73,11 @@ namespace IGNQuery.MySql
             };
         }
 
-        protected override void AddParameters(DbCommand dbc, IEnumerable<Tuple<int, object>> args)
+        protected override void AddParameters(DbCommand dbc, IEnumerable<IGNParameterValue> args)
         {
             foreach (var arg in args)
             {
-                ((MySqlCommand)dbc).Parameters.AddWithValue($"@p{arg.Item1}", arg.Item2);
+                ((MySqlCommand)dbc).Parameters.AddWithValue($"@p{arg.Position}", arg.Value);
             }
         }
 

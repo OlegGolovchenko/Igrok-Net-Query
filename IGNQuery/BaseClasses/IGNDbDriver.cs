@@ -31,6 +31,8 @@ using System.Text;
 using System.Data.Common;
 using IGNQuery.Enums;
 using System.Data;
+using IGNQuery.BaseClasses.Business;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses
 {
@@ -93,7 +95,7 @@ namespace IGNQuery.BaseClasses
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
 
-        protected virtual void AddParameters(DbCommand dbc, IEnumerable<Tuple<int, object>> args)
+        protected virtual void AddParameters(DbCommand dbc, IEnumerable<IGNParameterValue> args)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
@@ -178,7 +180,7 @@ namespace IGNQuery.BaseClasses
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
 
-        public void ExecuteWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args)
+        public void ExecuteWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args)
         {
             using (var connection = OpenConnection())
             {
@@ -188,11 +190,16 @@ namespace IGNQuery.BaseClasses
             }
         }
 
-        public void ExecuteStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args)
+        public void ExecuteStoredProcedure(string procName, IEnumerable<IGNParameterValue> args)
         {
             using (var connection = OpenConnection())
             {
-                var dbc = PrepareDbCommand("EXEC procName", connection);
+                var query = $"CALL {procName}({string.Join(",",args.Select(x=>$"@p{x.Position}"))})";
+                if(dialect == DialectEnum.MSSQL)
+                {
+                    query = $"EXEC {procName}";
+                }
+                var dbc = PrepareDbCommand(query, connection);
                 dbc.CommandType = CommandType.StoredProcedure;
                 AddParameters(dbc, args);
                 dbc.ExecuteNonQuery();
@@ -213,7 +220,7 @@ namespace IGNQuery.BaseClasses
             return result;
         }
 
-        public DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args)
+        public DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args)
         {
             DataTable result = null;
             using (var connection = OpenConnection())
@@ -228,12 +235,17 @@ namespace IGNQuery.BaseClasses
             return result;
         }
 
-        public DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args)
+        public DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<IGNParameterValue> args)
         {
             DataTable result = null;
             using (var connection = OpenConnection())
             {
-                var dbc = PrepareDbCommand("EXEC procName", connection);
+                var query = $"CALL {procName}({string.Join(",", args.Select(x => $"@p{x.Position}"))})";
+                if (dialect == DialectEnum.MSSQL)
+                {
+                    query = $"EXEC {procName}";
+                }
+                var dbc = PrepareDbCommand(query, connection);
                 dbc.CommandType = CommandType.StoredProcedure;
                 AddParameters(dbc, args);
                 using (var dbReader = dbc.ExecuteReader())

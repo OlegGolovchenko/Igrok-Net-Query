@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IGNQueriable StoredProcedure(string name, IGNQueriable query, Func<IEnumerable<Tuple<string, Type, int>>> fields)
+        public IGNQueriable StoredProcedure(string name, IGNQueriable query, Func<IEnumerable<IGNParameter>> fields)
         {
             if (string.IsNullOrWhiteSpace(this.format))
             {

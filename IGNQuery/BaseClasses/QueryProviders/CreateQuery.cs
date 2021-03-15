@@ -57,12 +57,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             this.queriable.Create().StoredProcedure(name, content.AsIgnQueriable(), 
                 () => parameters!=null?parameters.Select(
-                        x=>Tuple.Create(
-                            x.Name,
+                        x=>IGNParameter.FromConfig(
+                            parameters.ToList().IndexOf(x),
                             x.FromStringToType(),
                             x.StringLengthFromType()
                             )
-                    ) : new List<Tuple<string, Type, int>>()
+                    ) : new List<IGNParameter>()
                 ).
                 IfNotExists();
             return this;

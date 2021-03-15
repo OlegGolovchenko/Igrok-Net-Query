@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using System;
@@ -306,88 +307,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IGNQueriable Condition(Func<Tuple<string, IGNSqlCondition, object>> conditionalFunc)
+        public IGNQueriable Condition(Func<IGNCondition> conditionalFunc)
         {
-            var result = conditionalFunc?.Invoke();
-            var operation = "";
-            switch (result.Item2)
-            {
-                case IGNSqlCondition.In:
-                    operation = "IN";
-                    break;
-                case IGNSqlCondition.Between:
-                    operation = "BETWEEN";
-                    break;
-                case IGNSqlCondition.Like:
-                    operation = "LIKE";
-                    break;
-                case IGNSqlCondition.Eq:
-                    operation = "=";
-                    break;
-                case IGNSqlCondition.Ge:
-                    operation = ">=";
-                    break;
-                case IGNSqlCondition.Gt:
-                    operation = ">";
-                    break;
-                case IGNSqlCondition.Le:
-                    operation = "<=";
-                    break;
-                case IGNSqlCondition.Lt:
-                    operation = "<";
-                    break;
-                case IGNSqlCondition.Ne:
-                    operation = "<>";
-                    break;
-            }
-            var value = $"{result.Item3}";
-            if (result.Item3.GetType() == typeof(string))
-            {
-                value = "'" + value + "'";
-            }
-            if (result.Item3.GetType() == typeof(bool))
-            {
-                value = $"{((bool)result.Item3 ? "'1'" : "'0'")}";
-            }
-            this.conditional += $"{SanitizeName(result.Item1)} {operation} {value}";
+            var condition = conditionalFunc?.Invoke();
+            condition.SetSanitizedName(SanitizeName(condition.ColumnName));
+            this.conditional += condition.ToString();
             return this;
         }
 
-        public IGNQueriable ConditionWithParams(Func<Tuple<string, IGNSqlCondition, int>> conditionalFunc)
+        public IGNQueriable ConditionWithParams(Func<IGNConditionWithParameter> conditionalFunc)
         {
-            var result = conditionalFunc?.Invoke();
-            var operation = "";
-            switch (result.Item2)
-            {
-                case IGNSqlCondition.In:
-                    operation = "IN";
-                    break;
-                case IGNSqlCondition.Between:
-                    operation = "BETWEEN";
-                    break;
-                case IGNSqlCondition.Like:
-                    operation = "LIKE";
-                    break;
-                case IGNSqlCondition.Eq:
-                    operation = "=";
-                    break;
-                case IGNSqlCondition.Ge:
-                    operation = ">=";
-                    break;
-                case IGNSqlCondition.Gt:
-                    operation = ">";
-                    break;
-                case IGNSqlCondition.Le:
-                    operation = "<=";
-                    break;
-                case IGNSqlCondition.Lt:
-                    operation = "<";
-                    break;
-                case IGNSqlCondition.Ne:
-                    operation = "<>";
-                    break;
-            }
-            this.conditional += $"{SanitizeName(result.Item1)} {operation} @p{result.Item3}";
+            var condition = conditionalFunc?.Invoke();
+            condition.SetSanitizedName(SanitizeName(condition.ColumnName));
+            this.conditional += condition.ToString();
             return this;
         }
 
