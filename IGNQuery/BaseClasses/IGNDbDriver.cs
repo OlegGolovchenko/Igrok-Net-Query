@@ -168,11 +168,7 @@ namespace IGNQuery.BaseClasses
 
         public void Execute(IGNQueriable query)
         {
-            using(var connection = OpenConnection())
-            {
-                var dbc = PrepareDbCommand(query.ToString(), connection);
-                dbc.ExecuteNonQuery();
-            }
+            ExecuteWithParameters(query, query.ParamValues);
         }
 
         public virtual string GetDbAutoGenFor(Type clrType, int length)
@@ -208,16 +204,7 @@ namespace IGNQuery.BaseClasses
 
         public DataTable ReadData(IGNQueriable query)
         {
-            DataTable result = null;
-            using (var connection = OpenConnection())
-            {
-                var dbc = PrepareDbCommand(query.ToString(), connection);
-                using (var dbReader = dbc.ExecuteReader())
-                {
-                    result = InitDataTable(dbReader);
-                }
-            }
-            return result;
+            return ReadDataWithParameters(query, query.ParamValues);
         }
 
         public DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args)

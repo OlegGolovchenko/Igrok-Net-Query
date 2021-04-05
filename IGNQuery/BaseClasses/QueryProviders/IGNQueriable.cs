@@ -54,7 +54,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         /// {0:prefix} CREATE {1:objtype} {2:afterobjtype} 
         ///     {3:objname} {4:queryspecificpart} {5:suffix} {6:go}
         /// </summary>
-        private const string CREATE_QUERY_FORMAT = 
+        private const string CREATE_QUERY_FORMAT =
             "{0}CREATE {1}{2} {3}{4}{5}{6}";
         /// <summary>
         /// format for use query
@@ -131,8 +131,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
         }
 
+        private IList<IGNParameterValue> paramValues;
+
+        internal IEnumerable<IGNParameterValue> ParamValues
+        {
+            get
+            {
+                return paramValues;
+            }
+        }
+
+        private int lastParamIndex = 0;
+
         internal IGNQueriable(IDataDriver dataDriver)
         {
+            this.paramValues = new List<IGNParameterValue>();
             this.dataDriver = dataDriver;
             this.objectType = IGNDbObjectTypeEnum.None;
         }
@@ -256,18 +269,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IGNQueriable Values(IEnumerable<object> valuesRow)
-        {
-            this.insertValuesQueryPart = $"({string.Join(",", valuesRow)})";
-            return this;
-        }
-
-        public IGNQueriable AddRow(IEnumerable<object> valuesRow)
-        {
-            this.insertValuesQueryPart += $",({string.Join(",",valuesRow)})";
-            return this;
-        }
-
         public IGNQueriable ValuesWithParams(IEnumerable<int> valuesRow)
         {
             this.insertValuesQueryPart = $"({string.Join(",", valuesRow.Select(x=>$"@p{x}"))})";
@@ -286,32 +287,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IGNQueriable Set(string colName, object value)
-        {
-            var result = $"{value}";
-            if(value.GetType() == typeof(string))
-            {
-                result = "'" + result + "'";
-            }
-            if(value.GetType() == typeof(bool))
-            {
-                result = $"{((bool)value ? "'1'" : "'0'")}";
-            }
-            this.querySpecificPart = $"SET {SanitizeName(colName)} = {result}";
-            return this;
-        }
-
         public IGNQueriable Where()
         {
             this.conditional = "WHERE ";
-            return this;
-        }
-
-        public IGNQueriable Condition(Func<IGNCondition> conditionalFunc)
-        {
-            var condition = conditionalFunc?.Invoke();
-            condition.SetSanitizedName(SanitizeName(condition.ColumnName));
-            this.conditional += condition.ToString();
             return this;
         }
 
