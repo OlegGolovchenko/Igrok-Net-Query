@@ -43,7 +43,7 @@ namespace IGNQuery.BaseClasses.Business
 
         protected override string ValueAsString()
         {
-            return $"p{Parameter}";
+            return $"@p{Parameter}";
         }
 
         public static IGNConditionWithParameter FromConfig(
