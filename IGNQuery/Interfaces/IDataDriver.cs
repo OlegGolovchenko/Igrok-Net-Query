@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
 using System;
@@ -40,15 +41,15 @@ namespace IGNQuery.Interfaces
 
         void Execute(IGNQueriable query);
 
-        void ExecuteWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args);
+        void ExecuteWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args);
 
-        void ExecuteStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args);
+        void ExecuteStoredProcedure(string procName, IEnumerable<IGNParameterValue> args);
 
         DataTable ReadData(IGNQueriable query);
 
-        DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<Tuple<int, object>> args);
+        DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args);
 
-        DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<Tuple<int, object>> args);
+        DataTable ReadDataFromStoredProcedure(string procName, IEnumerable<IGNParameterValue> args);
 
         void IfTableNotExists(string name, IGNQueriable queriable);
 

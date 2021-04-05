@@ -33,10 +33,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public partial class IGNQueriable
     {
-        private string GetParams(Func<IEnumerable<Tuple<string, Type, int>>> fields)
+        private string GetParams(Func<IEnumerable<IGNParameter>> fields)
         {
             var parameterList = fields?.Invoke();
-            return string.Join(",", parameterList.Select(x => $"@{x.Item1} {GetDbType(x.Item2, x.Item3)}"));
+            return string.Join(",", parameterList.Select(x => x.AsQuery(GetDbType)));
         }
 
         private IEnumerable<string> CompileFieldsInfo(string tableName,
@@ -92,7 +92,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return generated ? this.dataDriver.GetDbAutoGenFor(clrType, length) : "";
         }
 
-        private string GetDbType(Type clrType, int length)
+        private string GetDbType(Type clrType, int length, int decPos)
         {
             if (clrType.Equals(typeof(long)))
             {
@@ -121,6 +121,22 @@ namespace IGNQuery.BaseClasses.QueryProviders
             else if (clrType.Equals(typeof(byte)))
             {
                 return "TINYINT";
+            }
+            else if (clrType.Equals(typeof(decimal)))
+            {
+                return $"DECIMAL({length},{decPos})";
+            }
+            else if (clrType.Equals(typeof(double)) || clrType.Equals(typeof(float)))
+            {
+                return "FLOAT";
+            }
+            else if(clrType.Equals(typeof(byte[])))
+            {
+                return $"BINARY({length})";
+            }
+            else if (clrType.Equals(typeof(TimeSpan)))
+            {
+                return $"TIME";
             }
             return null;
         }

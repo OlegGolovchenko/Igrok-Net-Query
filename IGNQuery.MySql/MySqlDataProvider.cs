@@ -19,6 +19,7 @@ using System;
 using System.Data.Common;
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
+using IGNQuery.BaseClasses.Business;
 using System.Collections.Generic;
 using IGNQuery.Enums;
 using MySql.Data.MySqlClient;
@@ -59,7 +60,7 @@ namespace IGNQuery.MySql
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
             this.dataDriver.ExecuteWithParameters(query.AsIgnQueriable(), 
-                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
+                parameters.Select(x => IGNParameterValue.FromConfig(x.ParamNumber, x.ParamValue)));
         }
 
         public void ExecuteStoredProcedure(string procname, IEnumerable<ParameterValue> parameters = null)
@@ -70,7 +71,7 @@ namespace IGNQuery.MySql
             }
 
             this.dataDriver.ExecuteStoredProcedure(procname,
-                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
+                parameters.Select(x => IGNParameterValue.FromConfig(x.ParamNumber, x.ParamValue)));
         }
 
         public DataTable ExecuteReader(IQueryResult query)
@@ -89,7 +90,7 @@ namespace IGNQuery.MySql
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
             return this.dataDriver.ReadDataWithParameters(query.AsIgnQueriable(),
-                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
+                parameters.Select(x => IGNParameterValue.FromConfig(x.ParamNumber, x.ParamValue)));
         }
 
         public DataTable ExecuteStoredProcedureReader(string procname, IEnumerable<ParameterValue> parameters = null)
@@ -99,7 +100,7 @@ namespace IGNQuery.MySql
                 throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             }
             return this.dataDriver.ReadDataFromStoredProcedure(procname,
-                parameters.Select(x => Tuple.Create<int, object>(x.ParamNumber, x.ParamValue)));
+                parameters.Select(x => IGNParameterValue.FromConfig(x.ParamNumber, x.ParamValue)));
         }
 
         public IQuery Query()

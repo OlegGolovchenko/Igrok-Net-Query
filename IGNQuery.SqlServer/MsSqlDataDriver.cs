@@ -1,4 +1,5 @@
 ﻿using IGNQuery.BaseClasses;
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Interfaces;
 using System;
@@ -45,7 +46,7 @@ namespace IGNQuery.SqlServer
 
         protected override string ConstructDefaultConnectionString()
         {
-            return $"Server=(localdb)\\MSSQLLocalDB;database=master;integrated security=true;";
+            return Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING"); ;
         }
 
         protected override DbConnection OpenConnection()
@@ -63,11 +64,11 @@ namespace IGNQuery.SqlServer
             };
         }
 
-        protected override void AddParameters(DbCommand dbc, IEnumerable<Tuple<int, object>> args)
+        protected override void AddParameters(DbCommand dbc, IEnumerable<IGNParameterValue> args)
         {
             foreach(var arg in args)
             {
-                ((SqlCommand)dbc).Parameters.AddWithValue($"@p{arg.Item1}", arg.Item2);
+                ((SqlCommand)dbc).Parameters.AddWithValue($"@p{arg.Position}", arg.Value);
             }
         }
 
@@ -95,6 +96,10 @@ namespace IGNQuery.SqlServer
             if(clrType == typeof(Guid))
             {
                 return " DEFAULT NEWSEQUENTIALID()";
+            }
+            if (clrType == typeof(DateTime))
+            {
+                return " DEFAULT GETUTCDATE()";
             }
             return "";
         }

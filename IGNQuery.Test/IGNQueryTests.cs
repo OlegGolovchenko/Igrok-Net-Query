@@ -218,12 +218,17 @@ namespace IGNQuery.Test
             var dbDriverMock = new Mock<IDataDriver>();
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var subquery = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).
+               Select().
+               From("test").
+               Where().
+               ConditionWithParams(() => IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0));
             var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).
                 Create().
-                StoredProcedure("sp_test",IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = @name","igrok_be@hotmail.com",dbDriverMock.Object),()=> new List<Tuple<string,Type,int>>(){
-                    Tuple.Create("name",typeof(string),255)
+                StoredProcedure("sp_test",subquery,()=> new List<IGNParameter>(){
+                    IGNParameter.FromConfig(0,typeof(string),255)
                 });
-            var expected = "CREATE PROCEDURE [sp_test] @name NVARCHAR(255)\nAS\nSELECT * FROM test WHERE name = @name\nGO";
+            var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test]  WHERE [name] = @p0\nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 
@@ -239,13 +244,18 @@ namespace IGNQuery.Test
                 IGNQueriable.PrefixWith(prefix, y);
                 IGNQueriable.SuffixWith("END", y);
             });
+            var subquery = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).
+                Select().
+                From("test").
+                Where().
+                ConditionWithParams(()=>IGNConditionWithParameter.FromConfig("name",Enums.IGNSqlCondition.Eq,0));
             var query = IGNQueriable.Begin("igrok_be@hotmail.com", dbDriverMock.Object).
                 Create().
-                StoredProcedure("sp_test", IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = @name","igrok_be@hotmail.com",dbDriverMock.Object), () => new List<Tuple<string, Type, int>>(){
-                    Tuple.Create("name",typeof(string),255)
+                StoredProcedure("sp_test", subquery, () => new List<IGNParameter>(){
+                    IGNParameter.FromConfig(0,typeof(string),255)
                 }).
                 IfNotExists();
-            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='sp_test' AND xtype='P')\nBEGIN\nCREATE PROCEDURE [sp_test] @name NVARCHAR(255)\nAS\nSELECT * FROM test WHERE name = @name\nEND\nGO";
+            var expected = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='sp_test' AND xtype='P')\nBEGIN\nCREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test]  WHERE [name] = @p0\nEND\nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 

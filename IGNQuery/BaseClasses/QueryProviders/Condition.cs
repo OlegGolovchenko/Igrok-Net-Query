@@ -27,6 +27,7 @@
 using System;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
+using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
@@ -48,25 +49,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public ICondition BoolEqual(bool value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Eq, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
             return this;
         }
 
         public ICondition BoolEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Eq, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
             return this;
         }
 
         public ICondition BoolNotEqual(bool value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Ne, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 
         public ICondition BoolNotEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Ne, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Ne, paramNb));
             return this;
         }
 
@@ -83,25 +84,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public ICondition LongEqual(long value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Eq, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
             return this;
         }
 
         public ICondition LongEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Eq, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
             return this;
         }
 
         public ICondition LongNotEqual(long value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Ne, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 
         public ICondition LongNotEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Ne, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Ne, paramNb));
             return this;
         }
 
@@ -113,25 +114,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public ICondition StringEqual(string value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Eq, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
             return this;
         }
 
         public ICondition StringEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Eq, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
             return this;
         }
 
         public ICondition StringNotEqual(string value)
         {
-            this.queriable.Condition(() => new Tuple<string, IGNSqlCondition, object>(this.fieldName, IGNSqlCondition.Ne, value));
+            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 
         public ICondition StringNotEqualToParam(int paramNb)
         {
-            this.queriable.ConditionWithParams(() => new Tuple<string, IGNSqlCondition, int>(this.fieldName, IGNSqlCondition.Ne, paramNb));
+            this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Ne, paramNb));
             return this;
         }
     }
