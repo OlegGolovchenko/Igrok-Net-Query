@@ -31,7 +31,8 @@ namespace IGNQuery.BaseClasses.Business
 {
     public delegate string GetDbTypeFunc(
         Type type, 
-        int length);
+        int length,
+        int decpos);
 
     public delegate string GetDefaultValueFunc(
         bool isRequired, 
@@ -59,6 +60,8 @@ namespace IGNQuery.BaseClasses.Business
 
         public object DefValue { get; private set; }
 
+        public int DecimalPositions { get; private set; }
+
         internal TableColumnConfiguration(
             string name,
             Type type, 
@@ -66,7 +69,8 @@ namespace IGNQuery.BaseClasses.Business
             bool required, 
             bool generated, 
             bool primary, 
-            object defvalue
+            object defvalue,
+            int decPos
             )
         {
             ColumnName = name;
@@ -76,6 +80,7 @@ namespace IGNQuery.BaseClasses.Business
             Generated = generated;
             Primary = primary;
             DefValue = defvalue;
+            DecimalPositions = decPos;
         }
 
         public static TableColumnConfiguration FromConfig(
@@ -85,7 +90,8 @@ namespace IGNQuery.BaseClasses.Business
             bool required,
             bool generated,
             bool primary,
-            object defvalue
+            object defvalue,
+            int decPos=0
             )
         {
             return new TableColumnConfiguration(
@@ -95,7 +101,8 @@ namespace IGNQuery.BaseClasses.Business
                 required,
                 generated,
                 primary,
-                defvalue);
+                defvalue,
+                decPos);
         }
 
         public static TableColumnConfiguration FromTableField(TableField tableField)
@@ -107,7 +114,8 @@ namespace IGNQuery.BaseClasses.Business
                 !tableField.CanHaveNull,
                 tableField.Generated,
                 tableField.Primary,
-                tableField.DefValueFromString());
+                tableField.DefValueFromString(),
+                0);
         }
 
         public string AsCreateTableQueryField(
@@ -116,7 +124,7 @@ namespace IGNQuery.BaseClasses.Business
             GetDefaultValueFunc getDefaultValue,
             GetDbAutoGenFunc getDbAutoGen)
         {
-            return $"{SanitizeName(ColumnName, dialect)} {getDbType(ColumnType, Length)} " +
+            return $"{SanitizeName(ColumnName, dialect)} {getDbType(ColumnType, Length, DecimalPositions)} " +
                 $"{(Required ? "NOT NULL" : "NULL")}" +
                 $"{getDefaultValue(Required, Generated, DefValue)}" +
                 $"{getDbAutoGen(Generated, ColumnType, Length)}";
