@@ -326,7 +326,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             switch (objectType)
             {
                 case IGNDbObjectTypeEnum.Table:
-                    this.dataDriver.IfTableNotExists(objName, this);
+                    if (this.dataDriver.Dialect == DialectEnum.MSSQL || this.format != ALTER_QUERY_FORMAT)
+                    {
+                        this.dataDriver.IfTableNotExists(objName, this);
+                    }
                     break;
                 case IGNDbObjectTypeEnum.Database:
                     this.dataDriver.IfDatabaseNotExists(objName, this);
@@ -354,7 +357,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             switch (objectType)
             {
                 case IGNDbObjectTypeEnum.Table:
-                    this.dataDriver.IfTableExists(objName, this);
+                    if (this.dataDriver.Dialect == DialectEnum.MSSQL || this.format != ALTER_QUERY_FORMAT)
+                    {
+                        this.dataDriver.IfTableExists(objName, this);
+                    }
                     break;
                 case IGNDbObjectTypeEnum.Database:
                     this.dataDriver.IfDatabaseExists(objName, this);

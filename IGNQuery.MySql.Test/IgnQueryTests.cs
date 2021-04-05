@@ -1,4 +1,5 @@
 using IGNQuery.BaseClasses;
+using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.MySql;
 using NUnit.Framework;
 using System;
@@ -147,6 +148,15 @@ namespace IGNQuery.SqlServer.Test
                 }).
                 Go();
             dataProvider.ExecuteNonQuery(query);
+            var dataDriver = new MySqlDataDriver("igrok_be@hotmail.com");
+            var addQuery = IGNQueriable.Begin("igrok_be@hotmail.com", dataDriver).
+                Add().
+                Column("createdOn", typeof(DateTime), 0, true, true);
+            var altquery = IGNQueriable.Begin("igrok_be@hotmail.com", dataDriver).
+                Alter().
+                Table("ignusers", addQuery).
+                IfExists();
+            dataDriver.Execute(altquery);
         }
 
         [Test]
