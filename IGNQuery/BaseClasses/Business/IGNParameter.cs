@@ -36,21 +36,24 @@ namespace IGNQuery.BaseClasses.Business
 
         public int TypeLength { get; private set; }
 
-        internal IGNParameter(int paramNumber, Type fieldType, int typeLength)
+        public int DecimalPositions { get; private set; }
+
+        internal IGNParameter(int paramNumber, Type fieldType, int typeLength, int decPos)
         {
             ParamNumber = paramNumber;
             FieldType = fieldType;
             TypeLength = typeLength;
+            DecimalPositions = decPos;
         }
 
-        public static IGNParameter FromConfig(int paramNumber, Type fieldType, int typeLength)
+        public static IGNParameter FromConfig(int paramNumber, Type fieldType, int typeLength, int decPos=0)
         {
-            return new IGNParameter(paramNumber, fieldType, typeLength);
+            return new IGNParameter(paramNumber, fieldType, typeLength,decPos);
         }
 
         public string AsQuery(GetDbTypeFunc getDbType)
         {
-            return $"@p{ParamNumber} {getDbType(FieldType, TypeLength, 0)}";
+            return $"@p{ParamNumber} {getDbType(FieldType, TypeLength, DecimalPositions)}";
         }
     }
 
