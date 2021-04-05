@@ -50,7 +50,7 @@ namespace IGNQuery.BaseClasses.Business
 
         public string AsQuery(GetDbTypeFunc getDbType)
         {
-            return $"@p{ParamNumber} {getDbType(FieldType, TypeLength)}";
+            return $"@p{ParamNumber} {getDbType(FieldType, TypeLength, 0)}";
         }
     }
 
