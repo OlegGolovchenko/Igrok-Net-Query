@@ -50,7 +50,7 @@ namespace IGNQuery.MySql
 
         protected override string ConstructDefaultConnectionString()
         {
-            return $"server=localhost;uid=root;pwd=root;";
+            return Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
         }
 
         protected override string ConstructConnectionString(string server, int port, string uName, string pwd)
@@ -100,6 +100,10 @@ namespace IGNQuery.MySql
             if (clrType == typeof(Guid))
             {
                 return " DEFAULT (uuid())";
+            }
+            if(clrType == typeof(DateTime))
+            {
+                return " DEFAULT (UTC_DATE())";
             }
             return "";
         }

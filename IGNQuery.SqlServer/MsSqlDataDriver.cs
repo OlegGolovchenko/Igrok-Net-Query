@@ -46,7 +46,7 @@ namespace IGNQuery.SqlServer
 
         protected override string ConstructDefaultConnectionString()
         {
-            return $"Server=(localdb)\\MSSQLLocalDB;database=master;integrated security=true;";
+            return Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING"); ;
         }
 
         protected override DbConnection OpenConnection()
@@ -96,6 +96,10 @@ namespace IGNQuery.SqlServer
             if(clrType == typeof(Guid))
             {
                 return " DEFAULT NEWSEQUENTIALID()";
+            }
+            if (clrType == typeof(DateTime))
+            {
+                return " DEFAULT GETUTCDATE()";
             }
             return "";
         }

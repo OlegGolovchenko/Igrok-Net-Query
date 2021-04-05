@@ -102,7 +102,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         /// Format for insert query
         /// INSERT {0:into query} {1:values}
         /// </summary>
-        private const string INSERT_QUERY_FORMAT = "INSERT INTO {0} VALUES({1})";
+        private const string INSERT_QUERY_FORMAT = "INSERT INTO {0} VALUES {1}";
         /// <summary>
         /// Format for select query
         /// SELECT {0:fields} FROM {1:objName} {2:query part} {3:condition}
@@ -326,7 +326,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             switch (objectType)
             {
                 case IGNDbObjectTypeEnum.Table:
-                    this.dataDriver.IfTableNotExists(objName, this);
+                    if (this.dataDriver.Dialect == DialectEnum.MSSQL || this.format != ALTER_QUERY_FORMAT)
+                    {
+                        this.dataDriver.IfTableNotExists(objName, this);
+                    }
                     break;
                 case IGNDbObjectTypeEnum.Database:
                     this.dataDriver.IfDatabaseNotExists(objName, this);
@@ -354,7 +357,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             switch (objectType)
             {
                 case IGNDbObjectTypeEnum.Table:
-                    this.dataDriver.IfTableExists(objName, this);
+                    if (this.dataDriver.Dialect == DialectEnum.MSSQL || this.format != ALTER_QUERY_FORMAT)
+                    {
+                        this.dataDriver.IfTableExists(objName, this);
+                    }
                     break;
                 case IGNDbObjectTypeEnum.Database:
                     this.dataDriver.IfDatabaseExists(objName, this);
