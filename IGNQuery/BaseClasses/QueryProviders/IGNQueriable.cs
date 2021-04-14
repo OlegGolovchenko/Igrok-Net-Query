@@ -211,9 +211,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IGNQueriable Join(string sourceTableName,
             string destTableName,
             string sourceKeyName, 
-            string destKeyName)
+            string destKeyName,
+            bool inner = true,
+            bool left = false,
+            bool right = false)
         {
-            this.querySpecificPart = $"INNER JOIN {SanitizeName(destTableName)} ON " +
+            string joinPart = "JOIN";
+            if (inner)
+            {
+                joinPart = "INNER " + joinPart;
+            }
+            else if (left)
+            {
+                joinPart = "LEFT " + joinPart;
+            }
+            else if (right)
+            {
+                joinPart = "RIGHT " + joinPart;
+            }
+            this.querySpecificPart = $"{joinPart} {SanitizeName(destTableName)} ON " +
                 $"{SanitizeName(sourceTableName)}.{SanitizeName(sourceKeyName)} = " +
                 $"{SanitizeName(destTableName)}.{SanitizeName(destKeyName)}";
             return this;
