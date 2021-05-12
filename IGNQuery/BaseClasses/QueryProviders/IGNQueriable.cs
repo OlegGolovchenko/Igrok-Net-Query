@@ -211,11 +211,29 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IGNQueriable Join(string sourceTableName,
             string destTableName,
             string sourceKeyName, 
-            string destKeyName)
+            string destKeyName,
+            bool inner = true,
+            bool left = false,
+            bool right = false)
         {
-            this.querySpecificPart = $"INNER JOIN {SanitizeName(destTableName)} ON " +
+            string joinPart = "JOIN";
+            if (inner)
+            {
+                joinPart = "INNER " + joinPart;
+            }
+            else if (left)
+            {
+                joinPart = "LEFT " + joinPart;
+            }
+            else if (right)
+            {
+                joinPart = "RIGHT " + joinPart;
+            }
+            var queryPart = $"{joinPart} {SanitizeName(destTableName)} ON " +
                 $"{SanitizeName(sourceTableName)}.{SanitizeName(sourceKeyName)} = " +
                 $"{SanitizeName(destTableName)}.{SanitizeName(destKeyName)}";
+            this.querySpecificPart = queryPart;
+
             return this;
         }
 
@@ -477,11 +495,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
         internal string SanitizeName(string objName)
         {
             var sanitizedFormat = "`{0}`";
+            var replace = "`.`";
             if(this.dataDriver.Dialect == DialectEnum.MSSQL)
             {
                 sanitizedFormat = "[{0}]";
+                replace = "].[";
             }
-            return string.Format(sanitizedFormat, objName);
+            return string.Format(sanitizedFormat, objName.Replace(".",replace));
         }
 
         internal string DeSanitizeName(string objName)
