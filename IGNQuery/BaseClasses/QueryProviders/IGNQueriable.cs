@@ -229,9 +229,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 joinPart = "RIGHT " + joinPart;
             }
-            this.querySpecificPart = $"{joinPart} {SanitizeName(destTableName)} ON " +
+            var queryPart = $"{joinPart} {SanitizeName(destTableName)} ON " +
                 $"{SanitizeName(sourceTableName)}.{SanitizeName(sourceKeyName)} = " +
                 $"{SanitizeName(destTableName)}.{SanitizeName(destKeyName)}";
+            this.querySpecificPart = queryPart;
+
             return this;
         }
 
@@ -493,11 +495,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
         internal string SanitizeName(string objName)
         {
             var sanitizedFormat = "`{0}`";
+            var replace = "`.`";
             if(this.dataDriver.Dialect == DialectEnum.MSSQL)
             {
                 sanitizedFormat = "[{0}]";
+                replace = "].[";
             }
-            return string.Format(sanitizedFormat, objName);
+            return string.Format(sanitizedFormat, objName.Replace(".",replace));
         }
 
         internal string DeSanitizeName(string objName)
