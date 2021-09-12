@@ -34,8 +34,6 @@ namespace IGNQuery.Interfaces.QueryProvider
 
         IInsertQuery Values();
 
-        IInsertQuery AddRow(IEnumerable<FieldValue> values);
-
         IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers);
 
         IInsertQuery Next();
