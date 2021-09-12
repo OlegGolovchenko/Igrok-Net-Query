@@ -47,21 +47,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public ICondition BoolEqual(bool value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
-            return this;
-        }
-
         public ICondition BoolEqualToParam(int paramNb)
         {
             this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
-            return this;
-        }
-
-        public ICondition BoolNotEqual(bool value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 
@@ -82,21 +70,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new QueryResult(this.queriable);
         }
 
-        public ICondition LongEqual(long value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
-            return this;
-        }
-
         public ICondition LongEqualToParam(int paramNb)
         {
             this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
-            return this;
-        }
-
-        public ICondition LongNotEqual(long value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 
@@ -112,21 +88,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public ICondition StringEqual(string value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Eq, value));
-            return this;
-        }
-
         public ICondition StringEqualToParam(int paramNb)
         {
             this.queriable.ConditionWithParams(() => IGNConditionWithParameter.FromConfig(this.fieldName, IGNSqlCondition.Eq, paramNb));
-            return this;
-        }
-
-        public ICondition StringNotEqual(string value)
-        {
-            this.queriable.Condition(() => IGNCondition.FromConfig(this.fieldName, IGNSqlCondition.Ne, value));
             return this;
         }
 

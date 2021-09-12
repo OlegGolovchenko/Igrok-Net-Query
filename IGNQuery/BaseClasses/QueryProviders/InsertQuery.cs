@@ -43,19 +43,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.firstRow = true;
         }
 
-        public IInsertQuery AddRow(IEnumerable<FieldValue> values)
-        {
-            if (this.firstRow)
-            {
-                this.queriable.Values(values.Select(x => x.ObjectValue));
-            }
-            else
-            {
-                this.queriable.AddRow(values.Select(x => x.ObjectValue));
-            }
-            return this;
-        }
-
         public IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers)
         {
             if (this.firstRow)

@@ -49,30 +49,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this.queriable.ToString();
         }
 
-        public IQueryResult SetBooleanFieldFalse(string field)
-        {
-            this.queriable.Set(field, false);
-            return this;
-        }
-
-        public IConditionalQuery SetBooleanFieldFalseWithCondition(string field)
-        {
-            this.queriable.Set(field, false);
-            return new ConditionalQuery(this.queriable);
-        }
-
-        public IQueryResult SetBooleanFieldTrue(string field)
-        {
-            this.queriable.Set(field, true);
-            return this;
-        }
-
-        public IConditionalQuery SetBooleanFieldTrueWithCondition(string field)
-        {
-            this.queriable.Set(field, true);
-            return new ConditionalQuery(this.queriable);
-        }
-
         public IConditionalQuery SetFieldWithConditionWithParam(string fieldName, int paramNb)
         {
             this.queriable.SetParametrized(fieldName, paramNb);
@@ -83,30 +59,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             this.queriable.SetParametrized(fieldName, paramNb);
             return this;
-        }
-
-        public IQueryResult SetLongField(string field, long value)
-        {
-            this.queriable.Set(field, value);
-            return this;
-        }
-
-        public IConditionalQuery SetLongFieldWithCondition(string field, long value)
-        {
-            this.queriable.Set(field, value);
-            return new ConditionalQuery(this.queriable);
-        }
-
-        public IQueryResult SetStringField(string field, string value)
-        {
-            this.queriable.Set(field, value);
-            return this;
-        }
-
-        public IConditionalQuery SetStringFieldWithCondition(string field, string value)
-        {
-            this.queriable.Set(field, value);
-            return new ConditionalQuery(this.queriable);
         }
 
         public IUpdateQuery Table(string table)
