@@ -24,24 +24,11 @@
 //
 // ############################################
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.Enums
 {
-    public interface IAlterQuery: IQueryResult
+    public enum ExistsEnum
     {
-        IAlterQuery TableIfExists(string tableName);
-
-        IAlterQuery Add();
-
-        IAlterQuery ColumnIfExists(TableField column);
-
-        IAlterQuery ColumnIfNotExists(TableField column);
-
-        IAlterQuery Next();
-
-        IAlterQuery Go();
-
-        IAlterQuery Drop();
-
-        IAlterQuery Alter();
+        Exists = 1,
+        NotExists = 2
     }
 }

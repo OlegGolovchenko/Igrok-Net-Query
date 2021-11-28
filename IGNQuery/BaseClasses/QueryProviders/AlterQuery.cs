@@ -66,11 +66,15 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this.queriable;
         }
 
-        public IAlterQuery Column(TableField column)
+        public IAlterQuery ColumnIfExists(TableField column)
         {
+            if (this.subquery.IsAddColumn)
+            {
+                throw new Exception("You should not call ColumnIfExists during Add query");
+            }
             if (this.subquery.IsDropColumn)
             {
-                this.subquery.Column(column.Name);
+                this.subquery.Column(column.Name).IfExists();
             }
             else
             {
@@ -79,7 +83,8 @@ namespace IGNQuery.BaseClasses.QueryProviders
                     column.StringLengthFromType(),
                     !column.CanHaveNull,
                     column.Generated,
-                    column.DefValueFromString());
+                    column.DefValueFromString()).
+                    IfExists();
             }
             return this;
         }
@@ -155,14 +160,23 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public IAlterQuery TableIfExists(string tableName)
         {
-            if (this.dataDriver.Dialect == DialectEnum.MSSQL)
+            this.queriable.Alter().Table(tableName, this.subquery).IfExists();
+            return this;
+        }
+
+        public IAlterQuery ColumnIfNotExists(TableField column)
+        {
+            if (!this.subquery.IsAddColumn)
             {
-                this.queriable.Alter().Table(tableName, this.subquery).IfExists();
+                throw new Exception("You should call ColumnIfNotExists during Add query");
             }
-            else if(this.dataDriver.Dialect == DialectEnum.MySQL)
-            {
-                this.queriable.Alter().Table(tableName, this.subquery);
-            }
+            this.subquery.Column(column.Name,
+                    column.FromStringToType(),
+                    column.StringLengthFromType(),
+                    !column.CanHaveNull,
+                    column.Generated,
+                    column.DefValueFromString()).
+                    IfNotExists();
             return this;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using IGNQuery.BaseClasses;
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,22 +15,28 @@ namespace IGNQuery.SqlServer
 {
     public class MsSqlDataDriver : IGNDbDriver
     {
+
+        private string email;
+
         public MsSqlDataDriver(string email, string server, int port,string user,string password):base(server,port,user,password)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
             Activation.Activate(email);
+            this.email = email;
         }
 
         public MsSqlDataDriver(string email) : base()
         {
             this.dialect = Enums.DialectEnum.MSSQL;
             Activation.Activate(email);
+            this.email = email;
         }
 
         public MsSqlDataDriver(string email, string connectionString):base(connectionString)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
             Activation.Activate(email);
+            this.email = email;
         }
 
         protected override string ConstructConnectionString(string server, int port, string uName, string pwd)
@@ -104,90 +111,118 @@ namespace IGNQuery.SqlServer
             return "";
         }
 
-        public override void IfTableNotExists(string name, IGNQueriable queriable)
-        {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='U')\nBEGIN\nEXEC('";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("')END", queriable);
-        }
-
         public override void IfTableExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='U')\nBEGIN\nEXEC('";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("')END", queriable);
+            SetTableExists(name, queriable, ExistsEnum.Exists);
+        }
+
+        public override void IfTableNotExists(string name, IGNQueriable queriable)
+        {
+            SetTableExists(name, queriable, ExistsEnum.NotExists);
+        }
+
+        private void SetTableExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[TABLES] WHERE [TABLE_CATALOG] = DB_NAME() AND [TABLE_NAME] = '{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public override void IfDatabaseNotExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM sysdatabases WHERE name='{name}')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetDatabaseExists(name, queriable, ExistsEnum.NotExists);
         }
 
         public override void IfDatabaseExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM sysdatabases WHERE name='{name}')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetDatabaseExists(name, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfViewNotExists(string name, IGNQueriable queriable)
+        private void SetDatabaseExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='V')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            var checkQuery = $"SELECT * FROM sysdatabases WHERE name='{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public override void IfViewExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='V')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetViewExists(name, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfStoredProcedureNotExists(string name, IGNQueriable queriable)
+        public override void IfViewNotExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='P')\nBEGIN\nEXEC('";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("')END", queriable);
+            SetViewExists(name, queriable, ExistsEnum.NotExists);
+        }
+
+        private void SetViewExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[VIEWS] WHERE [TABLE_CATALOG] = DB_NAME() AND [TABLE_NAME] = '{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public override void IfStoredProcedureExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM sysobjects WHERE name='{name}' AND xtype='P')\nBEGIN\nEXEC('";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("')END", queriable);
+            SetStoresProcedureExists(name, queriable, ExistsEnum.Exists);
+        }
+
+        public override void IfStoredProcedureNotExists(string name, IGNQueriable queriable)
+        {
+            SetStoresProcedureExists(name, queriable, ExistsEnum.NotExists);
+        }
+
+        private void SetStoresProcedureExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[ROUTINES] WHERE [ROUTINE_NAME] = '{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public override void IfIndexNotExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM sysindexes WHERE name='{name}')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetIndexExists(name, queriable, ExistsEnum.NotExists);
         }
 
         public override void IfIndexExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM sysindexes WHERE name='{name}')\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetIndexExists(name, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfColumnNotExists(string name, IGNQueriable queriable)
+        private void SetIndexExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            var prefix = $"IF NOT EXISTS (SELECT * FROM syscolumns WHERE name='{name}' " +
-                $"and Object_ID = Object_ID(N'{name}'))\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            var checkQuery = $"SELECT * FROM sysindexes WHERE name='{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public override void IfColumnExists(string name, IGNQueriable queriable)
         {
-            var prefix = $"IF EXISTS (SELECT * FROM syscolumns WHERE name='{name}' " +
-                $"and Object_ID = Object_ID(N'{name}'))\nBEGIN";
-            IGNQueriable.PrefixWith(prefix, queriable);
-            IGNQueriable.SuffixWith("END", queriable);
+            SetColumnExists(name, queriable, ExistsEnum.Exists);
+        }
+
+        public override void IfColumnNotExists(string name, IGNQueriable queriable)
+        {
+            SetColumnExists(name, queriable, ExistsEnum.NotExists);
+        }
+
+        private void SetColumnExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[COLUMNS] WHERE [TABLE_CATALOG] = DB_NAME() AND [TABLE_NAME] = '{queriable.TableName}' AND [COLUMN_NAME] = '{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
     }
 }

@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using System;
 
@@ -52,7 +53,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 return new IGNQueriable(dataDriver)
                 {
-                    query = query
+                    query = query,
+                    exists = true,
+                    canExecute = true
                 };
             }
             else
@@ -76,5 +79,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.afterObjType = queryPart;
         }
 
+        public static void SetExists(bool exists, IGNQueriable queriable)
+        {
+            queriable.exists = exists;
+        }
+
+        public static void SetCanExecute(ExistsEnum existsFunc, IGNQueriable queriable)
+        {
+            switch (existsFunc)
+            {
+                case ExistsEnum.Exists:
+                    queriable.canExecute = queriable.exists;
+                    break;
+                case ExistsEnum.NotExists:
+                    queriable.canExecute = !queriable.exists;
+                    break;
+                default:
+                    queriable.canExecute = true;
+                    break;
+            }
+        }
     }
 }

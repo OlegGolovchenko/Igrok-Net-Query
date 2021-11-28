@@ -12,14 +12,14 @@ namespace IGNQuery.SqlServer.Test
         [SetUp]
         public void Setup()
         {
-            var mssqlconnectionString = "server=127.0.0.1;user=root;pwd=IgRok_100692;database=igroknettest";
-            Environment.SetEnvironmentVariable("MYSQL_CONNECTION_STRING", mssqlconnectionString);
+            var myqlconnectionString = "server=127.0.0.1;user=testusr;pwd=IgRok-NET_t35t_u5r;database=igroknettest";
+            Environment.SetEnvironmentVariable("MYSQL_CONNECTION_STRING", myqlconnectionString);
         }
 
         [Test]
         public void ACreateTableIfNotExists()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var paramList = new List<TableField>()
             {
                 new TableField
@@ -68,7 +68,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void ADeleteAllUsers()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Delete().
                 From("ignusers");
@@ -80,12 +80,12 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BAlterTableIfExists()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Alter().
                 TableIfExists("ignusers").
                 Add().
-                Column(new TableField
+                ColumnIfNotExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -96,7 +96,7 @@ namespace IGNQuery.SqlServer.Test
                 }).
                 Next().
                 Add().
-                Column(new TableField
+                ColumnIfNotExists(new TableField
                 {
                     Name = "test2",
                     CanHaveNull = true,
@@ -111,7 +111,7 @@ namespace IGNQuery.SqlServer.Test
                 Alter().
                 TableIfExists("ignusers").
                 Alter().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -126,7 +126,7 @@ namespace IGNQuery.SqlServer.Test
                 Alter().
                 TableIfExists("ignusers").
                 Drop().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -137,7 +137,7 @@ namespace IGNQuery.SqlServer.Test
                 }).
                 Next().
                 Drop().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test2",
                     CanHaveNull = true,
@@ -162,7 +162,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BCreateUserIfNotExists()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                     Insert().
                     Into("ignusers", new List<string>() { "mail" }).
@@ -178,7 +178,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BCreateStoredProcedureIfNotExists()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().Drop().StoredProcedureIfExists("testProc");
             dataProvider.ExecuteNonQuery(query);
             var spQuery = dataProvider.Query().Select().AllFrom("ignusers");
@@ -192,7 +192,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void CDeleteTable()
         {
-            var dataProvider = new MySqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MySqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Drop().
                 TableIfExists("ignusers");

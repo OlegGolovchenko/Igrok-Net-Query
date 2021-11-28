@@ -178,11 +178,14 @@ namespace IGNQuery.BaseClasses
 
         public void ExecuteWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args)
         {
-            using (var connection = OpenConnection())
+            if (query.CanExecute)
             {
-                var dbc = PrepareDbCommand(query.ToString(), connection);
-                AddParameters(dbc, args);
-                dbc.ExecuteNonQuery();
+                using (var connection = OpenConnection())
+                {
+                    var dbc = PrepareDbCommand(query.ToString(), connection);
+                    AddParameters(dbc, args);
+                    dbc.ExecuteNonQuery();
+                }
             }
         }
 
@@ -193,7 +196,7 @@ namespace IGNQuery.BaseClasses
                 var query = $"CALL {procName}({string.Join(",",args.Select(x=>$"@p{x.Position}"))})";
                 if(dialect == DialectEnum.MSSQL)
                 {
-                    query = $"EXEC {procName}";
+                    query = $"EXEC {procName} {string.Join(",", args.Select(x => $"@p{x.Position}"))}";
                 }
                 var dbc = PrepareDbCommand(query, connection);
                 dbc.CommandType = CommandType.StoredProcedure;
@@ -204,19 +207,26 @@ namespace IGNQuery.BaseClasses
 
         public DataTable ReadData(IGNQueriable query)
         {
-            return ReadDataWithParameters(query, query.ParamValues);
+            if (query.CanExecute)
+            {
+                return ReadDataWithParameters(query, query.ParamValues);
+            }
+            return null;
         }
 
         public DataTable ReadDataWithParameters(IGNQueriable query, IEnumerable<IGNParameterValue> args)
         {
             DataTable result = null;
-            using (var connection = OpenConnection())
+            if (query.CanExecute)
             {
-                var dbc = PrepareDbCommand(query.ToString(), connection);
-                AddParameters(dbc, args);
-                using (var dbReader = dbc.ExecuteReader())
+                using (var connection = OpenConnection())
                 {
-                    result = InitDataTable(dbReader);
+                    var dbc = PrepareDbCommand(query.ToString(), connection);
+                    AddParameters(dbc, args);
+                    using (var dbReader = dbc.ExecuteReader())
+                    {
+                        result = InitDataTable(dbReader);
+                    }
                 }
             }
             return result;
@@ -230,7 +240,7 @@ namespace IGNQuery.BaseClasses
                 var query = $"CALL {procName}({string.Join(",", args.Select(x => $"@p{x.Position}"))})";
                 if (dialect == DialectEnum.MSSQL)
                 {
-                    query = $"EXEC {procName}";
+                    query = $"EXEC {procName} {string.Join(",", args.Select(x => $"@p{x.Position}"))}";
                 }
                 var dbc = PrepareDbCommand(query, connection);
                 dbc.CommandType = CommandType.StoredProcedure;
