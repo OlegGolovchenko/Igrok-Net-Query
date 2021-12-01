@@ -18,7 +18,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void ACreateTableIfNotExists()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var paramList = new List<TableField>()
             {
                 new TableField
@@ -67,7 +67,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void ADeleteAllUsers()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Delete().
                 From("ignusers");
@@ -79,12 +79,12 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BAlterTableIfExists()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Alter().
                 TableIfExists("ignusers").
                 Add().
-                Column(new TableField
+                ColumnIfNotExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -95,7 +95,7 @@ namespace IGNQuery.SqlServer.Test
                 }).
                 Next().
                 Add().
-                Column(new TableField
+                ColumnIfNotExists(new TableField
                 {
                     Name = "test2",
                     CanHaveNull = true,
@@ -110,7 +110,7 @@ namespace IGNQuery.SqlServer.Test
                 Alter().
                 TableIfExists("ignusers").
                 Alter().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -125,7 +125,7 @@ namespace IGNQuery.SqlServer.Test
                 Alter().
                 TableIfExists("ignusers").
                 Drop().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test1",
                     CanHaveNull = true,
@@ -136,7 +136,7 @@ namespace IGNQuery.SqlServer.Test
                 }).
                 Next().
                 Drop().
-                Column(new TableField
+                ColumnIfExists(new TableField
                 {
                     Name = "test2",
                     CanHaveNull = true,
@@ -161,7 +161,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BCreateUserIfNotExists()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                     Insert().
                     Into("ignusers", new List<string>() { "mail" }).
@@ -177,7 +177,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BCreateStoredProcedureIfNotExists()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().Drop().StoredProcedureIfExists("testProc");
             dataProvider.ExecuteNonQuery(query);
             var spQuery = dataProvider.Query().Select().AllFrom("ignusers");
@@ -191,7 +191,7 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void CDeleteTable()
         {
-            var dataProvider = new MsSqlDataProvider("igrok_be@hotmail.com");
+            var dataProvider = new MsSqlDataProvider("igntest@igrok-net.org");
             var query = dataProvider.Query().
                 Drop().
                 TableIfExists("ignusers");

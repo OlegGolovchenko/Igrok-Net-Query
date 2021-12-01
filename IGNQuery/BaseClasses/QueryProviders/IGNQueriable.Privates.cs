@@ -74,11 +74,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             var defVal = defValue?.ToString();
             if (defValue is bool boolean)
             {
-                defVal = boolean ? string.Format(valQuotesFormat,"1") : string.Format(valQuotesFormat, "0");
-                if(this.dataDriver.Dialect == Enums.DialectEnum.MySQL)
-                {
-                    defVal = boolean ? string.Format(valNoQuotesFormat, "1") : string.Format(valNoQuotesFormat, "0");
-                }
+                defVal = boolean ? string.Format(valNoQuotesFormat, "1") : string.Format(valNoQuotesFormat, "0");
             }
             if (defValue is string)
             {
@@ -161,6 +157,30 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 FormatSuffix(this.suffix),
                 this.dataDriver.GoTerminator()
             );
+        }
+
+        private void BuildCreateDatabaseQuery()
+        {
+            this.query = string.Format(
+                this.format,
+                FormatPrefix(this.prefix),
+                this.objectName,
+                this.afterObjType,
+                FormatSuffix(this.suffix),
+                this.dataDriver.GoTerminator());
+        }
+
+
+        private void BuildCreateIndexQuery()
+        {
+            this.query = string.Format(
+                this.format,
+                FormatPrefix(this.prefix),
+                this.objectName,
+                this.tableName,
+                this.querySpecificPart,
+                FormatSuffix(this.suffix),
+                this.dataDriver.GoTerminator());
         }
 
         private void BuildCreateQuery(string objType)

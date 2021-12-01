@@ -48,6 +48,30 @@ namespace IGNQuery.BaseClasses.QueryProviders
         private string conditional = "";
         private IEnumerable<string> fieldNames;
         private IGNQueriable subquery = null;
+        private string tableName = "";
+        public string TableName
+        {
+            get
+            {
+                return this.tableName;
+            }
+        }
+
+        private bool exists;
+
+        private bool canExecute;
+
+        public bool CanExecute
+        {
+            get
+            {
+                if(this.subquery != null)
+                {
+                    return this.canExecute && this.subquery.CanExecute;
+                }
+                return this.canExecute;
+            }
+        }
 
         /// <summary>
         /// Format for create query
@@ -56,6 +80,27 @@ namespace IGNQuery.BaseClasses.QueryProviders
         /// </summary>
         private const string CREATE_QUERY_FORMAT =
             "{0}CREATE {1}{2} {3}{4}{5}{6}";
+        /// <summary>
+        /// Format for create database query
+        /// {0:prefix} CREATE DATABASE {1:objname} {2:afterobjname}
+        ///     {3:suffix} {4:go}
+        /// </summary>
+        private const string CREATE_DATABASE_QUERY_FORMAT =
+            "{0}CREATE DATABASE {1}{2}{3}{4}";
+        /// <summary>
+        /// Format for create index query
+        /// {0:prefix} CREATE INDEX {1:objname} {2:tablename} 
+        ///     {3:columns} {4:suiffix} {5:go}
+        /// </summary>
+        private const string CREATE_INDEX_QUERY_FORMAT = 
+            "{0}CREATE INDEX {1} ON {2}({3}){4}{5}";
+        /// <summary>
+        /// Format for create index query
+        /// {0:prefix} CREATE INDEX {1:objname} {2:tablename} 
+        ///     {3:columns} {4:suffix} {5:go}
+        /// </summary>
+        private const string CREATE_UNIQUE_INDEX_QUERY_FORMAT =
+            "{0}CREATE UNIQUE INDEX {1} ON {2}({3}){4}{5}";
         /// <summary>
         /// format for use query
         /// USE {0:objname} {1:go}
@@ -108,6 +153,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
         /// SELECT {0:fields} FROM {1:objName} {2:query part} {3:condition}
         /// </summary>
         private const string SELECT_QUERY_FORMAT = "SELECT {0} FROM {1} {2} {3}";
+        /// <summary>
+        /// Format for select query with distinct results
+        /// SELECT DISTINCT {0:fields} FROM {1:objName} {2:query part} {3:condition}
+        /// </summary>
+        private const string SELECT_DISTINCT_QUERY_FORMAT = "SELECT DISTINCT {0} FROM {1} {2} {3}";
         /// <summary>
         /// Format for delete query
         /// DELETE FROM {0:objName} {2:condition}
@@ -194,17 +244,31 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IGNQueriable Select(IEnumerable<string> columns)
+        public IGNQueriable Select(IEnumerable<string> columns, bool distinct = false)
         {
             this.fieldNames = columns.Select(name=> SanitizeName(name));
-            this.format = SELECT_QUERY_FORMAT;
+            if (distinct)
+            {
+                this.format = SELECT_DISTINCT_QUERY_FORMAT;
+            }
+            else
+            {
+                this.format = SELECT_QUERY_FORMAT;
+            }
             return this;
         }
 
-        public IGNQueriable Select()
+        public IGNQueriable Select(bool distinct = false)
         {
             this.fieldNames = new List<string>();
-            this.format = SELECT_QUERY_FORMAT;
+            if (distinct)
+            {
+                this.format = SELECT_DISTINCT_QUERY_FORMAT;
+            }
+            else
+            {
+                this.format = SELECT_QUERY_FORMAT;
+            }
             return this;
         }
 
@@ -362,6 +426,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 case IGNDbObjectTypeEnum.UniqueIndex:
                     this.dataDriver.IfIndexNotExists(objName, this);
                     break;
+                case IGNDbObjectTypeEnum.Column:
+                    this.dataDriver.IfColumnNotExists(objName, this);
+                    break;
                 case IGNDbObjectTypeEnum.None:
                 default:
                     throw new Exception("Please call if not exists after Create update or alter ddl query");
@@ -393,6 +460,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 case IGNDbObjectTypeEnum.UniqueIndex:
                     this.dataDriver.IfIndexExists(objName, this);
                     break;
+                case IGNDbObjectTypeEnum.Column:
+                    this.dataDriver.IfColumnExists(objName, this);
+                    break;
                 default:
                     throw new Exception("Please call if exists after Create update or alter ddl query");
             }
@@ -407,7 +477,8 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 if (this.format != SELECT_QUERY_FORMAT &&
                     this.format != UPDATE_QUERY_FORMAT &&
                     this.format != INSERT_QUERY_FORMAT &&
-                    this.format != DELETE_QUERY_FORMAT)
+                    this.format != DELETE_QUERY_FORMAT &&
+                    this.format != SELECT_DISTINCT_QUERY_FORMAT)
                 {
                     switch (objectType)
                     {
@@ -446,6 +517,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
                         case CREATE_QUERY_FORMAT:
                             BuildCreateQuery(objType);
                             break;
+                        case CREATE_DATABASE_QUERY_FORMAT:
+                            BuildCreateDatabaseQuery();
+                            break;
+                        case CREATE_INDEX_QUERY_FORMAT:
+                            BuildCreateIndexQuery();
+                            break;
                         case DROP_QUERY_FORMAT:
                             BuildDropQuery(objType);
                             break;
@@ -467,6 +544,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                         case INSERT_QUERY_FORMAT:
                             BuildInsertQuery();
                             break;
+                        case SELECT_DISTINCT_QUERY_FORMAT:
                         case SELECT_QUERY_FORMAT:
                             BuildSelectQuery();
                             break;
