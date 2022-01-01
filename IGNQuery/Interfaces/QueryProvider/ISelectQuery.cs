@@ -24,18 +24,13 @@
 //
 // ############################################
 
-using System.Collections.Generic;
-
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ISelectQuery : IQueryResult
+    public interface ISelectQuery : IQueryResult,
+        ISelectExistenceCheckQuery
     {
-        IQueryResult AllFrom(string table);
+        ISelectExistenceCheckQuery From(string table);
 
-        IConditionalQuery AllFromWithCondition(string table);
-
-        IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames);
-
-        IConditionalQuery FieldsFromWithCondition(string table, IEnumerable<string> fieldNames);
+        IConditionalQuery WithCondition();
     }
 }

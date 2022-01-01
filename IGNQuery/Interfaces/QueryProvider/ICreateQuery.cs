@@ -24,14 +24,17 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ICreateQuery : IQueryResult
+    public interface ICreateQuery : IQueryResult, 
+        IExistenceCheckQuery
     {
-        IQueryResult TableIfNotExists(string name, IEnumerable<TableField> fields);
+        IExistenceCheckQuery Table(string name, IEnumerable<TableColumnConfiguration> fields);
 
         /// <summary>
         /// Creates stored procedure You should drop stored procedure if it exists before doing this
@@ -40,6 +43,12 @@ namespace IGNQuery.Interfaces.QueryProvider
         /// <param name="content">body of stored procedure</param>
         /// <param name="parameters">parameters of stored procedure</param>
         /// <returns>QueryResult</returns>
-        IQueryResult StoredProcedure(string name, IQueryResult content, [Optional] IEnumerable<TableField> parameters);
+        IExistenceCheckQuery StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters);
+
+        IExistenceCheckQuery Database(string name);
+
+        IExistenceCheckQuery View(string name, IGNQueriable content);
+
+        IExistenceCheckQuery Index(string name, string tableName, IEnumerable<string> columns, bool unique);
     }
 }

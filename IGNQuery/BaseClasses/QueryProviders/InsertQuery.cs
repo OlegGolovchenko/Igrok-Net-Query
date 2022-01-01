@@ -24,64 +24,66 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class InsertQuery : IInsertQuery
+    public class InsertQuery : QueryResult, IInsertQuery
     {
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
+        private readonly IList<string> values;
 
-        private readonly IGNQueriable queriable;
-        private bool firstRow;
-
-        public InsertQuery(string email, IDataDriver dataDriver)
+        public InsertQuery(IGNQueriable queriable):base(queriable)
         {
-            queriable = IGNQueriable.Begin(email, dataDriver);
-            this.firstRow = true;
+            values = new List<string>();
         }
 
-        public IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers)
+        public IInsertQuery AddRowWithParams(IEnumerable<int> valuesRow)
         {
-            if (this.firstRow)
+            if (values.Any())
             {
-                this.queriable.ValuesWithParams(paramNumbers);
+                queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", ", ");
             }
-            else
+            values.Add($"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})");
+            queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", " ");
+            return this;
+        }
+
+        public IInsertExistenceCheckQuery Into(string table, IEnumerable<string> fields)
+        {
+            name = table;
+            objectType = IGNDbObjectTypeEnum.Table;
+            queriable.AddOperation("INSERT INTO", queriable.SanitizeName(table), "");
+            var sanitizedFields = fields.Select(name => queriable.SanitizeName(name));
+            queriable.AddOperation("", $"({string.Join(",", sanitizedFields)})VALUES", " ");
+            return this;
+        }
+
+        public IInsertQuery ValuesWithParams(IEnumerable<int> valuesRow)
+        {
+            if (values.Any())
             {
-                this.queriable.AddRowWithParams(paramNumbers);
+                queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", ", ");
             }
+            values.Add($"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})");
+            queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", " ");
             return this;
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IInsertQuery IfExists()
         {
-            return this.queriable;
-        }
-
-        public string GetResultingString()
-        {
-            return this.queriable.ToString();
-        }
-
-        public IInsertQuery Into(string table, IEnumerable<string> fields)
-        {
-            this.queriable.Insert().Into(table, fields);
+            queriable.IfExists(objectType, name, "");
             return this;
         }
 
-        public IInsertQuery Next()
+        public IInsertQuery IfNotExists()
         {
-            this.firstRow = false;
-            return this;
-        }
-
-        public IInsertQuery Values()
-        {
-            this.firstRow = true;
-            return this;
+            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
         }
     }
 }

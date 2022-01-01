@@ -24,53 +24,81 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class SelectQuery : ISelectQuery
+    public class SelectQuery : QueryResult,
+        ISelectQuery
     {
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
+        private readonly bool distinct;
+        private readonly IEnumerable<string> fieldNames;
 
-        private IGNQueriable queriable;
-
-        public SelectQuery(string email, IDataDriver dataDriver)
+        public SelectQuery(IGNQueriable queriable, bool distinct, IEnumerable<string> fieldNames = null) : base(queriable)
         {
-            queriable = IGNQueriable.Begin(email, dataDriver);
+            this.distinct = distinct;
+            this.fieldNames = fieldNames;
         }
-        public IQueryResult AllFrom(string table)
+
+        public ISelectExistenceCheckQuery From(string table)
         {
-            this.queriable.Select().From(table);
+            objectType = IGNDbObjectTypeEnum.Table;
+            name = table;
+            string columns = fieldNames == null ? "*" : string.Join(",", fieldNames.Select(x => queriable.SanitizeName(x)));
+            string operand = distinct ? "SELECT DISTINCT" : "SELECT";
+            queriable.AddOperation(operand, columns, "");
+            queriable.AddOperation("FROM", queriable.SanitizeName(table), " ");
             return this;
         }
 
-        public IConditionalQuery AllFromWithCondition(string table)
+        public ISelectQuery IfExists()
         {
-            this.queriable.Select().From(table);
-            return new ConditionalQuery(this.queriable);
-        }
-
-        public IGNQueriable AsIgnQueriable()
-        {
-            return this.queriable;
-        }
-
-        public IQueryResult FieldsFrom(string table, IEnumerable<string> fieldNames)
-        {
-            this.queriable.Select(fieldNames).From(table);
+            queriable.IfExists(objectType, name, "");
+            if (fieldNames != null)
+            {
+                foreach (string colname in fieldNames)
+                {
+                    queriable.IfExists(IGNDbObjectTypeEnum.Column, colname, name);
+                }
+            }
             return this;
         }
 
-        public IConditionalQuery FieldsFromWithCondition(string table, IEnumerable<string> fieldNames)
+        public ISelectQuery IfNotExists()
         {
-            this.queriable.Select(fieldNames).From(table);
-            return new ConditionalQuery(this.queriable);
+            throw new System.NotImplementedException();
         }
 
-        public string GetResultingString()
+        public ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false)
         {
-            return this.queriable.ToString();
+            string operand = "JOIN";
+            if (inner)
+            {
+                operand = "INNER " + operand;
+            }
+            if (left)
+            {
+                operand = "LEFT " + operand;
+            }
+            if (right)
+            {
+                operand = "RIGHT " + operand;
+            }
+            queriable.AddOperation(operand, queriable.SanitizeName(destTableName), " ");
+            string parameter = $"{queriable.SanitizeName(sourceTableName)}.{queriable.SanitizeName(sourceKeyName)} = " +
+                $"{queriable.SanitizeName(destTableName)}.{queriable.SanitizeName(destKeyName)}";
+            queriable.AddOperation("ON", parameter, " ");
+            return this;
+        }
+
+        public IConditionalQuery WithCondition()
+        {
+            return new ConditionalQuery(queriable);
         }
     }
 }

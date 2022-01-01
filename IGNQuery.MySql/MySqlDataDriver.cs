@@ -30,7 +30,7 @@ namespace IGNQuery.MySql
 {
     public class MySqlDataDriver : IGNDbDriver
     {
-        private string email;
+        private readonly string email;
 
         public MySqlDataDriver(string email, string connectionString):base(connectionString)
         {
@@ -118,52 +118,57 @@ namespace IGNQuery.MySql
             return ";";
         }
 
-        public override void IfColumnExists(string name, IGNQueriable queriable)
+        public override void IfColumnExists(string name, string table, IGNQueriable queriable)
         {
-            SetColumnExists(name, queriable, ExistsEnum.Exists);
+            SetColumnExists(name, table, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfColumnNotExists(string name, IGNQueriable queriable)
+        public override void IfColumnNotExists(string name, string table, IGNQueriable queriable)
         {
-            SetColumnExists(name, queriable, ExistsEnum.NotExists);
+            SetColumnExists(name, table, queriable, ExistsEnum.NotExists);
         }
 
-        private void SetColumnExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        private void SetColumnExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            var checkQuery = $"SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = database() AND `TABLE_NAME` = '{queriable.TableName}' AND `COLUMN_NAME` = '{name}'";
+            var checkQuery = $"SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = database() AND `TABLE_NAME` = '{table}' AND `COLUMN_NAME` = '{name}'";
             var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
             IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
             IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
-        public override void IfDatabaseExists(string name, IGNQueriable queriable)
-        {
-            IGNQueriable.SetAfterObjectString(" IF EXISTS", queriable);
-            IGNQueriable.SetExists(true, queriable);
-            IGNQueriable.SetCanExecute(ExistsEnum.Exists, queriable);
-        }
-
         public override void IfDatabaseNotExists(string name, IGNQueriable queriable)
         {
-            IGNQueriable.SetAfterObjectString(" IF NOT EXISTS", queriable);
-            IGNQueriable.SetExists(false, queriable);
-            IGNQueriable.SetCanExecute(ExistsEnum.NotExists, queriable);
+            SetDatabaseExists(name, queriable, ExistsEnum.NotExists);
         }
 
-        public override void IfIndexExists(string name, IGNQueriable queriable)
+        public override void IfDatabaseExists(string name, IGNQueriable queriable)
         {
-            SetIndexExists(name, queriable, ExistsEnum.Exists);
+            SetDatabaseExists(name, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfIndexNotExists(string name, IGNQueriable queriable)
+        private void SetDatabaseExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            SetIndexExists(name, queriable, ExistsEnum.NotExists);
+            var checkQuery = $"SELECT * FROM `INFORMATION_SCHEMA`.`SHEMATA` WHERE `CATALOG_NAME`='{name}'";
+            var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
-        private void SetIndexExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        public override void IfIndexExists(string name, string table, IGNQueriable queriable)
         {
-            var checkQuery = $"SELECT * FROM `INFORMATION_SCHEMA`.`STATISTICS` WHERE `TABLE_SCHEMA` = database() AND `TABLE_NAME` = '{queriable.TableName}' AND `INDEX_NAME` = '{name}'";
+            SetIndexExists(name, table, queriable, ExistsEnum.Exists);
+        }
+
+        public override void IfIndexNotExists(string name, string table, IGNQueriable queriable)
+        {
+            SetIndexExists(name, table, queriable, ExistsEnum.NotExists);
+        }
+
+        private void SetIndexExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var checkQuery = $"SELECT * FROM `INFORMATION_SCHEMA`.`STATISTICS` WHERE `TABLE_SCHEMA` = database() AND `TABLE_NAME` = '{table}' AND `INDEX_NAME` = '{name}'";
             var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
             IGNQueriable.SetExists(result.Rows.Count > 0, queriable);

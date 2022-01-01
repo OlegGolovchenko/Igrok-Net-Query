@@ -24,48 +24,58 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
+using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class UpdateQuery : IUpdateQuery
+    public class UpdateQuery : QueryResult, IUpdateQuery
     {
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
 
-        private readonly IGNQueriable queriable;
-
-        public UpdateQuery(string email, IDataDriver dataDriver)
+        public UpdateQuery(IGNQueriable queriable):base(queriable)
         {
-            queriable = IGNQueriable.Begin(email, dataDriver);
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IConditionalQuery SetParametrizedWithCondition(string fieldName, int paramNb)
         {
-            return this.queriable;
+            AddSetColumnCommand(fieldName, paramNb);
+            return new ConditionalQuery(queriable);
         }
 
-        public string GetResultingString()
+        public IUpdateQuery SetParametrized(string fieldName, int paramNb)
         {
-            return this.queriable.ToString();
-        }
-
-        public IConditionalQuery SetFieldWithConditionWithParam(string fieldName, int paramNb)
-        {
-            this.queriable.SetParametrized(fieldName, paramNb);
-            return new ConditionalQuery(this.queriable);
-        }
-
-        public IQueryResult SetFieldWithParam(string fieldName, int paramNb)
-        {
-            this.queriable.SetParametrized(fieldName, paramNb);
+            AddSetColumnCommand(fieldName, paramNb);
             return this;
         }
 
-        public IUpdateQuery Table(string table)
+        private void AddSetColumnCommand(string fieldName, int paramNb)
         {
-            this.queriable.Update().
-                Table(table);
+            if (this.queriable.HasSetCommand())
+            {
+                queriable.AddOperation("SET", $"{fieldName} = @p{paramNb}", " ");
+            }
+            queriable.AddOperation("", $"{fieldName} = @p{paramNb}", ", ");
+        }
+
+        public IUpdateExistenceCheckQuery Table(string table)
+        {
+            name = table;
+            objectType = IGNDbObjectTypeEnum.Table;
             return this;
+        }
+
+        public IUpdateQuery IfExists()
+        {
+            queriable.IfExists(objectType, name, "");
+            return this;
+        }
+
+        public IUpdateQuery IfNotExists()
+        {
+            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
         }
     }
 }

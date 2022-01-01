@@ -25,6 +25,7 @@
 // ############################################
 
 using IGNQuery.Enums;
+using IGNQuery.Interfaces;
 using System;
 
 namespace IGNQuery.BaseClasses.Business
@@ -37,12 +38,14 @@ namespace IGNQuery.BaseClasses.Business
     public delegate string GetDefaultValueFunc(
         bool isRequired, 
         bool isGenerated, 
-        object defaultValue);
+        object defaultValue,
+        DialectEnum dialect);
 
     public delegate string GetDbAutoGenFunc(
         bool generated,
         Type colType,
-        int length);
+        int length,
+        IDataDriver driver);
 
     public class TableColumnConfiguration
     {
@@ -119,15 +122,15 @@ namespace IGNQuery.BaseClasses.Business
         }
 
         public string AsCreateTableQueryField(
-            DialectEnum dialect,
+            IDataDriver driver,
             GetDbTypeFunc getDbType,
             GetDefaultValueFunc getDefaultValue,
             GetDbAutoGenFunc getDbAutoGen)
         {
-            return $"{SanitizeName(ColumnName, dialect)} {getDbType(ColumnType, Length, DecimalPositions)} " +
+            return $"{SanitizeName(ColumnName, driver.Dialect)} {getDbType(ColumnType, Length, DecimalPositions)} " +
                 $"{(Required ? "NOT NULL" : "NULL")}" +
-                $"{getDefaultValue(Required, Generated, DefValue)}" +
-                $"{getDbAutoGen(Generated, ColumnType, Length)}";
+                $"{getDefaultValue(Required, Generated, DefValue,driver.Dialect)}" +
+                $"{getDbAutoGen(Generated, ColumnType, Length,driver)}";
         }
 
         internal string SanitizeName(string objName, DialectEnum dialect)

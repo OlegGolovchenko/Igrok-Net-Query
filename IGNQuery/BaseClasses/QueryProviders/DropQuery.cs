@@ -24,42 +24,72 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
 
-    public class DropQuery : IDropQuery
+    public class DropQuery : QueryResult, IDropQuery
     {
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
+        private string table = "";
 
-        private readonly IGNQueriable queriable;
-
-        public DropQuery(string email, IDataDriver dataDriver)
+        public DropQuery(IGNQueriable queriable):base(queriable)
         {
-            queriable = IGNQueriable.Begin(email, dataDriver);
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IExistenceCheckQuery Database(string name)
         {
-            return this.queriable;
-        }
-
-        public string GetResultingString()
-        {
-            return this.queriable.ToString();
-        }
-
-        public IQueryResult StoredProcedureIfExists(string name)
-        {
-            this.queriable.Drop().StoredProcedure(name).IfExists();
+            this.name = name;
+            objectType = IGNDbObjectTypeEnum.Database;
+            queriable.AddOperation("DROP DATABASE", queriable.SanitizeName(name), "");
             return this;
         }
 
-        public IQueryResult TableIfExists(string name)
+        public IQueryResult IfExists()
         {
-            this.queriable.Drop().Table(name).IfExists();
+            queriable.IfExists(objectType, name, table);
+            return this;
+        }
+
+        public IQueryResult IfNotExists()
+        {
+            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
+        }
+
+        public IExistenceCheckQuery Index(string name, string table, bool unique)
+        {
+            this.name = name;
+            this.table = table;
+            objectType = unique?IGNDbObjectTypeEnum.UniqueIndex:IGNDbObjectTypeEnum.Index;
+            queriable.AddOperation("DROP INDEX", queriable.SanitizeName(name), "");
+            return this;
+        }
+
+        public IExistenceCheckQuery StoredProcedure(string name)
+        {
+            this.name = name;
+            objectType = IGNDbObjectTypeEnum.StoredProcedure;
+            queriable.AddOperation("DROP PROCEDURE", queriable.SanitizeName(name), "");
+            return this;
+        }
+
+        public IExistenceCheckQuery Table(string name)
+        {
+            this.name = name;
+            objectType = IGNDbObjectTypeEnum.Table;
+            queriable.AddOperation("DROP TABLE", queriable.SanitizeName(name), "");
+            return this;
+        }
+
+        public IExistenceCheckQuery View(string name)
+        {
+            this.name = name;
+            objectType = IGNDbObjectTypeEnum.View;
+            queriable.AddOperation("DROP VIEW", queriable.SanitizeName(name), "");
             return this;
         }
     }

@@ -25,158 +25,74 @@
 // ############################################
 
 using IGNQuery.Enums;
-using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
-using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class AlterQuery : IAlterQuery
+    public class AlterQuery : QueryResult,
+        IAlterQuery
     {
-        private readonly IGNQueriable queriable;
-        private IGNQueriable subquery;
-        private readonly IList<string> preppedSubqueries;
-        private readonly string email;
-        private readonly IDataDriver dataDriver;
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
+        private string delimiter = " ";
+        private bool isAddQuery = false;
 
-        public AlterQuery(string email, IDataDriver dataDriver)
+        public AlterQuery(IGNQueriable queriable):base(queriable)
         {
-            this.preppedSubqueries = new List<string>();
-            this.queriable = IGNQueriable.Begin(email, dataDriver);
-            this.subquery = IGNQueriable.Begin(email, dataDriver);
-            this.email = email;
-            this.dataDriver = dataDriver;
         }
 
         public IAlterQuery Add()
         {
-            this.subquery.Add();
+            isAddQuery = true;
+            string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
+            queriable.AddOperation(operand, "", delimiter);
+            delimiter = ", ";
             return this;
         }
 
         public IAlterQuery Alter()
         {
-            this.subquery.Alter();
+            queriable.AddOperation("ALTER", "", delimiter);
+            delimiter = ", ";
             return this;
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IAlterExistenceCheckQuery Column(TableField column, int decimals = 0)
         {
-            return this.queriable;
-        }
-
-        public IAlterQuery ColumnIfExists(TableField column)
-        {
-            if (this.subquery.IsAddColumn)
-            {
-                throw new Exception("You should not call ColumnIfExists during Add query");
-            }
-            if (this.subquery.IsDropColumn)
-            {
-                this.subquery.Column(column.Name).IfExists();
-            }
-            else
-            {
-                this.subquery.Column(column.Name,
-                    column.FromStringToType(),
-                    column.StringLengthFromType(),
-                    !column.CanHaveNull,
-                    column.Generated,
-                    column.DefValueFromString()).
-                    IfExists();
-            }
+            name = column.Name;
+            objectType = IGNDbObjectTypeEnum.Column;
+            string operand = isAddQuery ? "" : "COLUMN";
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column, decimals), "");
             return this;
         }
 
-        public IAlterQuery Drop()
+        public IAlterExistenceCheckQuery Drop(string column)
         {
-            this.subquery.Drop();
+            this.name = column;
+            objectType = IGNDbObjectTypeEnum.Column;
+            string command = !queriable.HasDropColumnOrSqlServer() ? "DROP COLUMN" : "";
+            queriable.AddOperation(command, queriable.SanitizeName(name), delimiter);
+            delimiter = ", ";
             return this;
         }
 
-        public string GetResultingString()
+        public IAlterQuery IfExists()
         {
-            return this.queriable.ToString();
-        }
-
-        public IAlterQuery Go()
-        {
-
-            var query = this.subquery.ToString();
-            if (this.subquery.IsAddColumn)
-            {
-                if (this.dataDriver.Dialect == DialectEnum.MSSQL &&
-                    this.preppedSubqueries.Count > 0)
-                {
-                    query = query.Substring(4);
-                }
-            }
-            else if (this.subquery.IsDropColumn)
-            {
-                if (this.dataDriver.Dialect == DialectEnum.MSSQL &&
-                   this.preppedSubqueries.Count > 0)
-                {
-                    query = query.Substring(11);
-                }
-            }
-            this.preppedSubqueries.Add(query);
-            var subQuery = string.Join(",",this.preppedSubqueries);
-            this.subquery = IGNQueriable.FromQueryString(subQuery, this.email, this.dataDriver);
-            this.queriable.ReplaceAlterSubquery(this.subquery);
+            queriable.IfExists(objectType, name, "");
             return this;
         }
 
-        public IAlterQuery Next()
+        public IAlterQuery IfNotExists()
         {
-            if (this.subquery.IsAddColumn)
-            {
-                var query = this.subquery.ToString();
-                if (this.dataDriver.Dialect == DialectEnum.MSSQL &&
-                   this.preppedSubqueries.Count > 0)
-                {
-                    query = query.Substring(4);
-                }
-                this.preppedSubqueries.Add(query);
-                this.subquery = IGNQueriable.Begin(this.email, this.dataDriver);
-            }
-            else if (this.subquery.IsDropColumn)
-            {
-                var query = this.subquery.ToString();
-                if (this.dataDriver.Dialect == DialectEnum.MSSQL &&
-                   this.preppedSubqueries.Count > 0)
-                {
-                    query = query.Substring(11);
-                }
-                this.preppedSubqueries.Add(query);
-                this.subquery = IGNQueriable.Begin(this.email, this.dataDriver);
-            }
-            else 
-            { 
-                    throw new Exception("Only Add column can be called for multiple columns");                
-            }
+            queriable.IfNotExists(objectType, name, "");
             return this;
         }
 
-        public IAlterQuery TableIfExists(string tableName)
+        public IAlterExistenceCheckQuery Table(string tableName)
         {
-            this.queriable.Alter().Table(tableName, this.subquery).IfExists();
-            return this;
-        }
-
-        public IAlterQuery ColumnIfNotExists(TableField column)
-        {
-            if (!this.subquery.IsAddColumn)
-            {
-                throw new Exception("You should call ColumnIfNotExists during Add query");
-            }
-            this.subquery.Column(column.Name,
-                    column.FromStringToType(),
-                    column.StringLengthFromType(),
-                    !column.CanHaveNull,
-                    column.Generated,
-                    column.DefValueFromString()).
-                    IfNotExists();
+            name = tableName;
+            objectType = IGNDbObjectTypeEnum.Table;
+            queriable.AddOperation("ALTER TABLE", queriable.SanitizeName(tableName), "");
             return this;
         }
     }

@@ -16,7 +16,7 @@ namespace IGNQuery.SqlServer
     public class MsSqlDataDriver : IGNDbDriver
     {
 
-        private string email;
+        private readonly string email;
 
         public MsSqlDataDriver(string email, string server, int port,string user,string password):base(server,port,user,password)
         {
@@ -142,7 +142,7 @@ namespace IGNQuery.SqlServer
 
         private void SetDatabaseExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            var checkQuery = $"SELECT * FROM sysdatabases WHERE name='{name}'";
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[SHEMATA] WHERE [CATALOG_NAME]='{name}'";
             var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
             IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
@@ -187,17 +187,17 @@ namespace IGNQuery.SqlServer
             IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
-        public override void IfIndexNotExists(string name, IGNQueriable queriable)
+        public override void IfIndexNotExists(string name, string table, IGNQueriable queriable)
         {
-            SetIndexExists(name, queriable, ExistsEnum.NotExists);
+            SetIndexExists(name, table, queriable, ExistsEnum.NotExists);
         }
 
-        public override void IfIndexExists(string name, IGNQueriable queriable)
+        public override void IfIndexExists(string name, string table, IGNQueriable queriable)
         {
-            SetIndexExists(name, queriable, ExistsEnum.Exists);
+            SetIndexExists(name, table, queriable, ExistsEnum.Exists);
         }
 
-        private void SetIndexExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        private void SetIndexExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
         {
             var checkQuery = $"SELECT * FROM sysindexes WHERE name='{name}'";
             var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
@@ -206,19 +206,19 @@ namespace IGNQuery.SqlServer
             IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
-        public override void IfColumnExists(string name, IGNQueriable queriable)
+        public override void IfColumnExists(string name, string table, IGNQueriable queriable)
         {
-            SetColumnExists(name, queriable, ExistsEnum.Exists);
+            SetColumnExists(name, table, queriable, ExistsEnum.Exists);
         }
 
-        public override void IfColumnNotExists(string name, IGNQueriable queriable)
+        public override void IfColumnNotExists(string name, string table, IGNQueriable queriable)
         {
-            SetColumnExists(name, queriable, ExistsEnum.NotExists);
+            SetColumnExists(name, table, queriable, ExistsEnum.NotExists);
         }
 
-        private void SetColumnExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        private void SetColumnExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
         {
-            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[COLUMNS] WHERE [TABLE_CATALOG] = DB_NAME() AND [TABLE_NAME] = '{queriable.TableName}' AND [COLUMN_NAME] = '{name}'";
+            var checkQuery = $"SELECT * FROM [INFORMATION_SCHEMA].[COLUMNS] WHERE [TABLE_CATALOG] = DB_NAME() AND [TABLE_NAME] = '{table}' AND [COLUMN_NAME] = '{name}'";
             var query = IGNQueriable.FromQueryString(checkQuery, this.email, this);
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>());
             IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
