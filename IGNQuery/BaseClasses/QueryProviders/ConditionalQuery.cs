@@ -24,34 +24,47 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class ConditionalQuery : IConditionalQuery
+    public class ConditionalQuery : QueryResult, IConditionalQuery
     {
-
-        private IGNQueriable queriable;
-
-        internal ConditionalQuery(IGNQueriable queriable)
+        internal ConditionalQuery(IGNQueriable queriable):base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IConditionalQuery Where(IGNConditionWithParameter condition)
         {
-            return this.queriable;
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("WHERE", $"{condition}", " ");
+            return this;
         }
 
-        public string GetResultingString()
+        public IConditionalQuery Condition(IGNConditionWithParameter condition)
         {
-            return this.queriable.ToString();
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("", $"{condition}", " ");
+            return this;
         }
 
-        public ICondition Where()
+        public IConditionalQuery And()
         {
-            this.queriable.Where();
-            return new Condition(this.queriable);
+            queriable.AddOperation("ADD", "", " ");
+            return this;
+        }
+
+        public IConditionalQuery Or()
+        {
+            queriable.AddOperation("OR", "", " ");
+            return this;
+        }
+
+        public IConditionalQuery Not()
+        {
+            queriable.AddOperation("NOT", "", " ");
+            return this;
         }
     }
 }

@@ -26,17 +26,10 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDropQuery : IQueryResult,
-        IExistenceCheckQuery
+    public interface IExistenceCheckQuery: IQueryResult
     {
-        IExistenceCheckQuery Table(string name);
+        IQueryResult IfExists();
 
-        IExistenceCheckQuery StoredProcedure(string name);
-
-        IExistenceCheckQuery Database(string name);
-
-        IExistenceCheckQuery View(string name);
-
-        IExistenceCheckQuery Index(string name, string table, bool unique);
+        IQueryResult IfNotExists();
     }
 }

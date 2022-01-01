@@ -30,8 +30,6 @@ using IGNQuery.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Text;
 
 namespace IGNQuery.Interfaces
 {
@@ -59,9 +57,9 @@ namespace IGNQuery.Interfaces
 
         void IfViewNotExists(string name, IGNQueriable queriable);
 
-        void IfIndexNotExists(string name, IGNQueriable queriable);
+        void IfIndexNotExists(string name, string table, IGNQueriable queriable);
 
-        void IfColumnNotExists(string name, IGNQueriable queriable);
+        void IfColumnNotExists(string name, string table, IGNQueriable queriable);
 
         void IfTableExists(string name, IGNQueriable queriable);
 
@@ -71,11 +69,12 @@ namespace IGNQuery.Interfaces
 
         void IfViewExists(string name, IGNQueriable queriable);
 
-        void IfIndexExists(string name, IGNQueriable queriable);
+        void IfIndexExists(string name, string table, IGNQueriable queriable);
 
-        void IfColumnExists(string name, IGNQueriable queriable);
+        void IfColumnExists(string name, string table, IGNQueriable queriable);
 
         string GoTerminator();
+
         string GetDbAutoGenFor(Type clrType, int length);
     }
 }

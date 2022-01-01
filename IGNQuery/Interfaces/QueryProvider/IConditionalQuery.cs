@@ -24,28 +24,37 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+using System.Collections.Generic;
+
 namespace IGNQuery.Interfaces.QueryProvider
 {
     public interface IConditionalQuery : IQueryResult
     {
-        ICondition Where();
+        IConditionalQuery Where(IGNConditionWithParameter condition);
+
+        IConditionalQuery Condition(IGNConditionWithParameter condition);
+
+        IConditionalQuery And();
+
+        IConditionalQuery Or();
+
+        IConditionalQuery Not();
     }
 
     public interface ICondition
     {
-        ICondition Field(string name);
+        ICondition StringEqualToParam(string column, int paramNb);
 
-        ICondition StringEqualToParam(int paramNb);
+        ICondition LongEqualToParam(string column, int paramNb);
 
-        ICondition LongEqualToParam(int paramNb);
+        ICondition BoolEqualToParam(string column, int paramNb);
 
-        ICondition BoolEqualToParam(int paramNb);
+        ICondition StringNotEqualToParam(string column, int paramNb);
 
-        ICondition StringNotEqualToParam(int paramNb);
+        ICondition LongNotEqualToParam(string column, int paramNb);
 
-        ICondition LongNotEqualToParam(int paramNb);
-
-        ICondition BoolNotEqualToParam(int paramNb);
+        ICondition BoolNotEqualToParam(string column, int paramNb);
 
         ICondition Or();
 

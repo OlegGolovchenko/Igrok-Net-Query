@@ -26,10 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDeleteQuery : IQueryResult
+    public interface IDeleteQuery : IQueryResult,
+        IConditionalExistenceCheckQuery
     {
-        IQueryResult From(string table);
-
-        IConditionalQuery FromWithCondition(string table);
+        IConditionalQuery From(string table);
     }
 }

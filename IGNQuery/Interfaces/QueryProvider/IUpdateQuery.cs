@@ -26,12 +26,13 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IUpdateQuery : IQueryResult
+    public interface IUpdateQuery : IQueryResult,
+        IUpdateExistenceCheckQuery
     {
-        IUpdateQuery Table(string table);
+        IUpdateExistenceCheckQuery Table(string table);
 
-        IQueryResult SetFieldWithParam(string fieldName, int paramNb);
+        IConditionalQuery SetParametrizedWithCondition(string fieldName, int paramNb);
 
-        IConditionalQuery SetFieldWithConditionWithParam(string fieldName, int paramNb);
+        IUpdateQuery SetParametrized(string fieldName, int paramNb);
     }
 }

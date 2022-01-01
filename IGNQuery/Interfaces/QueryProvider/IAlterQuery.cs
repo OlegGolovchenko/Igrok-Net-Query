@@ -26,21 +26,16 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAlterQuery: IQueryResult
+    public interface IAlterQuery: IQueryResult,
+        IAlterExistenceCheckQuery
     {
-        IAlterQuery TableIfExists(string tableName);
+        IAlterExistenceCheckQuery Table(string tableName);
 
         IAlterQuery Add();
 
-        IAlterQuery ColumnIfExists(TableField column);
+        IAlterExistenceCheckQuery Column(TableField column, int decimals = 0);
 
-        IAlterQuery ColumnIfNotExists(TableField column);
-
-        IAlterQuery Next();
-
-        IAlterQuery Go();
-
-        IAlterQuery Drop();
+        IAlterExistenceCheckQuery Drop(string column);
 
         IAlterQuery Alter();
     }

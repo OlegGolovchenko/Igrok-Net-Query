@@ -24,15 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
-using IGNQuery.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public partial class IGNQueriable
+    public interface IInsertExistenceCheckQuery : IQueryResult
     {
+        IInsertQuery IfExists();
+
+        IInsertQuery IfNotExists();
     }
 }

@@ -27,7 +27,6 @@ using IGNQuery.Interfaces;
 using IGNQuery.BaseClasses.QueryProviders;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data.Common;
 using IGNQuery.Enums;
 using System.Data;
@@ -119,7 +118,7 @@ namespace IGNQuery.BaseClasses
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
-        public virtual void IfColumnNotExists(string name, IGNQueriable queriable)
+        public virtual void IfColumnNotExists(string name, string table, IGNQueriable queriable)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
@@ -128,7 +127,7 @@ namespace IGNQuery.BaseClasses
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
 
-        public virtual void IfIndexNotExists(string name, IGNQueriable queriable)
+        public virtual void IfIndexNotExists(string name, string table, IGNQueriable queriable)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
@@ -147,7 +146,7 @@ namespace IGNQuery.BaseClasses
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
-        public virtual void IfColumnExists(string name, IGNQueriable queriable)
+        public virtual void IfColumnExists(string name, string table, IGNQueriable queriable)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
@@ -156,7 +155,7 @@ namespace IGNQuery.BaseClasses
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
 
-        public virtual void IfIndexExists(string name, IGNQueriable queriable)
+        public virtual void IfIndexExists(string name, string table, IGNQueriable queriable)
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
         }

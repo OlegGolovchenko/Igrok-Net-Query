@@ -24,25 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public partial class IGNQueriable
+    public interface IConditionalExistenceCheckQuery : IQueryResult
     {
-        public IGNQueriable Database(string name)
-        {
-            if (string.IsNullOrWhiteSpace(this.format))
-            {
-                throw new Exception("Please call table after Create Update or Alter ddl query");
-            }
-            this.format = CREATE_DATABASE_QUERY_FORMAT;
-            this.objectType = IGNDbObjectTypeEnum.Database;
-            this.objectName = SanitizeName(name);
-            return this;
-        }
+        IConditionalQuery IfExists();
+
+        IConditionalQuery IfNotExists();
     }
 }

@@ -24,23 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Runtime.InteropServices;
-
-namespace IGNQuery.Interfaces
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDataProvider: IDisposable
+    public interface ISelectExistenceCheckQuery : IQueryResult
     {
-        IQuery Query();
-        DataTable ExecuteReader(IQueryResult query);
-        DataTable ExecuteReaderWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters);
-        DataTable ExecuteStoredProcedureReader(string procname, [Optional] IEnumerable<ParameterValue> parameters);
-        void ExecuteNonQuery(IQueryResult query);
-        void ExecuteNonQueryWithParams(IQueryResult query, IEnumerable<ParameterValue> parameters);
-        void ExecuteStoredProcedure(string procname, [Optional] IEnumerable<ParameterValue> parameters);
-        void ResetConnection();
+        ISelectQuery IfExists();
+
+        ISelectQuery IfNotExists();
+
+        ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false);
     }
 }

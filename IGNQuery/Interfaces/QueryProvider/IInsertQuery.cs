@@ -28,14 +28,13 @@ using System.Collections.Generic;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IInsertQuery : IQueryResult
+    public interface IInsertQuery : IQueryResult,
+        IInsertExistenceCheckQuery
     {
-        IInsertQuery Into(string table, IEnumerable<string> fields);
+        IInsertExistenceCheckQuery Into(string table, IEnumerable<string> fields);
 
-        IInsertQuery Values();
+        IInsertQuery ValuesWithParams(IEnumerable<int> valuesRow);
 
-        IInsertQuery AddRowWithParams(IEnumerable<int> paramNumbers);
-
-        IInsertQuery Next();
+        IInsertQuery AddRowWithParams(IEnumerable<int> valuesRow);
     }
 }

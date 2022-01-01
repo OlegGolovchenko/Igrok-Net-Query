@@ -30,21 +30,17 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class QueryResult : IQueryResult
     {
-        private IGNQueriable queriable;
+        internal readonly IGNQueriable queriable;
 
         public QueryResult(IGNQueriable queriable)
         {
             this.queriable = queriable;
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IGNQueriable Go()
         {
-            return this.queriable;
-        }
-
-        public string GetResultingString()
-        {
-           return this.queriable.ToString();
+            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
+            return queriable;
         }
     }
 }

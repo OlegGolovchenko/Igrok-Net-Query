@@ -24,41 +24,38 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
+using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class DeleteQuery : IDeleteQuery
+    public class DeleteQuery : QueryResult, IDeleteQuery
     {
+        private IGNDbObjectTypeEnum objectType;
+        private string name;
 
-        private readonly IGNQueriable queriable;
-
-        public DeleteQuery(string email, IDataDriver dataDriver)
+        public DeleteQuery(IGNQueriable queriable):base(queriable)
         {
-            queriable = IGNQueriable.Begin(email, dataDriver);
         }
 
-        public IGNQueriable AsIgnQueriable()
+        public IConditionalQuery From(string table)
         {
-            return this.queriable;
+            name = table;
+            objectType = IGNDbObjectTypeEnum.Table;
+            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            return new ConditionalQuery(queriable);
         }
 
-        public IQueryResult From(string table)
+        public IConditionalQuery IfExists()
         {
-            this.queriable.Delete().From(table);
-            return this;
+            queriable.IfExists(objectType, name, "");
+            return new ConditionalQuery(queriable);
         }
 
-        public IConditionalQuery FromWithCondition(string table)
+        public IConditionalQuery IfNotExists()
         {
-            this.queriable.Delete().From(table);
-            return new ConditionalQuery(this.queriable);
-        }
-
-        public string GetResultingString()
-        {
-            return this.queriable.ToString();
+            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
         }
     }
 }
