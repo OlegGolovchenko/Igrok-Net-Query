@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
@@ -57,12 +58,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IAlterExistenceCheckQuery Column(TableField column, int decimals = 0)
+        public IAlterExistenceCheckQuery Column(TableColumnConfiguration column)
         {
-            name = column.Name;
+            name = column.ColumnName;
             objectType = IGNDbObjectTypeEnum.Column;
             string operand = isAddQuery ? "" : "COLUMN";
-            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column, decimals), "");
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), "");
             return this;
         }
 

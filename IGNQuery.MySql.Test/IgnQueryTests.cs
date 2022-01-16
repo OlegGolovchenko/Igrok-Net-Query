@@ -140,7 +140,7 @@ namespace IGNQuery.SqlServer.Test
                 IfExists().
                 Go();
             dataProvider.Execute(query);
-            var dataDriver = new MySqlDataDriver("igrok_be@hotmail.com");
+            var dataDriver = new MySqlDataDriver("igntest@igrok-net.org");
             var column = new TableField
             {
                 Name = "createdOn",
@@ -150,7 +150,7 @@ namespace IGNQuery.SqlServer.Test
                 DefValue = "",
                 Type = TableField.TYPE_DATE
             };
-            var altquery = IGNQueriable.Begin("igrok_be@hotmail.com", dataDriver).
+            var altquery = IGNQueriable.Begin("igntest@igrok-net.org", dataDriver).
                 Alter().
                 Table("ignusers").
                 IfExists().
@@ -164,8 +164,8 @@ namespace IGNQuery.SqlServer.Test
         [Test]
         public void BCreateUserIfNotExists()
         {
-            var dataProvider = new MySqlDataDriver("igrok_be@hotmail.com");
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dataProvider).
+            var dataProvider = new MySqlDataDriver("igntest@igrok-net.org");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                     Insert().
                     Into("ignusers", new List<string>() { "mail" }).
                     IfExists().
@@ -174,26 +174,26 @@ namespace IGNQuery.SqlServer.Test
 
             dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
                 {
-                    IGNParameterValue.FromConfig(0, "igrok_be@hotmail.com")
+                    IGNParameterValue.FromConfig(0, "igntest@igrok-net.org")
                 });
         }
 
         [Test]
         public void BCreateStoredProcedureIfNotExists()
         {
-            var dataProvider = new MySqlDataDriver("igrok_be@hotmail.com");
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dataProvider).
+            var dataProvider = new MySqlDataDriver("igntest@igrok-net.org");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Drop().
                 StoredProcedure("testProc").
                 IfExists().
                 Go();
             dataProvider.Execute(query);
-            var spQuery = IGNQueriable.Begin("igrok_be@hotmail.com", dataProvider).
+            var spQuery = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Select().
                 From("ignusers").
                 IfExists().
                 Go();
-            query = IGNQueriable.Begin("igrok_be@hotmail.com", dataProvider).
+            query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Create().
                 StoredProcedure("testProc", spQuery).
                 IfNotExists().
@@ -206,7 +206,7 @@ namespace IGNQuery.SqlServer.Test
         public void CDeleteTable()
         {
             var dataProvider = new MySqlDataDriver("igntest@igrok-net.org");
-            var query = IGNQueriable.Begin("igrok_be@hotmail.com", dataProvider).
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Drop().
                 Table("ignusers").
                 IfExists().
