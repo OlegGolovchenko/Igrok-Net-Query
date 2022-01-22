@@ -108,19 +108,6 @@ namespace IGNQuery.BaseClasses.Business
                 decPos);
         }
 
-        public static TableColumnConfiguration FromTableField(TableField tableField)
-        {
-            return new TableColumnConfiguration(
-                tableField.Name,
-                tableField.FromStringToType(),
-                tableField.StringLengthFromType(),
-                !tableField.CanHaveNull,
-                tableField.Generated,
-                tableField.Primary,
-                tableField.DefValueFromString(),
-                0);
-        }
-
         public string AsCreateTableQueryField(
             IDataDriver driver,
             GetDbTypeFunc getDbType,
