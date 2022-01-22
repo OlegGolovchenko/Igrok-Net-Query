@@ -64,6 +64,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             name = table;
             objectType = IGNDbObjectTypeEnum.Table;
+            queriable.AddOperation("UPDATE TABLE", queriable.SanitizeName(table), "");
             return this;
         }
 
