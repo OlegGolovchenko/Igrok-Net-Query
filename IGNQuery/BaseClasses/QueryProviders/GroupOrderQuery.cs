@@ -24,21 +24,33 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IAlterQuery: IQueryResult,
-        IAlterExistenceCheckQuery
+    public class GroupOrderQuery : QueryResult, IGroupOrderQuery
     {
-        IAlterExistenceCheckQuery Table(string tableName);
+        public GroupOrderQuery(IGNQueriable queriable):base(queriable)
+        {
 
-        IAlterQuery Add();
+        }
 
-        IAlterExistenceCheckQuery Column(TableColumnConfiguration column);
+        public IGroupOrderQuery Ascending()
+        {
+            queriable.AddOperation("", "ASC", "");
+            return this;
+        }
 
-        IAlterExistenceCheckQuery Drop(string column);
+        public IGroupOrderQuery Descending()
+        {
+            queriable.AddOperation("", "DESC", "");
+            return this;
+        }
 
-        IAlterQuery Alter();
+        public IGroupOrderQuery ThenBy(string column)
+        {
+            queriable.AddOperation("", column, ",");
+            return this;
+        }
     }
 }

@@ -25,13 +25,14 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
-using System.Collections.Generic;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
     public interface IConditionalQuery : IQueryResult
     {
         IConditionalQuery Where(IGNConditionWithParameter condition);
+
+        IConditionalQuery Having(IGNConditionWithParameter condition);
 
         IConditionalQuery Condition(IGNConditionWithParameter condition);
 
@@ -40,26 +41,18 @@ namespace IGNQuery.Interfaces.QueryProvider
         IConditionalQuery Or();
 
         IConditionalQuery Not();
+
+        IGroupOrderQuery GroupBy(string column);
+
+        IGroupOrderQuery OrderBy(string column);
     }
 
-    public interface ICondition
+    public interface IGroupOrderQuery : IQueryResult
     {
-        ICondition StringEqualToParam(string column, int paramNb);
+        IGroupOrderQuery Descending();
 
-        ICondition LongEqualToParam(string column, int paramNb);
+        IGroupOrderQuery Ascending();
 
-        ICondition BoolEqualToParam(string column, int paramNb);
-
-        ICondition StringNotEqualToParam(string column, int paramNb);
-
-        ICondition LongNotEqualToParam(string column, int paramNb);
-
-        ICondition BoolNotEqualToParam(string column, int paramNb);
-
-        ICondition Or();
-
-        ICondition And();
-
-        IQueryResult Go();
+        IGroupOrderQuery ThenBy(string column);
     }
 }

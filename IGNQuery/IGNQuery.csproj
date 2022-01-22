@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp10;net40;netstandard13</TargetFrameworks>
+    <TargetFrameworks>netcoreapp20;net40;netstandard20</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://igrok-net.org/products</PackageProjectUrl>
     <Copyright>Oleg Golovchenko</Copyright>
@@ -10,7 +10,7 @@
     <RepositoryType>github</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.10.0</Version>
+    <Version>1.1.10.1</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
     <PackageIcon>IGNQuery-1.png</PackageIcon>
@@ -42,6 +42,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp10'">
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
@@ -49,6 +50,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard13'">
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
