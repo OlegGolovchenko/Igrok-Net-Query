@@ -24,26 +24,26 @@
 //
 // ############################################
 
-using System;
-
-namespace IGNQuery.Attributes
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class DatabaseTable:Attribute
+    public interface ICondition
     {
-        private readonly string tableName;
+        ICondition StringEqualToParam(string column, int paramNb);
 
-        public string TableName
-        {
-            get
-            {
-                return this.tableName;
-            }
-        }
+        ICondition LongEqualToParam(string column, int paramNb);
 
-        public DatabaseTable(string dbTableName)
-        {
-            this.tableName = dbTableName;
-        }
+        ICondition BoolEqualToParam(string column, int paramNb);
+
+        ICondition StringNotEqualToParam(string column, int paramNb);
+
+        ICondition LongNotEqualToParam(string column, int paramNb);
+
+        ICondition BoolNotEqualToParam(string column, int paramNb);
+
+        ICondition Or();
+
+        ICondition And();
+
+        IQueryResult Go();
     }
 }

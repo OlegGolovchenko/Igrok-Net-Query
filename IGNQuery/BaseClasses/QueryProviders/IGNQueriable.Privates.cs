@@ -35,13 +35,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public partial class IGNQueriable
     {
-        private string FormatFieldOptionals(Type colType, 
-            int length, bool required, bool generated, object defValue,
-            DialectEnum dialect)
+        internal string FormatFieldOptionals(TableColumnConfiguration column)
         {
-            return $"{(required ? "NOT NULL" : "NULL")}" +
-                   $"{GetDefaultValue(required, generated, defValue, dialect)}" +
-                   $"{GetDbAutoGenFunc(generated, colType, length, this.dataDriver)}";
+            return column.AsCreateTableQueryField(dataDriver, GetDbType, GetDefaultValue, GetDbAutoGenFunc);
         }
 
         internal string SanitizeName(string objName)
@@ -69,17 +65,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             var parameterList = fields?.Invoke();
             return string.Join(",", parameterList.Select(x => x.AsQuery(GetDbType)));
-        }
-
-        internal string FormatFieldOptionals(TableField column, int decimals)
-        {
-            string fieldFormat = FormatFieldOptionals(column.FromStringToType(),
-                    column.StringLengthFromType(),
-                    !column.CanHaveNull,
-                    column.Generated,
-                    column.DefValueFromString(),
-                    dataDriver.Dialect);
-            return $"{SanitizeName(column.Name)} {GetDbType(column.FromStringToType(), column.StringLengthFromType(), decimals)} {fieldFormat}";
         }
     }
 }

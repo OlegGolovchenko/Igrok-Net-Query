@@ -66,5 +66,24 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation("NOT", "", " ");
             return this;
         }
+
+        public IConditionalQuery Having(IGNConditionWithParameter condition)
+        {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("HAVING", $"{condition}", " ");
+            return this;
+        }
+
+        public IGroupOrderQuery GroupBy(string column)
+        {
+            queriable.AddOperation("GROUP BY", column, " ");
+            return new GroupOrderQuery(queriable);
+        }
+
+        public IGroupOrderQuery OrderBy(string column)
+        {
+            queriable.AddOperation("ORDER BY", column, " ");
+            return new GroupOrderQuery(queriable);
+        }
     }
 }

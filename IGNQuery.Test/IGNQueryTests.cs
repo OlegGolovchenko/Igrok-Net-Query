@@ -39,26 +39,10 @@ namespace IGNQuery.Test
                 Table("test").
                 IfExists().
                 Add().
-                Column(new TableField
-                {
-                    Name = "test1",
-                    CanHaveNull = true,
-                    Primary = false,
-                    Type = TableField.TypeNvarchar(25),
-                    Generated = false,
-                    DefValue = ""
-                }).
+                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, "")).
                 IfNotExists().
                 Add().
-                Column(new TableField
-                {
-                    Name = "test2",
-                    CanHaveNull = true,
-                    Primary = false,
-                    Type = TableField.TypeNvarchar(25),
-                    Generated = false,
-                    DefValue = ""
-                }).
+                Column(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, "")).
                 IfNotExists().
                 Go();
             var expected = "ALTER TABLE [test] ADD  [test1] NVARCHAR(25) NULL,   [test2] NVARCHAR(25) NULL \nGO";
@@ -96,15 +80,7 @@ namespace IGNQuery.Test
                 Table("test").
                 IfExists().
                 Alter().
-                Column(new TableField
-                {
-                    Name = "test1",
-                    CanHaveNull = true,
-                    Primary = false,
-                    Type = TableField.TypeNvarchar(25),
-                    Generated = false,
-                    DefValue = ""
-                }).
+                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, "")).
                 IfExists().
                 Go();
             var expected = "ALTER TABLE [test] ALTER COLUMN [test1] NVARCHAR(25) NULL \nGO";
