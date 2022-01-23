@@ -265,5 +265,22 @@ namespace IGNQuery.Test
             var expected = "SELECT DISTINCT [test].[id],[test2].[test],[test].[test] FROM [test] INNER JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
+
+        [Test]
+        public void UpdateQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Update().
+                Table("users").
+                IfExists().
+                SetParametrizedWithCondition("loggedInDateTime",0).
+                Where(IGNConditionWithParameter.FromConfig("Id",Enums.IGNSqlCondition.Eq,1)).
+                Go();
+            var expected = "UPDATE [users] SET [loggedInDateTime] = @p0 WHERE [Id] = @p1 \nGO";
+            Assert.AreEqual(expected , query.ToString());
+        }
     }
 }
