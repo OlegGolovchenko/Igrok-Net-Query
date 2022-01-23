@@ -53,18 +53,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         private void AddSetColumnCommand(string fieldName, int paramNb)
         {
-            if (this.queriable.HasSetCommand())
+            if (!this.queriable.HasSetCommand())
             {
-                queriable.AddOperation("SET", $"{fieldName} = @p{paramNb}", " ");
+                queriable.AddOperation("SET", $"{queriable.SanitizeName(fieldName)} = @p{paramNb}", " ");
+                return;
             }
-            queriable.AddOperation("", $"{fieldName} = @p{paramNb}", ", ");
+            queriable.AddOperation("", $"{queriable.SanitizeName(fieldName)} = @p{paramNb}", ", ");
         }
 
         public IUpdateExistenceCheckQuery Table(string table)
         {
             name = table;
             objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("UPDATE TABLE", queriable.SanitizeName(table), "");
+            queriable.AddOperation("UPDATE", queriable.SanitizeName(table), "");
             return this;
         }
 
