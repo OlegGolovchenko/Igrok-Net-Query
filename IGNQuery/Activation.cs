@@ -1,33 +1,35 @@
 ﻿using IGNActivation.Client;
+using IGNActivation.Client.Interfaces;
 
 namespace IGNQuery
 {
     public static class Activation
     {
-        private static ActivationClient _activationClient;
+        private static IActivationClient _activationClient;
 
-        public static void Activate(string email)
+        public static void Init(IActivationClient activationClient = null)
         {
-            _activationClient = new ActivationClient(email);
-#if NETFULL
-            _activationClient.ActivateAsync();
-#else
-            var result = _activationClient.ActivateAsync();
-            result.Wait();
-#endif
+            _activationClient = activationClient;
+        }
+
+        public static void Activate(string email, string key = null)
+        {
+            if (_activationClient == null)
+            {
+                _activationClient = new ActivationClient();
+            }
+            if (!_activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery))
+            {
+                _activationClient.Init(email, key);
+            }
+            _activationClient.Register((ushort)ProductsEnum.IGNQuery);
         }
 
         public static bool IsActive 
         { 
             get 
             {
-#if NETFULL
-                return (_activationClient != null) && _activationClient.IsRegisteredAsync();
-#else
-                var result = _activationClient.IsRegisteredAsync();
-                result.Wait();
-                return (_activationClient != null) && result.Result;
-#endif
+                return _activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery);
             } 
         }
     }

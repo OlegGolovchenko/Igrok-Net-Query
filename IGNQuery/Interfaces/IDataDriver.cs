@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNActivation.Client.Interfaces;
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
@@ -36,6 +37,10 @@ namespace IGNQuery.Interfaces
     public interface IDataDriver:IDisposable
     {
         DialectEnum Dialect { get; }
+
+        void AssignActivator(IActivationClient activator, string email);
+
+        void AssignActivator(string email, string key=null);
 
         void Execute(IGNQueriable query);
 
