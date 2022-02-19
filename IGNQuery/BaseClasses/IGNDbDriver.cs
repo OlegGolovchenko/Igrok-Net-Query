@@ -32,6 +32,7 @@ using IGNQuery.Enums;
 using System.Data;
 using IGNQuery.BaseClasses.Business;
 using System.Linq;
+using IGNActivation.Client.Interfaces;
 
 namespace IGNQuery.BaseClasses
 {
@@ -250,6 +251,17 @@ namespace IGNQuery.BaseClasses
                 }
             }
             return result;
+        }
+
+        public void AssignActivator(IActivationClient activator, string email)
+        {
+            Activation.Init(activator);
+            Activation.Activate(email);
+        }
+
+        public void AssignActivator(string email, string key = null)
+        {
+            Activation.Activate(email, key);
         }
     }
 }

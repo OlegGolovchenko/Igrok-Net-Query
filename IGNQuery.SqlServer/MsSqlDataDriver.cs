@@ -2,14 +2,11 @@
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
-using IGNQuery.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 
 namespace IGNQuery.SqlServer
 {
@@ -21,21 +18,18 @@ namespace IGNQuery.SqlServer
         public MsSqlDataDriver(string email, string server, int port,string user,string password):base(server,port,user,password)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
-            Activation.Activate(email);
             this.email = email;
         }
 
         public MsSqlDataDriver(string email) : base()
         {
             this.dialect = Enums.DialectEnum.MSSQL;
-            Activation.Activate(email);
             this.email = email;
         }
 
         public MsSqlDataDriver(string email, string connectionString):base(connectionString)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
-            Activation.Activate(email);
             this.email = email;
         }
 

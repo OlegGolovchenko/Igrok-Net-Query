@@ -19,7 +19,6 @@ using IGNQuery.BaseClasses;
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
 using IGNQuery.Enums;
-using IGNQuery.Interfaces;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -36,21 +35,18 @@ namespace IGNQuery.MySql
         {
             this.email = email;
             this.dialect = Enums.DialectEnum.MySQL;
-            Activation.Activate(email);
         }
 
         public MySqlDataDriver(string email, string server, int port, string uName, string pwd) : base(server, port, uName, pwd)
         {
             this.email = email;
             this.dialect = Enums.DialectEnum.MySQL;
-            Activation.Activate(email);
         }
 
         public MySqlDataDriver(string email) : base()
         {
             this.email = email;
             this.dialect = Enums.DialectEnum.MySQL;
-            Activation.Activate(email);
         }
 
         protected override string ConstructDefaultConnectionString()
