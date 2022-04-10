@@ -29,7 +29,5 @@ namespace IGNQuery.Interfaces.QueryProvider
     public interface IInsertExistenceCheckQuery : IQueryResult
     {
         IInsertQuery IfExists();
-
-        IInsertQuery IfNotExists();
     }
 }

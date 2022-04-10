@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class InsertQuery : QueryResult, IInsertQuery
+    internal class InsertQuery : QueryResult, IInsertQuery
     {
         private IGNDbObjectTypeEnum objectType;
         private string name;
@@ -47,10 +47,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             if (values.Any())
             {
+                values.Add($"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})");
                 queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", ", ");
             }
-            values.Add($"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})");
-            queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", " ");
+            else
+            {
+                throw new InvalidOperationException("Call ValuesWithParams to add first row");
+            }
             return this;
         }
 
@@ -68,7 +71,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             if (values.Any())
             {
-                queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", ", ");
+                throw new InvalidOperationException("Call AddRowWithParams to add another row");
             }
             values.Add($"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})");
             queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", " ");
@@ -79,11 +82,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             queriable.IfExists(objectType, name, "");
             return this;
-        }
-
-        public IInsertQuery IfNotExists()
-        {
-            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
         }
     }
 }

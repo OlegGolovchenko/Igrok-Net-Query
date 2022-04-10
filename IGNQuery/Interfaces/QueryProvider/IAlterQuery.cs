@@ -25,20 +25,18 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAlterQuery: IQueryResult,
-        IAlterExistenceCheckQuery
+    public interface IAlterQuery: IQueryResult
     {
-        IAlterExistenceCheckQuery Table(string tableName);
+        AlterExistsCheckQuery Table(string tableName);
 
-        IAlterQuery Add();
+        AddColumnQuery Add();
 
-        IAlterExistenceCheckQuery Column(TableColumnConfiguration column);
+        AlterExistsCheckQuery Drop(string column);
 
-        IAlterExistenceCheckQuery Drop(string column);
-
-        IAlterQuery Alter();
+        AlterColumnQuery Alter();
     }
 }

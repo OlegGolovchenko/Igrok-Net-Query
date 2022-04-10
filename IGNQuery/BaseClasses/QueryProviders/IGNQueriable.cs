@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public partial class IGNQueriable
+    public partial class IGNQueriable : IQueryResult
     {
         private string fullQuery;
         internal readonly IDataDriver dataDriver = null;
@@ -133,7 +133,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IQueryResult Use(string dbName)
         {
             AddOperation("USE", SanitizeName(dbName), "");
-            return new QueryResult(this);
+            return this;
         }
 
         public ICreateQuery Create()
@@ -230,6 +230,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
                     dataDriver.IfColumnNotExists(objectName, table, this);
                     break;
             }
+        }
+
+        public IGNQueriable Go()
+        {
+            this.AddOperation("", this.dataDriver.GoTerminator(), "");
+            return this;
         }
 
         public override string ToString()

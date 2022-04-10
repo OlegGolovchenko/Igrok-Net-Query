@@ -27,24 +27,20 @@
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class DeleteQuery : QueryResult, IDeleteQuery
+    public class ExistsCheckQuery : ExistanceCheck<QueryResult>
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
-
-        public DeleteQuery(IGNQueriable queriable):base(queriable)
+        internal ExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType):base(queriable, name, objectType)
         {
         }
 
-        public ConditionalExistsCheckQuery From(string table)
+        public override QueryResult IfNotExists()
         {
-            name = table;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
-            return new ConditionalExistsCheckQuery(name, objectType, queriable);
+            throw new InvalidOperationException("Not available for this operation");
         }
     }
 }

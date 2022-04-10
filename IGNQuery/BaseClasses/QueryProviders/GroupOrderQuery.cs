@@ -28,7 +28,7 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class GroupOrderQuery : QueryResult, IGroupOrderQuery
+    internal class GroupOrderQuery : QueryResult, IGroupOrderQuery
     {
         public GroupOrderQuery(IGNQueriable queriable):base(queriable)
         {
@@ -50,6 +50,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IGroupOrderQuery ThenBy(string column)
         {
             queriable.AddOperation("", column, ",");
+            return this;
+        }
+
+        public IQueryResult End()
+        {
             return this;
         }
     }

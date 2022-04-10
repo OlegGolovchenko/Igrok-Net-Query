@@ -24,11 +24,12 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.QueryProviders;
+
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDeleteQuery : IQueryResult,
-        IConditionalExistenceCheckQuery
+    public interface IDeleteQuery : IQueryResult
     {
-        IConditionalQuery From(string table);
+        ConditionalExistsCheckQuery From(string table);
     }
 }

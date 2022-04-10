@@ -30,7 +30,7 @@ using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class UpdateQuery : QueryResult, IUpdateQuery
+    internal class UpdateQuery : QueryResult, IUpdateQuery
     {
         private IGNDbObjectTypeEnum objectType;
         private string name;
@@ -73,11 +73,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             queriable.IfExists(objectType, name, "");
             return this;
-        }
-
-        public IUpdateQuery IfNotExists()
-        {
-            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
         }
     }
 }

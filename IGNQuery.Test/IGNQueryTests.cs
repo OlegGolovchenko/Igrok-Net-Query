@@ -133,52 +133,52 @@ namespace IGNQuery.Test
             Assert.AreEqual(expected, query.ToString());
         }
 
-        [Test]
-        public void CreateStoredProcedureQueryShouldGiveCorrectSyntax()
-        {
-            var dbDriverMock = new Mock<IDataDriver>();
-            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
-            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
-            var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-               Select().
-               From("test").
-               IfExists().
-               WithCondition().
-               Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
-               Go();
-            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Create().
-                StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
-                    IGNParameter.FromConfig(0,typeof(string),255)
-                }).
-                Go();
-            var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
-            Assert.AreEqual(expected, query.ToString());
-        }
+        //[Test]
+        //public void CreateStoredProcedureQueryShouldGiveCorrectSyntax()
+        //{
+        //    var dbDriverMock = new Mock<IDataDriver>();
+        //    dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+        //    dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+        //    var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+        //       Select().
+        //       From("test").
+        //       IfExists().
+        //       WithCondition().
+        //       Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
+        //       Go();
+        //    var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+        //        Create().
+        //        StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
+        //            IGNParameter.FromConfig(0,typeof(string),255)
+        //        }).
+        //        Go();
+        //    var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
+        //    Assert.AreEqual(expected, query.ToString());
+        //}
 
-        [Test]
-        public void CreateStoredProcedureIfNotExistsQueryShouldGiveCorrectSyntax()
-        {
-            var dbDriverMock = new Mock<IDataDriver>();
-            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
-            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
-            var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Select().
-                From("test").
-                IfExists().
-                WithCondition().
-                Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
-                Go();
-            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Create().
-                StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
-                    IGNParameter.FromConfig(0,typeof(string),255)
-                }).
-                IfNotExists().
-                Go();
-            var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
-            Assert.AreEqual(expected, query.ToString());
-        }
+        //[Test]
+        //public void CreateStoredProcedureIfNotExistsQueryShouldGiveCorrectSyntax()
+        //{
+        //    var dbDriverMock = new Mock<IDataDriver>();
+        //    dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+        //    dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+        //    var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+        //        Select().
+        //        From("test").
+        //        IfExists().
+        //        WithCondition().
+        //        Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
+        //        Go();
+        //    var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+        //        Create().
+        //        StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
+        //            IGNParameter.FromConfig(0,typeof(string),255)
+        //        }).
+        //        IfNotExists().
+        //        Go();
+        //    var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
+        //    Assert.AreEqual(expected, query.ToString());
+        //}
 
 
         [Test]
@@ -266,20 +266,35 @@ namespace IGNQuery.Test
             Assert.AreEqual(expected, query.ToString());
         }
 
+        //[Test]
+        //public void UpdateQueryShouldHaveCorrectSyntax()
+        //{
+        //    var dbDriverMock = new Mock<IDataDriver>();
+        //    dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+        //    dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+        //    var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+        //        Update().
+        //        Table("users").
+        //        IfExists().
+        //        SetParametrizedWithCondition("loggedInDateTime",0).
+        //        Where(IGNConditionWithParameter.FromConfig("Id",Enums.IGNSqlCondition.Eq,1)).
+        //        Go();
+        //    var expected = "UPDATE [users] SET [loggedInDateTime] = @p0 WHERE [Id] = @p1 \nGO";
+        //    Assert.AreEqual(expected , query.ToString());
+        //}
+
         [Test]
-        public void UpdateQueryShouldHaveCorrectSyntax()
+        public void DropQueryShouldHaveCorrectSyntax()
         {
             var dbDriverMock = new Mock<IDataDriver>();
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Update().
-                Table("users").
+                Drop().
+                Database("testdb").
                 IfExists().
-                SetParametrizedWithCondition("loggedInDateTime",0).
-                Where(IGNConditionWithParameter.FromConfig("Id",Enums.IGNSqlCondition.Eq,1)).
                 Go();
-            var expected = "UPDATE [users] SET [loggedInDateTime] = @p0 WHERE [Id] = @p1 \nGO";
+            var expected = "DROP DATABASE [testdb] \nGO";
             Assert.AreEqual(expected , query.ToString());
         }
     }

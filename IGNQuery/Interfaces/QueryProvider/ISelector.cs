@@ -24,27 +24,40 @@
 //
 // ############################################
 
-using IGNQuery.Enums;
-using IGNQuery.Interfaces.QueryProvider;
-using System;
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class DeleteQuery : QueryResult, IDeleteQuery
+    public interface ISelector<U, T> 
+        where T : IQuery
+        where U : IExistanceCheck<T>
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
+        U Table(string name, IEnumerable<TableColumnConfiguration> fields);
 
-        public DeleteQuery(IGNQueriable queriable):base(queriable)
-        {
-        }
+        U Table(string name);
 
-        public ConditionalExistsCheckQuery From(string table)
-        {
-            name = table;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
-            return new ConditionalExistsCheckQuery(name, objectType, queriable);
-        }
+        /// <summary>
+        /// Creates stored procedure You should drop stored procedure if it exists before doing this
+        /// </summary>
+        /// <param name="name">Stored procedure name</param>
+        /// <param name="content">body of stored procedure</param>
+        /// <param name="parameters">parameters of stored procedure</param>
+        /// <returns>QueryResult</returns>
+        U StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters);
+
+        U StoredProcedure(string name);
+
+        U Database(string name);
+
+        U View(string name, IGNQueriable content);
+
+        U View(string name);
+
+        U Index(string name, string tableName, IEnumerable<string> columns, bool unique);
+
+        U Index(string name, string table, bool unique);
     }
 }

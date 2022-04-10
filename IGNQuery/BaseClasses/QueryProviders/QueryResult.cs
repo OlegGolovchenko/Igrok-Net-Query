@@ -32,7 +32,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     {
         internal readonly IGNQueriable queriable;
 
-        public QueryResult(IGNQueriable queriable)
+        internal QueryResult(IGNQueriable queriable)
         {
             this.queriable = queriable;
         }

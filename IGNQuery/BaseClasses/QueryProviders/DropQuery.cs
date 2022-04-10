@@ -24,73 +24,38 @@
 //
 // ############################################
 
-using IGNQuery.Enums;
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-
-    public class DropQuery : QueryResult, IDropQuery
+    internal class DropQuery : Selector<ExistsCheckQuery, QueryResult>, IDropQuery
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
-        private string table = "";
-
-        public DropQuery(IGNQueriable queriable):base(queriable)
+        public DropQuery(IGNQueriable queriable) : base(queriable, "DROP")
         {
         }
 
-        public IExistenceCheckQuery Database(string name)
+        public override ExistsCheckQuery Index(string name, string tableName, IEnumerable<string> columns, bool unique)
         {
-            this.name = name;
-            objectType = IGNDbObjectTypeEnum.Database;
-            queriable.AddOperation("DROP DATABASE", queriable.SanitizeName(name), "");
-            return this;
+            throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public IQueryResult IfExists()
+        public override ExistsCheckQuery StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters)
         {
-            queriable.IfExists(objectType, name, table);
-            return this;
+            throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public IQueryResult IfNotExists()
+        public override ExistsCheckQuery Table(string name, IEnumerable<TableColumnConfiguration> fields)
         {
-            throw new NotImplementedException("IfNotExists check is not relevant for drop query");
+            throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public IExistenceCheckQuery Index(string name, string table, bool unique)
+        public override ExistsCheckQuery View(string name, IGNQueriable content)
         {
-            this.name = name;
-            this.table = table;
-            objectType = unique?IGNDbObjectTypeEnum.UniqueIndex:IGNDbObjectTypeEnum.Index;
-            queriable.AddOperation("DROP INDEX", queriable.SanitizeName(name), "");
-            return this;
-        }
-
-        public IExistenceCheckQuery StoredProcedure(string name)
-        {
-            this.name = name;
-            objectType = IGNDbObjectTypeEnum.StoredProcedure;
-            queriable.AddOperation("DROP PROCEDURE", queriable.SanitizeName(name), "");
-            return this;
-        }
-
-        public IExistenceCheckQuery Table(string name)
-        {
-            this.name = name;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("DROP TABLE", queriable.SanitizeName(name), "");
-            return this;
-        }
-
-        public IExistenceCheckQuery View(string name)
-        {
-            this.name = name;
-            objectType = IGNDbObjectTypeEnum.View;
-            queriable.AddOperation("DROP VIEW", queriable.SanitizeName(name), "");
-            return this;
+            throw new InvalidOperationException("This signature is for Create query only");
         }
     }
 }

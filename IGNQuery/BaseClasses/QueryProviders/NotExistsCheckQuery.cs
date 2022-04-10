@@ -24,12 +24,21 @@
 //
 // ############################################
 
-namespace IGNQuery.Interfaces.QueryProvider
-{
-    public interface IExistenceCheckQuery: IQueryResult
-    {
-        IQueryResult IfExists();
+using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
+using System;
 
-        IQueryResult IfNotExists();
+namespace IGNQuery.BaseClasses.QueryProviders
+{
+    public class NotExistsCheckQuery : ExistanceCheck<QueryResult>
+    {
+        internal NotExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        {
+        }
+
+        public override QueryResult IfExists()
+        {
+            throw new InvalidOperationException("Not available for this operation");
+        }
     }
 }

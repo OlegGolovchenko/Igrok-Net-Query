@@ -28,10 +28,6 @@ namespace IGNQuery.Interfaces.QueryProvider
 {
     public interface ISelectExistenceCheckQuery : IQueryResult
     {
-        ISelectQuery IfExists();
-
-        ISelectQuery IfNotExists();
-
-        ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false);
+        ISelecteableQuery IfExists();
     }
 }

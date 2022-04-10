@@ -25,6 +25,7 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
@@ -34,13 +35,11 @@ namespace IGNQuery.Interfaces.QueryProvider
 
         IConditionalQuery Having(IGNConditionWithParameter condition);
 
-        IConditionalQuery Condition(IGNConditionWithParameter condition);
+        IConditionalQuery And(IGNConditionWithParameter condition);
 
-        IConditionalQuery And();
+        IConditionalQuery Or(IGNConditionWithParameter condition);
 
-        IConditionalQuery Or();
-
-        IConditionalQuery Not();
+        IConditionalQuery Not(IGNConditionWithParameter condition);
 
         IGroupOrderQuery GroupBy(string column);
 

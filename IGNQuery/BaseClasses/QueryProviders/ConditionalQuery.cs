@@ -42,28 +42,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IConditionalQuery Condition(IGNConditionWithParameter condition)
+        public IConditionalQuery And(IGNConditionWithParameter condition)
         {
-            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
-            queriable.AddOperation("", $"{condition}", " ");
+            queriable.AddOperation("ADD", $"{condition}", " ");
             return this;
         }
 
-        public IConditionalQuery And()
+        public IConditionalQuery Or(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("ADD", "", " ");
+            queriable.AddOperation("OR", $"{condition}", " ");
             return this;
         }
 
-        public IConditionalQuery Or()
+        public IConditionalQuery Not(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("OR", "", " ");
-            return this;
-        }
-
-        public IConditionalQuery Not()
-        {
-            queriable.AddOperation("NOT", "", " ");
+            queriable.AddOperation("NOT", $"{condition}", " ");
             return this;
         }
 

@@ -31,15 +31,17 @@ using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class SelectQuery : QueryResult,
-        ISelectQuery
+    internal class SelectQuery : QueryResult,
+        ISelectQuery, 
+        ISelectExistenceCheckQuery, 
+        ISelecteableQuery
     {
         private IGNDbObjectTypeEnum objectType;
         private string name;
         private readonly bool distinct;
         private readonly IEnumerable<string> fieldNames;
 
-        public SelectQuery(IGNQueriable queriable, bool distinct, IEnumerable<string> fieldNames = null) : base(queriable)
+        internal SelectQuery(IGNQueriable queriable, bool distinct, IEnumerable<string> fieldNames = null) : base(queriable)
         {
             this.distinct = distinct;
             this.fieldNames = fieldNames;
@@ -56,7 +58,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public ISelectQuery IfExists()
+        public ISelecteableQuery IfExists()
         {
             queriable.IfExists(objectType, name, "");
             if (fieldNames != null)
@@ -67,11 +69,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 }
             }
             return this;
-        }
-
-        public ISelectQuery IfNotExists()
-        {
-            throw new System.NotImplementedException();
         }
 
         public ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false)

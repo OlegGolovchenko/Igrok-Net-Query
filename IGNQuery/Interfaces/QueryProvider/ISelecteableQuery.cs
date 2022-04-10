@@ -24,27 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.Enums;
-using IGNQuery.Interfaces.QueryProvider;
-using System;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class DeleteQuery : QueryResult, IDeleteQuery
+    public interface ISelecteableQuery : IQueryResult
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
+        IConditionalQuery WithCondition();
 
-        public DeleteQuery(IGNQueriable queriable):base(queriable)
-        {
-        }
-
-        public ConditionalExistsCheckQuery From(string table)
-        {
-            name = table;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
-            return new ConditionalExistsCheckQuery(name, objectType, queriable);
-        }
+        ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false);
     }
 }

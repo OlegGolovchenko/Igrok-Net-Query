@@ -25,26 +25,29 @@
 // ############################################
 
 using IGNQuery.Enums;
-using IGNQuery.Interfaces.QueryProvider;
 using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class DeleteQuery : QueryResult, IDeleteQuery
+    public class AlterNotExistsCheckQuery : ExistanceCheck<AlterQuery>
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
+        private string delimiter;
 
-        public DeleteQuery(IGNQueriable queriable):base(queriable)
+        internal AlterNotExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType, string delimiter) : base(queriable, name, objectType)
         {
+            this.delimiter = delimiter;
         }
 
-        public ConditionalExistsCheckQuery From(string table)
+        public override AlterQuery IfNotExists()
         {
-            name = table;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
-            return new ConditionalExistsCheckQuery(name, objectType, queriable);
+            var result = base.IfNotExists();
+            result.delimiter = delimiter;
+            return result;
+        }
+
+        public override AlterQuery IfExists()
+        {
+            throw new InvalidOperationException("Not available for this operation");
         }
     }
 }

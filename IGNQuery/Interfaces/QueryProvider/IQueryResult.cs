@@ -28,7 +28,7 @@ using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IQueryResult
+    public interface IQueryResult : IQuery
     {
         IGNQueriable Go();
     }

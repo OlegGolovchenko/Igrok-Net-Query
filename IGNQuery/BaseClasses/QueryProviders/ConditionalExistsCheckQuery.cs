@@ -24,55 +24,26 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-
-    public class AlterQuery : QueryResult,
-        IAlterQuery
+    public class ConditionalExistsCheckQuery : QueryResult
     {
         private IGNDbObjectTypeEnum objectType;
         private string name;
-        internal string delimiter = " ";
 
-        internal AlterQuery(IGNQueriable queriable):base(queriable)
+        internal ConditionalExistsCheckQuery(string name, IGNDbObjectTypeEnum objectType, IGNQueriable queriable) : base(queriable)
         {
+            this.objectType = objectType;
+            this.name = name;
         }
 
-        public AddColumnQuery Add()
+        public IConditionalQuery IfExists()
         {
-            string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
-            queriable.AddOperation(operand, "", delimiter);
-            delimiter = ", ";
-            return new AddColumnQuery(queriable, delimiter);
-        }
-
-        public AlterColumnQuery Alter()
-        {
-            queriable.AddOperation("ALTER", "", delimiter);
-            delimiter = ", ";
-            return new AlterColumnQuery(queriable, delimiter);
-        }
-
-        public AlterExistsCheckQuery Drop(string column)
-        {
-            this.name = column;
-            objectType = IGNDbObjectTypeEnum.Column;
-            string command = !queriable.HasDropColumnOrSqlServer() ? "DROP COLUMN" : "";
-            queriable.AddOperation(command, queriable.SanitizeName(name), delimiter);
-            delimiter = ", ";
-            return new AlterExistsCheckQuery(queriable, column, objectType, delimiter);
-        }
-
-        public AlterExistsCheckQuery Table(string tableName)
-        {
-            name = tableName;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("ALTER TABLE", queriable.SanitizeName(tableName), "");
-            return new AlterExistsCheckQuery(queriable, tableName, objectType, delimiter);
+            queriable.IfExists(objectType, name, "");
+            return new ConditionalQuery(queriable);
         }
     }
 }
