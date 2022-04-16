@@ -53,11 +53,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             queriable.AddOperation($"{sqloperand} DATABASE", queriable.SanitizeName(name), "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+            }
         }
 
         public virtual U Index(string name, string tableName, IEnumerable<string> columns, bool unique)
@@ -68,11 +76,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation("ON", tableName, " ");
             queriable.AddOperation($"({string.Join(",", columns.Select(x => queriable.SanitizeName(x)))})", "", "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, objectType });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, objectType });
+            }
         }
 
         public virtual U Index(string name, string table, bool unique)
@@ -80,11 +96,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
             objectType = unique ? IGNDbObjectTypeEnum.UniqueIndex : IGNDbObjectTypeEnum.Index;
             queriable.AddOperation("DROP INDEX", queriable.SanitizeName(name), "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, objectType });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, objectType });
+            }
         }
 
         public virtual U StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters)
@@ -92,22 +116,38 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation($"{sqloperand} PROCEDURE", queriable.SanitizeName(name), "");
             queriable.AddOperation(queriable.FormatSpSubqueryAndParams(parameters ?? new List<IGNParameter>(), content), "", "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.StoredProcedure });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.StoredProcedure });
+            }
         }
 
         public virtual U StoredProcedure(string name)
         {
             queriable.AddOperation("DROP PROCEDURE", queriable.SanitizeName(name), "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.StoredProcedure });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.StoredProcedure });
+            }
         }
 
         public virtual U Table(string name, IEnumerable<TableColumnConfiguration> fields)
@@ -115,22 +155,38 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation($"{sqloperand} TABLE", queriable.SanitizeName(name), "");
             queriable.AddOperation($"({string.Join(",", queriable.CompileFieldsInfo(name, fields))})", "", "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Table });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.Table });
+            }
         }
 
         public virtual U Table(string name)
         {
             queriable.AddOperation("DROP TABLE", queriable.SanitizeName(name), "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Table });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.Table });
+            }
         }
 
         public virtual U View(string name, IGNQueriable content)
@@ -139,22 +195,38 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation("AS", "", "\n");
             queriable.AddOperation($"{content}", "", "\n");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.View });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.View });
+            }
         }
 
         public virtual U View(string name)
         {
             queriable.AddOperation("DROP VIEW", queriable.SanitizeName(name), "");
             Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(U)))
+            {
+                ConstructorInfo ci = u.GetConstructor(
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database });
+                return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.View });
+            }
+            else
+            {
+                u = queriable.declaredQueryTypes[typeof(U)];
+                MethodInfo mi = u.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (U)mi.Invoke(null, new object[] { queriable, name, IGNDbObjectTypeEnum.View });
+            }
         }
     }
 }

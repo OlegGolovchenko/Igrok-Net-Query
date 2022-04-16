@@ -35,6 +35,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
         }
 
+        internal static IConditionalQuery Init(IGNQueriable queriable)
+        {
+            return new ConditionalQuery(queriable);
+        }
+
         public IConditionalQuery Where(IGNConditionWithParameter condition)
         {
             condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));

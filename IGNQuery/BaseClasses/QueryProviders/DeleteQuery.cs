@@ -35,16 +35,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
         private IGNDbObjectTypeEnum objectType;
         private string name;
 
-        public DeleteQuery(IGNQueriable queriable):base(queriable)
+        internal DeleteQuery(IGNQueriable queriable):base(queriable)
         {
         }
 
-        public ConditionalExistsCheckQuery From(string table)
+        public IExistanceCheck<IConditionalQuery> From(string table)
         {
             name = table;
             objectType = IGNDbObjectTypeEnum.Table;
             queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
-            return new ConditionalExistsCheckQuery(name, objectType, queriable);
+            return new DeleteExistsCheckQuery(queriable, name, objectType);
+        }
+
+        internal static IDeleteQuery Init(IGNQueriable queriable)
+        {
+            return new DeleteQuery(queriable);
         }
     }
 }

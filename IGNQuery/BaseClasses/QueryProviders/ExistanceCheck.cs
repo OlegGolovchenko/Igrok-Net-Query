@@ -48,22 +48,39 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             queriable.IfExists(objectType, name, ""); 
             Type t = typeof(T);
-
-            ConstructorInfo ci = t.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { typeof(IGNQueriable) }, null);
-            return (T)ci.Invoke(new object[] { queriable });
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(T)))
+            {
+                ConstructorInfo ci = t.GetConstructor(
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null, new Type[] { typeof(IGNQueriable) }, null);
+                return (T)ci.Invoke(new object[] { queriable });
+            }
+            else
+            {
+                t = queriable.declaredQueryTypes[typeof(T)];
+                MethodInfo mi = t.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (T)mi.Invoke(null, new object[] { queriable });
+            }
         }
 
         public virtual T IfNotExists()
         {
-            queriable.IfNotExists(objectType, name, "");
             Type t = typeof(T);
+            if (!queriable.declaredQueryTypes.ContainsKey(typeof(T)))
+            {
+                queriable.IfNotExists(objectType, name, "");
 
-            ConstructorInfo ci = t.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { typeof(IGNQueriable) }, null);
-            return (T)ci.Invoke(new object[] { queriable });
+                ConstructorInfo ci = t.GetConstructor(
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null, new Type[] { typeof(IGNQueriable) }, null);
+                return (T)ci.Invoke(new object[] { queriable });
+            }
+            else
+            {
+                t = queriable.declaredQueryTypes[typeof(T)];
+                MethodInfo mi = t.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+                return (T)mi.Invoke(null, new object[] { queriable });
+            }
         }
     }
 }

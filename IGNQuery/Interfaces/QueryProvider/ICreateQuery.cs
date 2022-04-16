@@ -28,7 +28,7 @@ using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ICreateQuery : ISelector<NotExistsCheckQuery, QueryResult>
+    public interface ICreateQuery : ISelector<INotExistsCheckQuery, IQueryResult>
     {
     }
 }

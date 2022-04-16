@@ -32,28 +32,28 @@ using System.Runtime.InteropServices;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class DropQuery : Selector<ExistsCheckQuery, QueryResult>, IDropQuery
+    internal class DropQuery : Selector<IExistsCheckQuery, IQueryResult>, IDropQuery
     {
         public DropQuery(IGNQueriable queriable) : base(queriable, "DROP")
         {
         }
 
-        public override ExistsCheckQuery Index(string name, string tableName, IEnumerable<string> columns, bool unique)
+        public override IExistsCheckQuery Index(string name, string tableName, IEnumerable<string> columns, bool unique)
         {
             throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public override ExistsCheckQuery StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters)
+        public override IExistsCheckQuery StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters)
         {
             throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public override ExistsCheckQuery Table(string name, IEnumerable<TableColumnConfiguration> fields)
+        public override IExistsCheckQuery Table(string name, IEnumerable<TableColumnConfiguration> fields)
         {
             throw new InvalidOperationException("This signature is for Create query only");
         }
 
-        public override ExistsCheckQuery View(string name, IGNQueriable content)
+        public override IExistsCheckQuery View(string name, IGNQueriable content)
         {
             throw new InvalidOperationException("This signature is for Create query only");
         }

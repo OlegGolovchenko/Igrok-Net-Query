@@ -28,8 +28,7 @@ using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDeleteQuery : IQueryResult
+    public interface IDeleteQuery : ITarget<IConditionalQuery, IExistanceCheck<IConditionalQuery>>
     {
-        ConditionalExistsCheckQuery From(string table);
     }
 }

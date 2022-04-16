@@ -26,8 +26,7 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ISelectQuery : IQueryResult
+    public interface ISelectQuery : ITarget<IConditionalQuery,IExistanceCheck<IConditionalQuery>>
     {
-        ISelectExistenceCheckQuery From(string table);
     }
 }

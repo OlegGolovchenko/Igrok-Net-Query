@@ -31,7 +31,7 @@ namespace IGNQuery.Interfaces.QueryProvider
 {
     public interface IAlterSelectorQuery<T, U> 
         where T : IQuery
-        where U : ExistanceCheck<T>
+        where U : IExistanceCheck<T>
     {
         U Column(TableColumnConfiguration column);
     }

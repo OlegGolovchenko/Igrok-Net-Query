@@ -32,13 +32,18 @@ using System.Text;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class ExistsCheckQuery : ExistanceCheck<QueryResult>
+    public class ExistsCheckQuery : ExistanceCheck<IQueryResult>, IExistsCheckQuery
     {
         internal ExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType):base(queriable, name, objectType)
         {
         }
 
-        public override QueryResult IfNotExists()
+        internal static ExistsCheckQuery Init(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType)
+        {
+            return new ExistsCheckQuery(queriable, name, objectType);
+        }
+
+        public override IQueryResult IfNotExists()
         {
             throw new InvalidOperationException("Not available for this operation");
         }

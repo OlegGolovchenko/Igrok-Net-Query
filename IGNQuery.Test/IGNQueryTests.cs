@@ -295,7 +295,38 @@ namespace IGNQuery.Test
                 IfExists().
                 Go();
             var expected = "DROP DATABASE [testdb] \nGO";
-            Assert.AreEqual(expected , query.ToString());
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DeleteQueryShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Delete().
+                From("test").
+                IfExists().
+                Go();
+            var expected = "DELETE FROM [test] \nGO";
+            Assert.AreEqual(expected,query.ToString());
+        }
+
+        [Test]
+        public void DeleteQueryWithConditionShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Delete().
+                From("test").
+                IfExists().
+                Where(IGNConditionWithParameter.FromConfig("tc",Enums.IGNSqlCondition.Eq,0)).
+                Go();
+            var expected = "DELETE FROM [test] WHERE [tc] = @p0 \nGO";
+            Assert.AreEqual(expected, query.ToString());
         }
     }
 }

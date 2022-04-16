@@ -28,15 +28,17 @@ using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
+using System;
 using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public partial class IGNQueriable : IQueryResult
+    public partial class IGNQueriable
     {
         private string fullQuery;
         internal readonly IDataDriver dataDriver = null;
         private readonly IGNQueriable subquery = null;
+        internal IDictionary<Type, Type> declaredQueryTypes = null;
 
         private bool exists;
 
@@ -70,6 +72,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.dataDriver = dataDriver;
             canExecute = true;
             exists = true;
+            this.declaredQueryTypes = new Dictionary<Type, Type>();
+            this.declaredQueryTypes.Add(typeof(IDeleteQuery), typeof(DeleteQuery));
+            this.declaredQueryTypes.Add(typeof(IConditionalQuery), typeof(ConditionalQuery));
+            this.declaredQueryTypes.Add(typeof(IQueryResult), typeof(QueryResult));
+            this.declaredQueryTypes.Add(typeof(IExistsCheckQuery), typeof(ExistsCheckQuery));
+            this.declaredQueryTypes.Add(typeof(INotExistsCheckQuery), typeof(NotExistsCheckQuery));
         }
 
         internal bool HasSetCommand()
@@ -133,7 +141,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IQueryResult Use(string dbName)
         {
             AddOperation("USE", SanitizeName(dbName), "");
-            return this;
+            return QueryResult.Init(this);
         }
 
         public ICreateQuery Create()
@@ -230,12 +238,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
                     dataDriver.IfColumnNotExists(objectName, table, this);
                     break;
             }
-        }
-
-        public IGNQueriable Go()
-        {
-            this.AddOperation("", this.dataDriver.GoTerminator(), "");
-            return this;
         }
 
         public override string ToString()

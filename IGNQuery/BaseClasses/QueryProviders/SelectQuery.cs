@@ -47,7 +47,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.fieldNames = fieldNames;
         }
 
-        public ISelectExistenceCheckQuery From(string table)
+        public IExistanceCheck<IConditionalQuery> From(string table)
         {
             objectType = IGNDbObjectTypeEnum.Table;
             name = table;
@@ -55,7 +55,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             string operand = distinct ? "SELECT DISTINCT" : "SELECT";
             queriable.AddOperation(operand, columns, "");
             queriable.AddOperation("FROM", queriable.SanitizeName(table), " ");
-            return this;
+            return new ExistanceCheck<IConditionalQuery>(queriable, name, objectType);
         }
 
         public ISelecteableQuery IfExists()

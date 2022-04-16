@@ -37,6 +37,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.queriable = queriable;
         }
 
+        internal static QueryResult Init(IGNQueriable queriable)
+        {
+            return new QueryResult(queriable);
+        }
+
         public IGNQueriable Go()
         {
             queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");

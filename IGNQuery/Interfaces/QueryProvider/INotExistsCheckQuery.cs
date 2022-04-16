@@ -24,11 +24,10 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
-
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IDropQuery : ISelector<IExistsCheckQuery, IQueryResult>
+    public interface INotExistsCheckQuery: IExistanceCheck<IQueryResult>
     {
+
     }
 }

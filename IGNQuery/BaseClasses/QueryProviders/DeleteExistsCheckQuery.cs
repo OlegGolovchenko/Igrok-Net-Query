@@ -24,11 +24,21 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
+using System;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IDropQuery : ISelector<IExistsCheckQuery, IQueryResult>
+    public class DeleteExistsCheckQuery : ExistanceCheck<IConditionalQuery>
     {
+        internal DeleteExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        {
+        }
+
+        public override IConditionalQuery IfNotExists()
+        {
+            throw new InvalidOperationException("Not available for this operation");
+        }
     }
 }

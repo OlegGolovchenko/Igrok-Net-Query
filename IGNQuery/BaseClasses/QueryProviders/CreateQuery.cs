@@ -29,28 +29,28 @@ using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class CreateQuery: Selector<NotExistsCheckQuery, QueryResult>, ICreateQuery
+    internal class CreateQuery: Selector<INotExistsCheckQuery, IQueryResult>, ICreateQuery
     {
         public CreateQuery(IGNQueriable queriable) : base(queriable, "CREATE")
         {
         }
 
-        public override NotExistsCheckQuery Index(string name, string table, bool unique)
+        public override INotExistsCheckQuery Index(string name, string table, bool unique)
         {
             throw new InvalidOperationException("This signature is for Drop query only");
         }
 
-        public override NotExistsCheckQuery StoredProcedure(string name)
+        public override INotExistsCheckQuery StoredProcedure(string name)
         {
             throw new InvalidOperationException("This signature is for Drop query only");
         }
 
-        public override NotExistsCheckQuery Table(string name)
+        public override INotExistsCheckQuery Table(string name)
         {
             throw new InvalidOperationException("This signature is for Drop query only");
         }
 
-        public override NotExistsCheckQuery View(string name)
+        public override INotExistsCheckQuery View(string name)
         {
             throw new InvalidOperationException("This signature is for Drop query only");
         }
