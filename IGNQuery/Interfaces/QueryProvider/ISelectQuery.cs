@@ -26,7 +26,7 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ISelectQuery : ITarget<IJoinable,IExistanceCheck<IJoinable>>
+    public interface ISelectQuery : ITarget<IConditionalJoinable,IExistanceCheck<IConditionalJoinable>>
     {
     }
 }

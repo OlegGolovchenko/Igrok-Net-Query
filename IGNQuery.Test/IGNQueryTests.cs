@@ -336,8 +336,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Delete().
-                From("test").
-                IfExists().
+                From("test", true).
                 Go();
             var expected = "DELETE FROM [test] \nGO";
             Assert.AreEqual(expected,query.ToString());
@@ -351,11 +350,27 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Delete().
-                From("test").
-                IfExists().
+                ConditionalFrom("test", true).
                 Where(IGNConditionWithParameter.FromConfig("tc",Enums.IGNSqlCondition.Eq,0)).
                 Go();
             var expected = "DELETE FROM [test] WHERE [tc] = @p0 \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DeleteQueryWithJoinConditionShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Delete().
+                JoineableFrom("test", true).
+                InnerJoin("test2",true).
+                On("test2Id","id",true).
+                Where(IGNConditionWithParameter.FromConfig("tc", Enums.IGNSqlCondition.Eq, 0)).
+                Go();
+            var expected = "DELETE FROM [test] INNER JOIN [test2] ON [test].[test2Id] = [test2].[id] WHERE [tc] = @p0 \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
     }

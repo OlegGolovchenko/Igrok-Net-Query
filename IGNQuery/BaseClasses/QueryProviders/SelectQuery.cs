@@ -45,7 +45,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.fieldNames = fieldNames;
         }
 
-        public IExistanceCheck<IJoinable> From(string table)
+        public IExistanceCheck<IConditionalJoinable> From(string table)
         {
             objectType = IGNDbObjectTypeEnum.Table;
             name = table;

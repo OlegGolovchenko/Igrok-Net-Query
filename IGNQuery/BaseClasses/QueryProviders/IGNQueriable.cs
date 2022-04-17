@@ -79,7 +79,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 { typeof(IQueryResult), typeof(QueryResult) },
                 { typeof(IExistsCheckQuery), typeof(ExistsCheckQuery) },
                 { typeof(INotExistsCheckQuery), typeof(NotExistsCheckQuery) },
-                { typeof(IJoinable), typeof(Joinable) }
+                { typeof(IConditionalJoinable), typeof(ConditionalJoinable) }
             };
         }
 
@@ -182,9 +182,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new SelectQuery(this,distinct);
         }
 
-        public IDeleteQuery Delete()
+        public IDelete Delete()
         {
-            return new DeleteQuery(this);
+            return new Delete(this);
         }
 
         internal void IfExists(IGNDbObjectTypeEnum objectType,string objectName, string table)

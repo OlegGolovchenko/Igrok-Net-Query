@@ -25,27 +25,32 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
-using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class JoinableExistsCheckQuery : ExistanceCheck<IConditionalJoinable>
+    public class Condition : QueryResult, ICondition
     {
-
-        internal JoinableExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        internal Condition(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        internal static IExistanceCheck<IConditionalJoinable> Init(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType)
+        public ICondition And(IGNConditionWithParameter condition)
         {
-            return new JoinableExistsCheckQuery(queriable, name, objectType);
+            queriable.AddOperation("AND", $"{condition}", " ");
+            return this;
         }
 
-        public override IConditionalJoinable IfNotExists()
+        public ICondition Not(IGNConditionWithParameter condition)
         {
-            throw new InvalidOperationException("Not available for this operation");
+            queriable.AddOperation("OR", $"{condition}", " ");
+            return this;
+        }
+
+        public ICondition Or(IGNConditionWithParameter condition)
+        {
+            queriable.AddOperation("NOT", $"{condition}", " ");
+            return this;
         }
     }
 }

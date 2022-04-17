@@ -28,41 +28,30 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class Joinable : ConditionalQuery, IJoinable
+    public class Joinable : Join
     {
         internal Joinable(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        internal static new IJoinable Init(IGNQueriable queriable)
+        public override IJoin InnerJoin(string joinedTable, bool checkExists)
         {
-            return new Joinable(queriable);
-        }
-
-        public IJoinable InnerJoin(string source, string destination, string srcColumn, string destColumn)
-        {
-            queriable.AddOperation("INNER JOIN", queriable.SanitizeName(destination), " ");
-            string parameter = $"{queriable.SanitizeName(source)}.{queriable.SanitizeName(srcColumn)} = " +
-                $"{queriable.SanitizeName(destination)}.{queriable.SanitizeName(destColumn)}";
-            queriable.AddOperation("ON", parameter, " ");
+            queriable.AddOperation("INNER JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
             return this;
         }
 
-        public IJoinable LeftJoin(string source, string destination, string srcColumn, string destColumn)
+        public override IJoin LeftJoin(string joinedTable, bool checkExists)
         {
-            queriable.AddOperation("LEFT JOIN", queriable.SanitizeName(destination), " ");
-            string parameter = $"{queriable.SanitizeName(source)}.{queriable.SanitizeName(srcColumn)} = " +
-                $"{queriable.SanitizeName(destination)}.{queriable.SanitizeName(destColumn)}";
-            queriable.AddOperation("ON", parameter, " ");
+            queriable.AddOperation("LEFT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
             return this;
         }
 
-        public IJoinable RightJoin(string source, string destination, string srcColumn, string destColumn)
+        public override IJoin RightJoin(string joinedTable, bool checkExists)
         {
-            queriable.AddOperation("RIGHT JOIN", queriable.SanitizeName(destination), " ");
-            string parameter = $"{queriable.SanitizeName(source)}.{queriable.SanitizeName(srcColumn)} = " +
-                $"{queriable.SanitizeName(destination)}.{queriable.SanitizeName(destColumn)}";
-            queriable.AddOperation("ON", parameter, " ");
+            queriable.AddOperation("RIGHT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
             return this;
         }
     }

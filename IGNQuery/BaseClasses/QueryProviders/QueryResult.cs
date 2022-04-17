@@ -24,6 +24,7 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders

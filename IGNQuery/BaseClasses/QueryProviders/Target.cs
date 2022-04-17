@@ -24,28 +24,48 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class JoinableExistsCheckQuery : ExistanceCheck<IConditionalJoinable>
+    public class Target : Joinable, ITarget
     {
-
-        internal JoinableExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        internal Target(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        internal static IExistanceCheck<IConditionalJoinable> Init(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType)
+        public IConditional ConditionalFrom(string table, bool checkExists)
         {
-            return new JoinableExistsCheckQuery(queriable, name, objectType);
+            source = table;
+            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            if (checkExists)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
+            }
+            return this;
         }
 
-        public override IConditionalJoinable IfNotExists()
+        public IJoinable JoineableFrom(string table, bool checkExists)
         {
-            throw new InvalidOperationException("Not available for this operation");
+            source = table;
+            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            if (checkExists)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
+            }
+            return this;
+        }
+
+        IQueryResult ITarget.From(string table, bool checkExists)
+        {
+            source = table;
+            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            if (checkExists)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
+            }
+            return this;
         }
     }
 }

@@ -24,28 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
-using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class JoinableExistsCheckQuery : ExistanceCheck<IConditionalJoinable>
+    public class Delete : Target, IDelete
     {
-
-        internal JoinableExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        internal Delete(IGNQueriable queriable) : base(queriable)
         {
-        }
-
-        internal static IExistanceCheck<IConditionalJoinable> Init(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType)
-        {
-            return new JoinableExistsCheckQuery(queriable, name, objectType);
-        }
-
-        public override IConditionalJoinable IfNotExists()
-        {
-            throw new InvalidOperationException("Not available for this operation");
         }
     }
 }

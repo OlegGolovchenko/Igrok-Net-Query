@@ -26,10 +26,12 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ITarget<T,U>: IQueryResult 
-        where T : IQuery
-        where U : IExistanceCheck<T>
+    public interface ITarget
     {
-        U From(string table);
+        IQueryResult From(string table, bool checkExists);
+
+        IJoinable JoineableFrom(string table, bool checkExists);
+
+        IConditional ConditionalFrom(string table, bool checkExists);
     }
 }
