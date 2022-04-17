@@ -72,12 +72,15 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.dataDriver = dataDriver;
             canExecute = true;
             exists = true;
-            this.declaredQueryTypes = new Dictionary<Type, Type>();
-            this.declaredQueryTypes.Add(typeof(IDeleteQuery), typeof(DeleteQuery));
-            this.declaredQueryTypes.Add(typeof(IConditionalQuery), typeof(ConditionalQuery));
-            this.declaredQueryTypes.Add(typeof(IQueryResult), typeof(QueryResult));
-            this.declaredQueryTypes.Add(typeof(IExistsCheckQuery), typeof(ExistsCheckQuery));
-            this.declaredQueryTypes.Add(typeof(INotExistsCheckQuery), typeof(NotExistsCheckQuery));
+            this.declaredQueryTypes = new Dictionary<Type, Type>
+            {
+                { typeof(IDeleteQuery), typeof(DeleteQuery) },
+                { typeof(IConditionalQuery), typeof(ConditionalQuery) },
+                { typeof(IQueryResult), typeof(QueryResult) },
+                { typeof(IExistsCheckQuery), typeof(ExistsCheckQuery) },
+                { typeof(INotExistsCheckQuery), typeof(NotExistsCheckQuery) },
+                { typeof(IJoinable), typeof(Joinable) }
+            };
         }
 
         internal bool HasSetCommand()

@@ -24,26 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.Enums;
-using IGNQuery.Interfaces.QueryProvider;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public class ConditionalNotExistsCheckQuery : QueryResult
+    public interface IJoinable : IConditionalQuery
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
-
-        internal ConditionalNotExistsCheckQuery(string name, IGNDbObjectTypeEnum objectType, IGNQueriable queriable) : base(queriable)
-        {
-            this.objectType = objectType;
-            this.name = name;
-        }
-
-        public IConditionalQuery IfNotExists()
-        {
-            queriable.IfNotExists(objectType, name, "");
-            return new ConditionalQuery(queriable);
-        }
+        IJoinable InnerJoin(string source, string destination, string srcColumn, string destColumn);
+        IJoinable LeftJoin(string source, string destination, string srcColumn, string destColumn);
+        IJoinable RightJoin(string source, string destination, string srcColumn, string destColumn);
     }
 }

@@ -35,7 +35,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
         }
 
-        internal static IConditionalQuery Init(IGNQueriable queriable)
+        internal static new IConditionalQuery Init(IGNQueriable queriable)
         {
             return new ConditionalQuery(queriable);
         }

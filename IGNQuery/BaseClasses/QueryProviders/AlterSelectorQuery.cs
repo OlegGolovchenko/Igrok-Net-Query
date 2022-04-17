@@ -37,7 +37,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         where U : ExistanceCheck<T>
     {
         private string name;
-        private IGNDbObjectTypeEnum objectType;
         private IGNQueriable queriable;
         private bool isAddQuery;
         private string delimiter;
@@ -52,7 +51,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public virtual U Column(TableColumnConfiguration column)
         {
             name = column.ColumnName;
-            objectType = IGNDbObjectTypeEnum.Column;
             string operand = isAddQuery ? "" : "COLUMN";
             queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), "");
             Type u = typeof(U);

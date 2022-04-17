@@ -47,7 +47,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new DeleteExistsCheckQuery(queriable, name, objectType);
         }
 
-        internal static IDeleteQuery Init(IGNQueriable queriable)
+        internal static new IDeleteQuery Init(IGNQueriable queriable)
         {
             return new DeleteQuery(queriable);
         }

@@ -24,11 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.QueryProviders;
-
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IConditionalExistsQuery : IExistanceCheck<ConditionalQuery>
+    public interface IGroupOrderQuery : IQueryResult
     {
+        IGroupOrderQuery Descending();
+
+        IGroupOrderQuery Ascending();
+
+        IGroupOrderQuery ThenBy(string column);
     }
 }

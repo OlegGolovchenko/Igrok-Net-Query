@@ -24,26 +24,28 @@
 //
 // ############################################
 
-namespace IGNQuery.Interfaces.QueryProvider
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
+using System;
+
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface ICondition
+    public class JoinableExistsCheckQuery : ExistanceCheck<IJoinable>
     {
-        ICondition StringEqualToParam(string column, int paramNb);
 
-        ICondition LongEqualToParam(string column, int paramNb);
+        internal JoinableExistsCheckQuery(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType) : base(queriable, name, objectType)
+        {
+        }
 
-        ICondition BoolEqualToParam(string column, int paramNb);
+        internal static IExistanceCheck<IJoinable> Init(IGNQueriable queriable, string name, IGNDbObjectTypeEnum objectType)
+        {
+            return new JoinableExistsCheckQuery(queriable, name, objectType);
+        }
 
-        ICondition StringNotEqualToParam(string column, int paramNb);
-
-        ICondition LongNotEqualToParam(string column, int paramNb);
-
-        ICondition BoolNotEqualToParam(string column, int paramNb);
-
-        ICondition Or();
-
-        ICondition And();
-
-        IQueryResult Go();
+        public override IJoinable IfNotExists()
+        {
+            throw new InvalidOperationException("Not available for this operation");
+        }
     }
 }

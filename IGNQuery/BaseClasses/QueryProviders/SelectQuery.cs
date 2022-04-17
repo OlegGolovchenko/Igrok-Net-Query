@@ -32,9 +32,7 @@ using System.Linq;
 namespace IGNQuery.BaseClasses.QueryProviders
 {
     internal class SelectQuery : QueryResult,
-        ISelectQuery, 
-        ISelectExistenceCheckQuery, 
-        ISelecteableQuery
+        ISelectQuery
     {
         private IGNDbObjectTypeEnum objectType;
         private string name;
@@ -47,7 +45,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.fieldNames = fieldNames;
         }
 
-        public IExistanceCheck<IConditionalQuery> From(string table)
+        public IExistanceCheck<IJoinable> From(string table)
         {
             objectType = IGNDbObjectTypeEnum.Table;
             name = table;
@@ -55,47 +53,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             string operand = distinct ? "SELECT DISTINCT" : "SELECT";
             queriable.AddOperation(operand, columns, "");
             queriable.AddOperation("FROM", queriable.SanitizeName(table), " ");
-            return new ExistanceCheck<IConditionalQuery>(queriable, name, objectType);
-        }
-
-        public ISelecteableQuery IfExists()
-        {
-            queriable.IfExists(objectType, name, "");
-            if (fieldNames != null)
-            {
-                foreach (string colname in fieldNames)
-                {
-                    queriable.IfExists(IGNDbObjectTypeEnum.Column, colname, name);
-                }
-            }
-            return this;
-        }
-
-        public ISelectQuery Join(string sourceTableName, string destTableName, string sourceKeyName, string destKeyName, bool inner = true, bool left = false, bool right = false)
-        {
-            string operand = "JOIN";
-            if (inner)
-            {
-                operand = "INNER " + operand;
-            }
-            if (left)
-            {
-                operand = "LEFT " + operand;
-            }
-            if (right)
-            {
-                operand = "RIGHT " + operand;
-            }
-            queriable.AddOperation(operand, queriable.SanitizeName(destTableName), " ");
-            string parameter = $"{queriable.SanitizeName(sourceTableName)}.{queriable.SanitizeName(sourceKeyName)} = " +
-                $"{queriable.SanitizeName(destTableName)}.{queriable.SanitizeName(destKeyName)}";
-            queriable.AddOperation("ON", parameter, " ");
-            return this;
-        }
-
-        public IConditionalQuery WithCondition()
-        {
-            return new ConditionalQuery(queriable);
+            return new JoinableExistsCheckQuery(queriable, name, objectType);
         }
     }
 }

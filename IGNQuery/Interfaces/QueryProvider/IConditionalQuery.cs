@@ -45,13 +45,4 @@ namespace IGNQuery.Interfaces.QueryProvider
 
         IGroupOrderQuery OrderBy(string column);
     }
-
-    public interface IGroupOrderQuery : IQueryResult
-    {
-        IGroupOrderQuery Descending();
-
-        IGroupOrderQuery Ascending();
-
-        IGroupOrderQuery ThenBy(string column);
-    }
 }
