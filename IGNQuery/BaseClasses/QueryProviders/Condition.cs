@@ -29,7 +29,7 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class Condition : QueryResult, ICondition
+    internal class Condition : Groupbale, ICondition
     {
         internal Condition(IGNQueriable queriable) : base(queriable)
         {

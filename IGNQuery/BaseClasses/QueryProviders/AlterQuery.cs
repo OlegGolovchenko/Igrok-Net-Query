@@ -31,7 +31,7 @@ using IGNQuery.Interfaces.QueryProvider;
 namespace IGNQuery.BaseClasses.QueryProviders
 {
 
-    public class AlterQuery : QueryResult,
+    internal class AlterQuery : QueryResult,
         IAlterQuery
     {
         private IGNDbObjectTypeEnum objectType;
@@ -42,7 +42,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
         }
 
-        public AddColumnQuery Add()
+        public IAddColumnQuery Add()
         {
             string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
             queriable.AddOperation(operand, "", delimiter);
@@ -50,14 +50,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new AddColumnQuery(queriable, delimiter);
         }
 
-        public AlterColumnQuery Alter()
+        public IAlterColumnQuery Alter()
         {
             queriable.AddOperation("ALTER", "", delimiter);
             delimiter = ", ";
             return new AlterColumnQuery(queriable, delimiter);
         }
 
-        public AlterExistsCheckQuery Drop(string column)
+        public IAlterExistsCheckQuery Drop(string column)
         {
             this.name = column;
             objectType = IGNDbObjectTypeEnum.Column;
@@ -67,7 +67,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new AlterExistsCheckQuery(queriable, column, objectType, delimiter);
         }
 
-        public AlterExistsCheckQuery Table(string tableName)
+        public IAlterExistsCheckQuery Table(string tableName)
         {
             name = tableName;
             objectType = IGNDbObjectTypeEnum.Table;

@@ -24,17 +24,28 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Delete : Target, IDelete
+    internal class GroupedConditional : Conditional, IGroupedConditional
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
+        internal GroupedConditional(IGNQueriable queriable) : base(queriable)
         {
-            operation = "DELETE";
+        }
+
+        public IOrderableCondition Having(IGNConditionWithParameter condition)
+        {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("HAVING", $"{condition}", " ");
+            return this;
+        }
+        public new IGroupableCondition Where(IGNConditionWithParameter condition)
+        {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("WHERE", $"{condition}", " ");
+            return this;
         }
     }
 }

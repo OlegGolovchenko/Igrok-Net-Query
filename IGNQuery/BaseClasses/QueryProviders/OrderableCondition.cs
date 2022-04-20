@@ -24,34 +24,46 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class Joinable : Join
+    internal class OrderableCondition : Condition, IOrderableCondition
     {
-        internal Joinable(IGNQueriable queriable) : base(queriable)
+        internal OrderableCondition(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        public override IJoin InnerJoin(string joinedTable, bool checkExists)
+        public IOrderable OrderBy(string column, bool descending)
         {
-            queriable.AddOperation("INNER JOIN", queriable.SanitizeName(joinedTable), " ");
-            destination = joinedTable;
+            queriable.AddOperation("ORDER BY", column, " ");
+            if (descending)
+            {
+                queriable.AddOperation("", "DESC", "");
+            }
+            else
+            {
+                queriable.AddOperation("", "ASC", "");
+            }
             return this;
         }
 
-        public override IJoin LeftJoin(string joinedTable, bool checkExists)
+        IOrderableCondition IOrderableCondition.And(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("LEFT JOIN", queriable.SanitizeName(joinedTable), " ");
-            destination = joinedTable;
+            base.And(condition);
             return this;
         }
 
-        public override IJoin RightJoin(string joinedTable, bool checkExists)
+        IOrderableCondition IOrderableCondition.Not(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("RIGHT JOIN", queriable.SanitizeName(joinedTable), " ");
-            destination = joinedTable;
+            base.Not(condition);
+            return this;
+        }
+
+        IOrderableCondition IOrderableCondition.Or(IGNConditionWithParameter condition)
+        {
+            base.Or(condition);
             return this;
         }
     }

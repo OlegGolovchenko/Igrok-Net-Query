@@ -24,17 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class Delete : Target, IDelete
+    public interface IConditionalJoinable : IConditionalQuery
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
-        {
-            operation = "DELETE";
-        }
+        IConditionalJoinable InnerJoin(string source, string destination, string srcColumn, string destColumn);
+        IConditionalJoinable LeftJoin(string source, string destination, string srcColumn, string destColumn);
+        IConditionalJoinable RightJoin(string source, string destination, string srcColumn, string destColumn);
     }
 }

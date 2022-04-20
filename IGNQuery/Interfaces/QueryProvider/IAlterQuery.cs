@@ -29,14 +29,19 @@ using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    public interface IAlterColumnQuery : IAlterSelectorQuery<IAlterQuery, IAlterExistsCheckQuery>
+    {
+
+    }
+
     public interface IAlterQuery: IQueryResult
     {
-        AlterExistsCheckQuery Table(string tableName);
+        IAlterExistsCheckQuery Table(string tableName);
 
-        AddColumnQuery Add();
+        IAddColumnQuery Add();
 
-        AlterExistsCheckQuery Drop(string column);
+        IAlterExistsCheckQuery Drop(string column);
 
-        AlterColumnQuery Alter();
+        IAlterColumnQuery Alter();
     }
 }

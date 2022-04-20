@@ -24,17 +24,12 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class Delete : Target, IDelete
+    public interface IGroupedJoinable : IJoinable
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
-        {
-            operation = "DELETE";
-        }
+        new IGroupableJoin InnerJoin(string joinedTable, bool checkExists);
+        new IGroupableJoin LeftJoin(string joinedTable, bool checkExists);
+        new IGroupableJoin RightJoin(string joinedTable, bool checkExists);
     }
 }

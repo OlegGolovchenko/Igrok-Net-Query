@@ -29,8 +29,9 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class Target : Joinable, ITarget
+    internal class Target : GroupedJoinable, ITarget, IGroupableTarget
     {
+        internal string operation;
         internal Target(IGNQueriable queriable) : base(queriable)
         {
         }
@@ -38,7 +39,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IConditional ConditionalFrom(string table, bool checkExists)
         {
             source = table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
@@ -46,10 +47,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IJoinable JoineableFrom(string table, bool checkExists)
+        public IQueryResult From(string table, bool checkExists)
         {
             source = table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
@@ -57,15 +58,25 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        IQueryResult ITarget.From(string table, bool checkExists)
+        public IJoinable JoinableFrom(string table, bool checkExists)
         {
             source = table;
-            queriable.AddOperation("DELETE FROM", queriable.SanitizeName(table), "");
+            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
             }
             return this;
+        }
+
+        IGroupedConditional IGroupableTarget.ConditionalFrom(string table, bool checkExists)
+        {
+            return (IGroupedConditional)this.ConditionalFrom(table, checkExists);
+        }
+
+        IGroupedJoinable IGroupableTarget.JoinableFrom(string table, bool checkExists)
+        {
+            return (IGroupedJoinable)this.JoinableFrom(table, checkExists);
         }
     }
 }

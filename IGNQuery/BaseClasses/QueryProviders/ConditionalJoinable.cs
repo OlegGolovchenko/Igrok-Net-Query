@@ -28,7 +28,7 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class ConditionalJoinable : ConditionalQuery, IConditionalJoinable
+    internal class ConditionalJoinable : ConditionalQuery, IConditionalJoinable
     {
         internal ConditionalJoinable(IGNQueriable queriable) : base(queriable)
         {

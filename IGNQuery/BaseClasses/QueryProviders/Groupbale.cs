@@ -25,16 +25,19 @@
 // ############################################
 
 using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Delete : Target, IDelete
+    internal class Groupbale : Orderable, IGroupable
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
+        internal Groupbale(IGNQueriable queriable) : base(queriable)
         {
-            operation = "DELETE";
+        }
+
+        public IGroupable ThenBy(string column)
+        {
+            queriable.AddOperation("", column, ",");
+            return this;
         }
     }
 }

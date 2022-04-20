@@ -24,17 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
+using IGNQuery.BaseClasses.Business;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class Delete : Target, IDelete
+    public interface IGroupedConditional:IConditional, IQueryResult
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
-        {
-            operation = "DELETE";
-        }
+        IOrderableCondition Having(IGNConditionWithParameter condition);
+
+        new IGroupableCondition Where(IGNConditionWithParameter condition);
     }
 }

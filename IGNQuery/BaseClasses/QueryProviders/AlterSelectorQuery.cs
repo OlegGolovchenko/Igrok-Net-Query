@@ -34,7 +34,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 {
     public class AlterSelectorQuery<T, U> : IAlterSelectorQuery<T, U>
         where T : IQuery
-        where U : ExistanceCheck<T>
+        where U : IExistanceCheck<T>
     {
         private string name;
         private IGNQueriable queriable;

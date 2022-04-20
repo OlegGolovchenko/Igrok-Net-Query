@@ -25,11 +25,12 @@
 // ############################################
 
 using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
 using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class AlterNotExistsCheckQuery : ExistanceCheck<AlterQuery>
+    internal class AlterNotExistsCheckQuery : ExistanceCheck<IAlterQuery>, IAlterNotExistsCheckQuery
     {
         private string delimiter;
 
@@ -38,14 +39,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.delimiter = delimiter;
         }
 
-        public override AlterQuery IfNotExists()
+        public override IAlterQuery IfNotExists()
         {
             var result = base.IfNotExists();
-            result.delimiter = delimiter;
+            ((AlterQuery)result).delimiter = delimiter;
             return result;
         }
 
-        public override AlterQuery IfExists()
+        public override IAlterQuery IfExists()
         {
             throw new InvalidOperationException("Not available for this operation");
         }

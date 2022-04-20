@@ -30,25 +30,48 @@ using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Join : GroupedConditional, IJoin, IJoinable
+    internal class GroupableJoin : Join, IGroupableJoin, IGroupedJoinable, IJoinable, IJoin
     {
-        internal string source;
-        internal string destination;
-        internal Join(IGNQueriable queriable) : base(queriable)
+        internal GroupableJoin(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        public virtual IJoin InnerJoin(string joinedTable, bool checkExists)
+        public override IJoin InnerJoin(string joinedTable, bool checkExists)
         {
-            throw new NotImplementedException("Inheriting class must override it");
+            queriable.AddOperation("INNER JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
         }
 
-        public virtual IJoin LeftJoin(string joinedTable, bool checkExists)
+        public override IJoin LeftJoin(string joinedTable, bool checkExists)
         {
-            throw new NotImplementedException("Inheriting class must override it");
+            queriable.AddOperation("LEFT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
         }
 
-        public IJoinable MultiJoinOn(string sourceColumn, string joinedColumn, bool checkExists)
+        public override IJoin RightJoin(string joinedTable, bool checkExists)
+        {
+            queriable.AddOperation("RIGHT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
+        }
+
+        IGroupableJoin IGroupedJoinable.InnerJoin(string joinedTable, bool checkExists)
+        {
+            queriable.AddOperation("INNER JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
+        }
+
+        IGroupableJoin IGroupedJoinable.LeftJoin(string joinedTable, bool checkExists)
+        {
+            queriable.AddOperation("LEFT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
+        }
+
+        IGroupedJoinable IGroupableJoin.MultiJoinOn(string sourceColumn, string joinedColumn, bool checkExists)
         {
             string parameter = $"{queriable.SanitizeName(source)}.{queriable.SanitizeName(sourceColumn)} = " +
                    $"{queriable.SanitizeName(destination)}.{queriable.SanitizeName(joinedColumn)}";
@@ -58,7 +81,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public IConditional On(string sourceColumn, string joinedColumn, bool checkExists)
+        IGroupedConditional IGroupableJoin.On(string sourceColumn, string joinedColumn, bool checkExists)
         {
             string parameter = $"{queriable.SanitizeName(source)}.{queriable.SanitizeName(sourceColumn)} = " +
                    $"{queriable.SanitizeName(destination)}.{queriable.SanitizeName(joinedColumn)}";
@@ -68,9 +91,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
-        public virtual IJoin RightJoin(string joinedTable, bool checkExists)
+        IGroupableJoin IGroupedJoinable.RightJoin(string joinedTable, bool checkExists)
         {
-            throw new NotImplementedException("Inheriting class must override it");
+            queriable.AddOperation("RIGHT JOIN", queriable.SanitizeName(joinedTable), " ");
+            destination = joinedTable;
+            return this;
         }
     }
 }

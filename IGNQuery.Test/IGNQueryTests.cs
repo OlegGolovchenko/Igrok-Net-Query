@@ -141,8 +141,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                Select().
-               From("test").
-               IfExists().
+               ConditionalFrom("test", true).
                Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
                Go();
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
@@ -164,8 +163,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var subquery = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Select().
-                From("test").
-                IfExists().
+                ConditionalFrom("test", true).
                 Where(IGNConditionWithParameter.FromConfig("name", Enums.IGNSqlCondition.Eq, 0)).
                 Go();
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
@@ -240,9 +238,9 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Select(new List<string> { "test.id", "test2.test", "test.test" }).
-                From("test").
-                IfExists().
-                InnerJoin("test", "test2", "test2id", "id").
+                JoinableFrom("test", true).
+                InnerJoin("test2", true).
+                On("test2id", "id", true).
                 Go();
             var expected = "SELECT [test].[id],[test2].[test],[test].[test] FROM [test] INNER JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -256,9 +254,9 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Select(new List<string> { "test.id", "test2.test", "test.test" }).
-                From("test").
-                IfExists().
-                LeftJoin("test", "test2", "test2id", "id").
+                JoinableFrom("test", true).
+                LeftJoin("test2", true).
+                On("test2id", "id",true).
                 Go();
             var expected = "SELECT [test].[id],[test2].[test],[test].[test] FROM [test] LEFT JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -272,9 +270,9 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Select(new List<string> { "test.id", "test2.test", "test.test" }).
-                From("test").
-                IfExists().
-                RightJoin("test", "test2", "test2id", "id").
+                JoinableFrom("test", true).
+                RightJoin("test2", true).
+                On("test2id", "id", true).
                 Go();
             var expected = "SELECT [test].[id],[test2].[test],[test].[test] FROM [test] RIGHT JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -288,9 +286,9 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Select(new List<string> { "test.id", "test2.test", "test.test" }, true).
-                From("test").
-                IfExists().
-                InnerJoin("test", "test2", "test2id", "id").
+                JoinableFrom("test", true).
+                InnerJoin("test2", true).
+                On("test2id", "id", true).
                 Go();
             var expected = "SELECT DISTINCT [test].[id],[test2].[test],[test].[test] FROM [test] INNER JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -365,7 +363,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Delete().
-                JoineableFrom("test", true).
+                JoinableFrom("test", true).
                 InnerJoin("test2",true).
                 On("test2Id","id",true).
                 Where(IGNConditionWithParameter.FromConfig("tc", Enums.IGNSqlCondition.Eq, 0)).

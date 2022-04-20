@@ -26,10 +26,10 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IConditionalJoinable : IConditionalQuery
+    public interface IJoinable
     {
-        IConditionalJoinable InnerJoin(string source, string destination, string srcColumn, string destColumn);
-        IConditionalJoinable LeftJoin(string source, string destination, string srcColumn, string destColumn);
-        IConditionalJoinable RightJoin(string source, string destination, string srcColumn, string destColumn);
+        IJoin InnerJoin(string joinedTable, bool checkExists);
+        IJoin LeftJoin(string joinedTable, bool checkExists);
+        IJoin RightJoin(string joinedTable, bool checkExists);
     }
 }

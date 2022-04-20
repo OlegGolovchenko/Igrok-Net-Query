@@ -29,7 +29,7 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class QueryResult : IQueryResult
+    internal class QueryResult : IQueryResult
     {
         internal readonly IGNQueriable queriable;
 

@@ -25,16 +25,27 @@
 // ############################################
 
 using IGNQuery.Interfaces.QueryProvider;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Delete : Target, IDelete
+    internal class Orderable : QueryResult, IOrderable
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
+        internal Orderable(IGNQueriable queriable) : base(queriable)
         {
-            operation = "DELETE";
+        }
+
+        public IOrderable ThenBy(string column, bool descending)
+        {
+            queriable.AddOperation("", column, ",");
+            if (descending)
+            {
+                queriable.AddOperation("", "DESC", "");
+            }
+            else
+            {
+                queriable.AddOperation("", "ASC", "");
+            }
+            return this;
         }
     }
 }

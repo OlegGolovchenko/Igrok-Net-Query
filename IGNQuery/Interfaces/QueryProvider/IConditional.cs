@@ -31,7 +31,5 @@ namespace IGNQuery.Interfaces.QueryProvider
     public interface IConditional
     {
         ICondition Where(IGNConditionWithParameter condition);
-
-        IConditional Having(IGNConditionWithParameter condition);
     }
 }

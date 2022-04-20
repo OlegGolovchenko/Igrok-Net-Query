@@ -25,10 +25,11 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
+using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class AlterColumnQuery : AlterSelectorQuery<AlterQuery, AlterExistsCheckQuery>
+    internal class AlterColumnQuery : AlterSelectorQuery<IAlterQuery, IAlterExistsCheckQuery>, IAlterColumnQuery
     {
         public AlterColumnQuery(IGNQueriable queriable,string delimiter) : base(queriable, false, delimiter)
         {

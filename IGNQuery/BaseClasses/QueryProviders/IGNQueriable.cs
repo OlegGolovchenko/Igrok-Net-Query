@@ -172,14 +172,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new InsertQuery(this);
         }
 
-        public ISelectQuery Select(IEnumerable<string> columns, bool distinct = false)
+        public ISelect Select(IEnumerable<string> columns, bool distinct = false)
         {
-            return new SelectQuery(this, distinct, columns);
+            return new Select(this, columns, distinct);
         }
 
-        public ISelectQuery Select(bool distinct = false)
+        public ISelect Select(bool distinct = false)
         {
-            return new SelectQuery(this,distinct);
+            return new Select(this, distinct);
         }
 
         public IDelete Delete()

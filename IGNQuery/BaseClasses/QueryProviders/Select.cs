@@ -30,11 +30,31 @@ using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Delete : Target, IDelete
+    internal class Select : Target, ISelect
     {
-        internal Delete(IGNQueriable queriable) : base(queriable)
+        internal Select(IGNQueriable queriable, bool distinct) : base(queriable)
         {
-            operation = "DELETE";
+            if (distinct)
+            {
+                operation = "SELECT DISTINCT *";
+            }
+            else
+            {
+                operation = "SELECT *";
+            }
+        }
+
+        internal Select(IGNQueriable queriable, IEnumerable<string> fieldNames, bool distinct) : base(queriable)
+        {
+            string columns = fieldNames == null ? "*" : string.Join(",", fieldNames.Select(x => queriable.SanitizeName(x)));
+            if (distinct) 
+            {
+                operation = $"SELECT DISTINCT {columns}";
+            }
+            else
+            {
+                operation = $"SELECT {columns}";
+            }
         }
     }
 }

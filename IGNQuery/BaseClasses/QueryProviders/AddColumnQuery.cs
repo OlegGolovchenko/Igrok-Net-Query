@@ -24,9 +24,11 @@
 //
 // ############################################
 
+using IGNQuery.Interfaces.QueryProvider;
+
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class AddColumnQuery : AlterSelectorQuery<AlterQuery, AlterNotExistsCheckQuery>
+    internal class AddColumnQuery : AlterSelectorQuery<IAlterQuery, IAlterNotExistsCheckQuery>, IAddColumnQuery
     {
         public AddColumnQuery(IGNQueriable queriable, string delimiter) : base(queriable, true, delimiter)
         {

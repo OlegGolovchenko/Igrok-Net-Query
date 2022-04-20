@@ -30,7 +30,7 @@ namespace IGNQuery.Interfaces.QueryProvider
     {
         IQueryResult From(string table, bool checkExists);
 
-        IJoinable JoineableFrom(string table, bool checkExists);
+        IJoinable JoinableFrom(string table, bool checkExists);
 
         IConditional ConditionalFrom(string table, bool checkExists);
     }

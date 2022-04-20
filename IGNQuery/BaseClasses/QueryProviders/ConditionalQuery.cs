@@ -29,7 +29,7 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class ConditionalQuery : QueryResult, IConditionalQuery
+    internal class ConditionalQuery : QueryResult, IConditionalQuery
     {
         internal ConditionalQuery(IGNQueriable queriable):base(queriable)
         {

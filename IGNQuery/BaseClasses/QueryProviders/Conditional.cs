@@ -30,17 +30,10 @@ using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public class Conditional : Condition, IConditional
+    internal class Conditional : GroupableCondition, IConditional
     {
         internal Conditional(IGNQueriable queriable) : base(queriable)
         {
-        }
-
-        public IConditional Having(IGNConditionWithParameter condition)
-        {
-            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
-            queriable.AddOperation("HAVING", $"{condition}", " ");
-            return this;
         }
 
         public ICondition Where(IGNConditionWithParameter condition)

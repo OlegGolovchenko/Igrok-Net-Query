@@ -26,10 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IJoinable
+    public interface IGroupableJoin : IJoin
     {
-        IJoin InnerJoin(string joinedTable, bool checkExists);
-        IJoin LeftJoin(string joinedTable, bool checkExists);
-        IJoin RightJoin(string joinedTable, bool checkExists);
+        new IGroupedConditional On(string sourceColumn, string joinedColumn, bool checkExists);
+        new IGroupedJoinable MultiJoinOn(string sourceColumn, string joinedColumn, bool checkExists);
     }
 }
