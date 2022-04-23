@@ -24,28 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
+using System.Collections.Generic;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class QueryResult : IQueryResult
+    public interface IInsert
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
-        {
-            this.queriable = queriable;
-        }
-
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
-        }
+        IValuesQuery Into(string table, IEnumerable<string>fields, bool existsCheck);
+        ISelect IntoSelect(string table, IEnumerable<string> fields,
+            IEnumerable<string> selectFields, bool distinct, bool existsCheck);
     }
 }

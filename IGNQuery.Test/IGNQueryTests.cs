@@ -371,5 +371,68 @@ namespace IGNQuery.Test
             var expected = "DELETE FROM [test] INNER JOIN [test2] ON [test].[test2Id] = [test2].[id] WHERE [tc] = @p0 \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
+
+        [Test]
+        public void InsertQueryShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Insert().
+                Into("tempTest", new List<string> { "test1", "test2" }, true).
+                Values(new List<int> { 0, 1 }).
+                Go();
+            var expected = "INSERT INTO [tempTest] ([test1],[test2]) VALUES (@p0,@p1) \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void InsertQueryShouldGiveCorrectSyntaxWithMultipleRows()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Insert().
+                Into("tempTest", new List<string> { "test1", "test2" }, true).
+                Values(new List<int> { 0, 1 }).
+                Values(new List<int> { 2, 3 }).
+                Go();
+            var expected = "INSERT INTO [tempTest] ([test1],[test2]) VALUES (@p0,@p1), (@p2,@p3) \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void InsertSelectQueryShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Insert().
+                IntoSelect("tempTest", new List<string> { "test1", "test2" }, 
+                           new List<string> { "test", "test2" }, false, true).
+                From("test",true).
+                Go();
+            var expected = "INSERT INTO [tempTest] ([test1],[test2]) SELECT [test],[test2] FROM [test] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void InsertSelectDistinctQueryShouldGiveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Insert().
+                IntoSelect("tempTest", new List<string> { "test1", "test2" },
+                           new List<string> { "test", "test2" }, true, true).
+                From("test", true).
+                Go();
+            var expected = "INSERT INTO [tempTest] ([test1],[test2]) SELECT DISTINCT [test],[test2] FROM [test] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
     }
 }

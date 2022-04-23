@@ -167,9 +167,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new UpdateQuery(this);
         }
 
-        public IInsertQuery Insert()
+        public IInsert Insert()
         {
-            return new InsertQuery(this);
+            return new Insert(this);
         }
 
         public ISelect Select(IEnumerable<string> columns, bool distinct = false)
