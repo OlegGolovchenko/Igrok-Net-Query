@@ -74,7 +74,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
             exists = true;
             this.declaredQueryTypes = new Dictionary<Type, Type>
             {
-                { typeof(IDeleteQuery), typeof(DeleteQuery) },
                 { typeof(IConditionalQuery), typeof(ConditionalQuery) },
                 { typeof(IQueryResult), typeof(QueryResult) },
                 { typeof(IExistsCheckQuery), typeof(ExistsCheckQuery) },
