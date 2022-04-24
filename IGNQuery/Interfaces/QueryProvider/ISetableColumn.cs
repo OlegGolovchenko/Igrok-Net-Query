@@ -26,8 +26,8 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IUpdateExistenceCheckQuery: IQueryResult
+    public interface ISetableColumn : IConditional, IQueryResult
     {
-        IUpdateQuery IfExists();
+        ISetableColumn Set(string column, int param);
     }
 }

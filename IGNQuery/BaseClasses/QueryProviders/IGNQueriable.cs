@@ -161,9 +161,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new DropQuery(this);
         }
 
-        public IUpdateQuery Update()
+        public IUpdate Update(string table, bool existsCheck)
         {
-            return new UpdateQuery(this);
+            return new Update(this, table, existsCheck);
         }
 
         public IInsert Insert()

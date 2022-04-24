@@ -26,53 +26,18 @@
 
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class UpdateQuery : QueryResult, IUpdateQuery
+    internal class Update : SetableColumn, IUpdate
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
-
-        public UpdateQuery(IGNQueriable queriable):base(queriable)
+        internal Update(IGNQueriable queriable, string table, bool existsCheck) : base(queriable)
         {
-        }
-
-        public IConditionalQuery SetParametrizedWithCondition(string fieldName, int paramNb)
-        {
-            AddSetColumnCommand(fieldName, paramNb);
-            return new ConditionalQuery(queriable);
-        }
-
-        public IUpdateQuery SetParametrized(string fieldName, int paramNb)
-        {
-            AddSetColumnCommand(fieldName, paramNb);
-            return this;
-        }
-
-        private void AddSetColumnCommand(string fieldName, int paramNb)
-        {
-            if (!this.queriable.HasSetCommand())
-            {
-                queriable.AddOperation("SET", $"{queriable.SanitizeName(fieldName)} = @p{paramNb}", " ");
-                return;
-            }
-            queriable.AddOperation("", $"{queriable.SanitizeName(fieldName)} = @p{paramNb}", ", ");
-        }
-
-        public IUpdateExistenceCheckQuery Table(string table)
-        {
-            name = table;
-            objectType = IGNDbObjectTypeEnum.Table;
             queriable.AddOperation("UPDATE", queriable.SanitizeName(table), "");
-            return this;
-        }
-
-        public IUpdateQuery IfExists()
-        {
-            queriable.IfExists(objectType, name, "");
-            return this;
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
+            }
         }
     }
 }
