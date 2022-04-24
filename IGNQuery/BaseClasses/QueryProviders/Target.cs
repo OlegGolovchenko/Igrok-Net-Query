@@ -32,6 +32,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     internal class Target : GroupedJoinable, ITarget, IGroupableTarget
     {
         internal string operation;
+        internal string[] fields;
         internal Target(IGNQueriable queriable) : base(queriable)
         {
         }
@@ -42,6 +43,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
+                if(fields != null)
+                {
+                    foreach (var field in fields)
+                    {
+                        queriable.IfExists(IGNDbObjectTypeEnum.Column, field, table);
+                    }
+                }
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
             }
             return this;
@@ -53,6 +61,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
+                if (fields != null)
+                {
+                    foreach (var field in fields)
+                    {
+                        queriable.IfExists(IGNDbObjectTypeEnum.Column, field, table);
+                    }
+                }
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
             }
             return this;
@@ -64,6 +79,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
             queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
             if (checkExists)
             {
+                if (fields != null)
+                {
+                    foreach (var field in fields)
+                    {
+                        queriable.IfExists(IGNDbObjectTypeEnum.Column, field, table);
+                    }
+                }
                 queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
             }
             return this;

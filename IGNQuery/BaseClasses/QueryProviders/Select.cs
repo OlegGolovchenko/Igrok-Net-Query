@@ -46,6 +46,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         internal Select(IGNQueriable queriable, IEnumerable<string> fieldNames, bool distinct) : base(queriable)
         {
+            fields = fieldNames.ToArray();
             string columns = fieldNames == null ? "*" : string.Join(",", fieldNames.Select(x => queriable.SanitizeName(x)));
             if (distinct) 
             {
