@@ -33,6 +33,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     {
         internal Update(IGNQueriable queriable, string table, bool existsCheck) : base(queriable)
         {
+            this.table = table;
             queriable.AddOperation("UPDATE", queriable.SanitizeName(table), "");
             if (existsCheck)
             {

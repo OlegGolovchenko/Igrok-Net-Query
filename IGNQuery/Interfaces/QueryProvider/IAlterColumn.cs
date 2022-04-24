@@ -25,40 +25,11 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
-using IGNQuery.Enums;
-using IGNQuery.Interfaces.QueryProvider;
-using System;
-using System.Reflection;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    public class AlterSelectorQuery<T, U> : IAlterSelectorQuery<T, U>
-        where T : IQuery
-        where U : IExistanceCheck<T>
+    public interface IAlterColumn : IQueryResult
     {
-        private string name;
-        private IGNQueriable queriable;
-        private bool isAddQuery;
-        private string delimiter;
-
-        public AlterSelectorQuery(IGNQueriable queriable, bool isAddQuery, string delimiter)
-        {
-            this.queriable = queriable;
-            this.isAddQuery = isAddQuery;
-            this.delimiter = delimiter;
-        }
-
-        public virtual U Column(TableColumnConfiguration column)
-        {
-            name = column.ColumnName;
-            string operand = isAddQuery ? "" : "COLUMN";
-            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), "");
-            Type u = typeof(U);
-
-            ConstructorInfo ci = u.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { typeof(IGNQueriable), typeof(string), typeof(IGNDbObjectTypeEnum), typeof(string) }, null);
-            return (U)ci.Invoke(new object[] { queriable, name, IGNDbObjectTypeEnum.Database, delimiter });
-        }
+        IAlterColumn Alter(TableColumnConfiguration column, bool existsCheck);
     }
 }

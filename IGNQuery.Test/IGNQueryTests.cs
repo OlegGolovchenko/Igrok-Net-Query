@@ -35,17 +35,11 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Alter().
-                Table("test").
-                IfExists().
-                Add().
-                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, "")).
-                IfNotExists().
-                Add().
-                Column(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, "")).
-                IfNotExists().
+                Alter("test",true).
+                AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
+                Add(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, ""),true).
                 Go();
-            var expected = "ALTER TABLE [test] ADD  [test1] NVARCHAR(25) NULL,   [test2] NVARCHAR(25) NULL \nGO";
+            var expected = "ALTER TABLE [test] ADD [test1] NVARCHAR(25) NULL, [test2] NVARCHAR(25) NULL \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 
@@ -57,15 +51,11 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Alter().
-                Table("test").
-                IfExists().
-                Drop("test1").
-                IfExists().
-                Drop("test2").
-                IfExists().
+                Alter("test",true).
+                DropColumn("test1",true).
+                Drop("test2",true).
                 Go();
-            var expected = "ALTER TABLE [test] DROP COLUMN [test1],  [test2] \nGO";
+            var expected = "ALTER TABLE [test] DROP COLUMN [test1], [test2] \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 
@@ -76,12 +66,8 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
-                Alter().
-                Table("test").
-                IfExists().
-                Alter().
-                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, "")).
-                IfExists().
+                Alter("test", true).
+                AlterColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
                 Go();
             var expected = "ALTER TABLE [test] ALTER COLUMN [test1] NVARCHAR(25) NULL \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -302,7 +288,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Update("users",true).
-                Set("loggedInDateTime", 0).
+                Set("loggedInDateTime", 0, true).
                 Where(IGNConditionWithParameter.FromConfig("Id", Enums.IGNSqlCondition.Eq, 1)).
                 Go();
             var expected = "UPDATE [users] SET [loggedInDateTime] = @p0 WHERE [Id] = @p1 \nGO";
@@ -317,7 +303,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Update("users", true).
-                Set("loggedInDateTime", 0).
+                Set("loggedInDateTime", 0, true).
                 Go();
             var expected = "UPDATE [users] SET [loggedInDateTime] = @p0 \nGO";
             Assert.AreEqual(expected, query.ToString());

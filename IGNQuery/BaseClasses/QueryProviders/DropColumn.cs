@@ -24,15 +24,26 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
-using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Interfaces.QueryProvider
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public interface IAlterSelectorQuery<T, U> 
-        where T : IQuery
-        where U : IExistanceCheck<T>
+    internal class DropColumn : AlterColumn, IDropColumn
     {
-        U Column(TableColumnConfiguration column);
+        internal DropColumn(IGNQueriable queriable) : base(queriable)
+        {
+        }
+
+        IDropColumn IDropColumn.Drop(string column, bool existsCheck)
+        {
+            string command = !queriable.HasDropColumnOrSqlServer() ? "DROP COLUMN" : "";
+            queriable.AddOperation(command, queriable.SanitizeName(column), ",");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
+            }
+            return this;
+        }
     }
 }

@@ -25,14 +25,25 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class AlterColumnQuery : AlterSelectorQuery<IAlterQuery, IAlterExistsCheckQuery>, IAlterColumnQuery
+    internal class AlterColumn : AddColumn, IAlterColumn
     {
-        public AlterColumnQuery(IGNQueriable queriable,string delimiter) : base(queriable, false, delimiter)
+        internal AlterColumn(IGNQueriable queriable) : base(queriable)
         {
+        }
+
+        IAlterColumn IAlterColumn.Alter(TableColumnConfiguration column, bool existsCheck)
+        {
+            queriable.AddOperation("ALTER COLUMN", queriable.FormatFieldOptionals(column), ",");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
+            }
+            return this;
         }
     }
 }

@@ -25,23 +25,13 @@
 // ############################################
 
 using IGNQuery.BaseClasses.Business;
-using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAlterColumnQuery : IAlterSelectorQuery<IAlterQuery, IAlterExistsCheckQuery>
+    public interface IAlter
     {
-
-    }
-
-    public interface IAlterQuery: IQueryResult
-    {
-        IAlterExistsCheckQuery Table(string tableName);
-
-        IAddColumnQuery Add();
-
-        IAlterExistsCheckQuery Drop(string column);
-
-        IAlterColumnQuery Alter();
+        IAlterColumn AlterColumn(TableColumnConfiguration column, bool existsCheck);
+        IAddColumn AddColumn(TableColumnConfiguration column, bool existsCheck);
+        IDropColumn DropColumn(string column, bool existsCheck);
     }
 }

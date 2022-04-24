@@ -28,6 +28,6 @@ namespace IGNQuery.Interfaces.QueryProvider
 {
     public interface ISetableColumn : IConditional, IQueryResult
     {
-        ISetableColumn Set(string column, int param);
+        ISetableColumn Set(string column, int param, bool existsCheck);
     }
 }

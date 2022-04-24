@@ -30,49 +30,48 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-
-    internal class AlterQuery : QueryResult,
-        IAlterQuery
+    internal class Alter : DropColumn, IAlter
     {
-        private IGNDbObjectTypeEnum objectType;
-        private string name;
-        internal string delimiter = " ";
-
-        internal AlterQuery(IGNQueriable queriable):base(queriable)
+        internal Alter(IGNQueriable queriable, string table, bool checkExists) : base(queriable)
         {
+            this.table = table;
+            queriable.AddOperation("ALTER TABLE", queriable.SanitizeName(table), "");
+            if (checkExists)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, string.Empty);
+            }
         }
 
-        public IAddColumnQuery Add()
+        public IAddColumn AddColumn(TableColumnConfiguration column, bool existsCheck)
         {
             string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
-            queriable.AddOperation(operand, "", delimiter);
-            delimiter = ", ";
-            return new AddColumnQuery(queriable, delimiter);
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), " ");
+            if (existsCheck)
+            {
+                queriable.IfNotExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
+            }
+            return this;
         }
 
-        public IAlterColumnQuery Alter()
+        public IAlterColumn AlterColumn(TableColumnConfiguration column, bool existsCheck)
         {
-            queriable.AddOperation("ALTER", "", delimiter);
-            delimiter = ", ";
-            return new AlterColumnQuery(queriable, delimiter);
+            queriable.AddOperation("ALTER COLUMN", queriable.FormatFieldOptionals(column), " ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
+            }
+            return this;
         }
 
-        public IAlterExistsCheckQuery Drop(string column)
+        public IDropColumn DropColumn(string column, bool existsCheck)
         {
-            this.name = column;
-            objectType = IGNDbObjectTypeEnum.Column;
             string command = !queriable.HasDropColumnOrSqlServer() ? "DROP COLUMN" : "";
-            queriable.AddOperation(command, queriable.SanitizeName(name), delimiter);
-            delimiter = ", ";
-            return new AlterExistsCheckQuery(queriable, column, objectType, delimiter);
-        }
-
-        public IAlterExistsCheckQuery Table(string tableName)
-        {
-            name = tableName;
-            objectType = IGNDbObjectTypeEnum.Table;
-            queriable.AddOperation("ALTER TABLE", queriable.SanitizeName(tableName), "");
-            return new AlterExistsCheckQuery(queriable, tableName, objectType, delimiter);
+            queriable.AddOperation(command, queriable.SanitizeName(column), " ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
+            }
+            return this;
         }
     }
 }

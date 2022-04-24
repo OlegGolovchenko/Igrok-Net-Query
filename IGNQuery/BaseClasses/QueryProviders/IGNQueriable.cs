@@ -151,9 +151,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return new CreateQuery(this);
         }
 
-        public IAlterQuery Alter()
+        public IAlter Alter(string table, bool existsCheck)
         {
-            return new AlterQuery(this);
+            return new Alter(this, table, existsCheck);
         }
 
         public IDropQuery Drop()

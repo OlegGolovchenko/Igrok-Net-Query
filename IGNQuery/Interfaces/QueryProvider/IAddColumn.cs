@@ -24,10 +24,12 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAddColumnQuery: IAlterSelectorQuery<IAlterQuery, IAlterNotExistsCheckQuery>
+    public interface IAddColumn: IQueryResult
     {
-
+        IAddColumn Add(TableColumnConfiguration column, bool existsCheck);
     }
 }

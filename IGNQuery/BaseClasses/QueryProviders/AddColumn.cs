@@ -24,10 +24,29 @@
 //
 // ############################################
 
-namespace IGNQuery.Interfaces.QueryProvider
-{
-    public interface IAlterExistsCheckQuery : IExistanceCheck<IAlterQuery>
-    {
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.Enums;
+using IGNQuery.Interfaces.QueryProvider;
 
+namespace IGNQuery.BaseClasses.QueryProviders
+{
+    internal class AddColumn : QueryResult, IAddColumn
+    {
+        internal string table;
+        internal bool isFirstAdd = true;
+        internal AddColumn(IGNQueriable queriable) : base(queriable)
+        {
+        }
+
+        public IAddColumn Add(TableColumnConfiguration column, bool existsCheck)
+        {
+            string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), ",");
+            if (existsCheck)
+            {
+                queriable.IfNotExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
+            }
+            return this;
+        }
     }
 }

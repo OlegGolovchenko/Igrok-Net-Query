@@ -26,8 +26,8 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface IAlterNotExistsCheckQuery : IExistanceCheck<IAlterQuery>
+    public interface IDropColumn : IQueryResult
     {
-
+        IDropColumn Drop(string column, bool existsCheck);
     }
 }

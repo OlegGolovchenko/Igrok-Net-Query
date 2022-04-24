@@ -32,19 +32,28 @@ namespace IGNQuery.BaseClasses.QueryProviders
     internal class SetableColumn : Conditional, ISetableColumn
     {
         internal bool isFirstSet = true;
+        internal string table;
         internal SetableColumn(IGNQueriable queriable) : base(queriable)
         {
         }
 
-        public ISetableColumn Set(string column, int param)
+        public ISetableColumn Set(string column, int param, bool existsCheck)
         {
             if (isFirstSet)
             {
                 queriable.AddOperation("SET", $"{queriable.SanitizeName(column)} = @p{param}", " ");
                 isFirstSet = false;
+                if (existsCheck)
+                {
+                    queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+                }
                 return this;
             }
             queriable.AddOperation("", $"{queriable.SanitizeName(column)} = @p{param}", ", ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+            }
             return this;
         }
     }
