@@ -310,17 +310,72 @@ namespace IGNQuery.Test
         }
 
         [Test]
-        public void DropQueryShouldHaveCorrectSyntax()
+        public void DropDatabaseQueryShouldHaveCorrectSyntax()
         {
             var dbDriverMock = new Mock<IDataDriver>();
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Drop().
-                Database("testdb").
-                IfExists().
+                Database("testdb", true).
                 Go();
             var expected = "DROP DATABASE [testdb] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DropIndexQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Drop().
+                Index("IX_test", "test", true).
+                Go();
+            var expected = "DROP INDEX [IX_test] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DropStoredProcedureQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Drop().
+                StoredProcedure("test_proc", true).
+                Go();
+            var expected = "DROP PROCEDURE [test_proc] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DropTableQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Drop().
+                Table("test", true).
+                Go();
+            var expected = "DROP TABLE [test] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void DropViewQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Drop().
+                View("vw_test", true).
+                Go();
+            var expected = "DROP VIEW [vw_test] \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
 

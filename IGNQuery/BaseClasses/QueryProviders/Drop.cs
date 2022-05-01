@@ -24,38 +24,36 @@
 //
 // ############################################
 
-using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class DropQuery : Selector<IExistsCheckQuery, IQueryResult>, IDropQuery
+    internal class Drop : DropCreateSelector, IDrop
     {
-        public DropQuery(IGNQueriable queriable) : base(queriable, "DROP")
+        internal Drop(IGNQueriable queriable) : base(queriable)
         {
+            isDropQuery = true;
+            sqloperand = "DROP";
         }
 
-        public override IExistsCheckQuery Index(string name, string tableName, IEnumerable<string> columns, bool unique)
+        public IDrop Index(string name, string table, bool existsCheck)
         {
-            throw new InvalidOperationException("This signature is for Create query only");
+            return (IDrop)Index(name, table, false, existsCheck, null);
         }
 
-        public override IExistsCheckQuery StoredProcedure(string name, IGNQueriable content, [Optional] IEnumerable<IGNParameter> parameters)
+        public IDrop StoredProcedure(string name, bool existsCheck)
         {
-            throw new InvalidOperationException("This signature is for Create query only");
+            return (IDrop)StoredProcedure(name, existsCheck, null);
         }
 
-        public override IExistsCheckQuery Table(string name, IEnumerable<TableColumnConfiguration> fields)
+        public IDrop Table(string name, bool existsCheck)
         {
-            throw new InvalidOperationException("This signature is for Create query only");
+            return (IDrop)Table(name, existsCheck, null);
         }
 
-        public override IExistsCheckQuery View(string name, IGNQueriable content)
+        public IDrop View(string name, bool existsCheck)
         {
-            throw new InvalidOperationException("This signature is for Create query only");
+            return (IDrop)View(name, existsCheck, null);
         }
     }
 }
