@@ -24,14 +24,13 @@ We will not send you emails except for service emails (account activation, any r
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
                 Create().
-                Table("test", new List<TableColumnConfiguration>()
+                Table("test", true, new List<TableColumnConfiguration>()
                 {
                     TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
                     TableColumnConfiguration.FromConfig("userId",typeof(long),0,true,false,false,null),
                     TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null),
                     TableColumnConfiguration.FromConfig("testDate",typeof(DateTime),0,false,false,false,null)
                 }).
-                IfNotExists().
                 Go();
 dataProvider.Execute(query);
 ```
@@ -42,8 +41,7 @@ dataProvider.Execute(query);
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
                 Create().
-                Database("testdb").
-                IfNotExists().
+                Database("testdb", true).
                 Go()
 dataProvider.Execute(query);
 ```
@@ -53,77 +51,27 @@ dataProvider.Execute(query);
 ``` csharp
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
-    Alter().
-    Table("ignusers").
-    IfExists().
-    Add().
-    Column(new TableField
-    {
-        Name = "test1",
-        CanHaveNull = true,
-        Primary = false,
-        Type = TableField.TypeNvarchar(25),
-        Generated = false,
-        DefValue = ""
-    }).
-    IfNotExists().
-    Add().
-    Column(new TableField
-    {
-        Name = "test2",
-        CanHaveNull = true,
-        Primary = false,
-        Type = TableField.TypeNvarchar(25),
-        Generated = false,
-        DefValue = ""
-    }).
-    IfNotExists().
+    Alter("ignusers", true).
+    AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
+    AddColumn(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, ""),true).
     Go();
 dataProvider.Execute(query);
 query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
-    Alter().
-    Table("ignusers").
-    IfExists().
-    Alter().
-    Column(new TableField
-    {
-        Name = "test1",
-        CanHaveNull = true,
-        Primary = false,
-        Type = TableField.TypeNvarchar(50),
-        Generated = false,
-        DefValue = ""
-    }).
-    IfExists().
+    Alter("ignusers", true).
+    AlterColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
     Go();
 dataProvider.Execute(query);
 query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
-    Alter().
-    Table("ignusers").
-    IfExists().
-    Drop("test1").
-    IfExists().
-    Drop("test2").
-    IfExists().
+    Alter("ignusers", true).
+    DropColumn("test1", true).
+    Drop("test2", true).
     Go();
 dataProvider.Execute(query);
 var dataDriver = new MySqlDataDriver("youremail@domain.com");
-var column = new TableField
-{
-    Name = "createdOn",
-    CanHaveNull = true,
-    Primary = false,
-    Generated = true,
-    DefValue = "",
-    Type = TableField.TYPE_DATE
-};
 var altquery = IGNQueriable.Begin("youremail@domain.com", dataDriver).
-    Alter().
-    Table("ignusers").
-    IfExists().
-    Add().
-    Column(column).
-    IfNotExists().
+    Alter("ignusers", true).
+    AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
+    Add(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, ""),true).
     Go();
 dataDriver.Execute(altquery);
 ```
@@ -135,7 +83,7 @@ dataDriver.Execute(altquery);
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
     Delete().
-    From("ignusers").
+    From("ignusers", true).
     Go();
 
 dataProvider.Execute(query);
@@ -147,9 +95,8 @@ dataProvider.Execute(query);
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
         Insert().
-        Into("ignusers", new List<string>() { "mail" }).
-        IfExists().
-        ValuesWithParams(new List<int> { 0 }).
+        Into("ignusers", new List<string>() { "mail" }, true).
+        Values(new List<int> { 0 }).
         Go();
 
 dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
@@ -164,8 +111,7 @@ dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
 var dataProvider = new MySqlDataDriver("youremail@domain.com");
 var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
     Drop().
-    Table("ignusers").
-    IfExists().
+    Table("ignusers", true).
     Go();
 
 dataProvider.Execute(query);
