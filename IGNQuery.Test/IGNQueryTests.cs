@@ -74,6 +74,20 @@ namespace IGNQuery.Test
         }
 
         [Test]
+        public void AlterColumnsQueryShouldGiveCorrectSyntaxForMySql()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MySQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns(";");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Alter("test", true).
+                AlterColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""), true).
+                Go();
+            var expected = "ALTER TABLE `test` MODIFY COLUMN `test1` NVARCHAR(25) NULL ;";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
         public void CreateDatabaseQueryShouldGiveCorrectSyntax()
         {
             var dbDriverMock = new Mock<IDataDriver>();
