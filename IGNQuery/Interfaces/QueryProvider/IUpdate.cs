@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Update query
+    /// </summary>
     public interface IUpdate: ISetableColumn
     {
 

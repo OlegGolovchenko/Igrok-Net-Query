@@ -26,8 +26,17 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Drop column query
+    /// </summary>
     public interface IDropColumn : IQueryResult
     {
+        /// <summary>
+        /// Drop column line starting from second
+        /// </summary>
+        /// <param name="column">column to drop</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>next drop column query</returns>
         IDropColumn Drop(string column, bool existsCheck);
     }
 }

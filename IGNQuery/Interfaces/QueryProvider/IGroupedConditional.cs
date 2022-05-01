@@ -28,8 +28,16 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Conditional with grouping
+    /// </summary>
     public interface IGroupedConditional:IConditional, IQueryResult
     {
+        /// <summary>
+        /// Having operator
+        /// </summary>
+        /// <param name="condition">first condition</param>
+        /// <returns>next condition</returns>
         IOrderableCondition Having(IGNConditionWithParameter condition);
 
         new IGroupableCondition Where(IGNConditionWithParameter condition);

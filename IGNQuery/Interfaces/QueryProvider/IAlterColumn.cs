@@ -28,8 +28,17 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Alter column query representation
+    /// </summary>
     public interface IAlterColumn : IQueryResult
     {
+        /// <summary>
+        /// Alter columns starting from second
+        /// </summary>
+        /// <param name="column">new column configuration</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>next alter column query</returns>
         IAlterColumn Alter(TableColumnConfiguration column, bool existsCheck);
     }
 }

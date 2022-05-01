@@ -28,10 +28,28 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Condition query representation
+    /// </summary>
     public interface ICondition : IQueryResult
     {
+        /// <summary>
+        /// And operator
+        /// </summary>
+        /// <param name="condition">next condition</param>
+        /// <returns>next boolean operator</returns>
         ICondition And(IGNConditionWithParameter condition);
+        /// <summary>
+        /// Or operator
+        /// </summary>
+        /// <param name="condition">next condition</param>
+        /// <returns>next boolean operator</returns>
         ICondition Or(IGNConditionWithParameter condition);
+        /// <summary>
+        /// Not operator
+        /// </summary>
+        /// <param name="condition">next condition</param>
+        /// <returns>next boolean condition</returns>
         ICondition Not(IGNConditionWithParameter condition);
     }
 }

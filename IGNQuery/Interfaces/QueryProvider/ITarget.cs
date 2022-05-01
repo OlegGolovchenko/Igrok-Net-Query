@@ -26,12 +26,33 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Target for select/delete query
+    /// </summary>
     public interface ITarget
     {
+        /// <summary>
+        /// From operand
+        /// </summary>
+        /// <param name="table">table to select/delete from</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>query result</returns>
         IQueryResult From(string table, bool checkExists);
 
+        /// <summary>
+        /// From operand with join
+        /// </summary>
+        /// <param name="table">table to select/delete from</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>joinable query</returns>
         IJoinable JoinableFrom(string table, bool checkExists);
 
+        /// <summary>
+        /// From operand with condition
+        /// </summary>
+        /// <param name="table">table to select/delete from</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>conditional query</returns>
         IConditional ConditionalFrom(string table, bool checkExists);
     }
 }

@@ -26,8 +26,18 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Setable column
+    /// </summary>
     public interface ISetableColumn : IConditional, IQueryResult
     {
+        /// <summary>
+        /// Sets value of column
+        /// </summary>
+        /// <param name="column">column to set</param>
+        /// <param name="param">param to hold value</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns></returns>
         ISetableColumn Set(string column, int param, bool existsCheck);
     }
 }

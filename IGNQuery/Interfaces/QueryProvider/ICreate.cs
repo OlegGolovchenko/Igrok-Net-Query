@@ -30,16 +30,56 @@ using System.Collections.Generic;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Create query representation
+    /// </summary>
     public interface ICreate
     {
+        /// <summary>
+        /// Create database
+        /// </summary>
+        /// <param name="name">dbName</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IQueryResult Database(string name, bool existsCheck);
 
+        /// <summary>
+        /// Create table
+        /// </summary>
+        /// <param name="name">table name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <param name="fields">fields to add to table</param>
+        /// <returns>query result</returns>
         IQueryResult Table(string name, bool existsCheck, IEnumerable<TableColumnConfiguration> fields);
 
+        /// <summary>
+        /// Create index
+        /// </summary>
+        /// <param name="name">index name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <param name="table">table name</param>
+        /// <param name="columns">columns to index on</param>
+        /// <param name="unique">unique index or not</param>
+        /// <returns>query result</returns>
         IQueryResult Index(string name, string table, bool unique, bool existsCheck, IEnumerable<string> columns);
 
+        /// <summary>
+        /// Create view
+        /// </summary>
+        /// <param name="name">view name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <param name="content">content of view</param>
+        /// <returns>query result</returns>
         IQueryResult View(string name, bool existsCheck, IGNQueriable content);
 
+        /// <summary>
+        /// Create stored procedure
+        /// </summary>
+        /// <param name="name">stored procedure name</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <param name="content">content of stored procedure</param>
+        /// <param name="parameters">parameters for stored procedure</param>
+        /// <returns>query result</returns>
         IQueryResult StoredProcedure(string name, bool checkExists, IGNQueriable content, IEnumerable<IGNParameter> parameters);
     }
 }

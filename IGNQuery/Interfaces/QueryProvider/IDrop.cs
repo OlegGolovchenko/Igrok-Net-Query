@@ -26,16 +26,50 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Drop query representation
+    /// </summary>
     public interface IDrop : IQueryResult
     {
+        /// <summary>
+        /// Drop database
+        /// </summary>
+        /// <param name="name">dbName</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IQueryResult Database(string name, bool existsCheck);
 
+        /// <summary>
+        /// Drop table
+        /// </summary>
+        /// <param name="name">table name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IDrop Table(string name, bool existsCheck);
 
+        /// <summary>
+        /// Drop index
+        /// </summary>
+        /// <param name="name">index name</param>
+        /// <param name="table">table name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IDrop Index(string name, string table, bool existsCheck);
 
+        /// <summary>
+        /// Drop view
+        /// </summary>
+        /// <param name="name">view name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IDrop View(string name,bool existsCheck);
 
+        /// <summary>
+        /// Drop stored procedure
+        /// </summary>
+        /// <param name="name">stored procedure name</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>query result</returns>
         IDrop StoredProcedure(string name, bool existsCheck);
     }
 }

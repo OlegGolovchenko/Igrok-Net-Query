@@ -26,9 +26,27 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Join operand
+    /// </summary>
     public interface IJoin
     {
+        /// <summary>
+        /// On operand
+        /// </summary>
+        /// <param name="sourceColumn">source table column</param>
+        /// <param name="joinedColumn">target table column</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>conditional query</returns>
         IConditional On(string sourceColumn, string joinedColumn, bool checkExists);
+
+        /// <summary>
+        /// On operand for multijoin
+        /// </summary>
+        /// <param name="sourceColumn">source table column</param>
+        /// <param name="joinedColumn">target table column</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>next joinable query</returns>
         IJoinable MultiJoinOn(string sourceColumn, string joinedColumn, bool checkExists);
     }
 }

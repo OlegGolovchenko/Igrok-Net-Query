@@ -28,9 +28,18 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Grouping with condition
+    /// </summary>
     public interface IGroupableCondition : ICondition
     {
+        /// <summary>
+        /// First grouping
+        /// </summary>
+        /// <param name="column">column to group on</param>
+        /// <returns>next grouping</returns>
         IGroupable GroupBy(string column);
+
         new IGroupableCondition And(IGNConditionWithParameter condition);
         new IGroupableCondition Or(IGNConditionWithParameter condition);
         new IGroupableCondition Not(IGNConditionWithParameter condition);

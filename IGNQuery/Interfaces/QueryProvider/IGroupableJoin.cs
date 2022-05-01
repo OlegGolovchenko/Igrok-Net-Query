@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// join with grouping
+    /// </summary>
     public interface IGroupableJoin : IJoin
     {
         new IGroupedConditional On(string sourceColumn, string joinedColumn, bool checkExists);

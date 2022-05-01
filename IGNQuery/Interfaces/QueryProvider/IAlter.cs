@@ -28,10 +28,31 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Alter query representation
+    /// </summary>
     public interface IAlter
     {
+        /// <summary>
+        /// Alter first column
+        /// </summary>
+        /// <param name="column">new column configuration</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>next alter column query</returns>
         IAlterColumn AlterColumn(TableColumnConfiguration column, bool existsCheck);
+        /// <summary>
+        /// Add first column
+        /// </summary>
+        /// <param name="column">new column configuration</param>
+        /// <param name="existsCheck">check if not exists</param>
+        /// <returns>next add column query</returns>
         IAddColumn AddColumn(TableColumnConfiguration column, bool existsCheck);
+        /// <summary>
+        /// Drop first column
+        /// </summary>
+        /// <param name="column">column to drop</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>next drop column auery</returns>
         IDropColumn DropColumn(string column, bool existsCheck);
     }
 }

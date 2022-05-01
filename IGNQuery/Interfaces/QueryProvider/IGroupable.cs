@@ -26,8 +26,16 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Second grouping
+    /// </summary>
     public interface IGroupable : IQueryResult
     {
+        /// <summary>
+        /// Second grouping
+        /// </summary>
+        /// <param name="column">column to group on</param>
+        /// <returns>next grouping query</returns>
         IGroupable ThenBy(string column);
     }
 }
