@@ -133,11 +133,11 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 if (isDropQuery)
                 {
-                    queriable.IfExists(Enums.IGNDbObjectTypeEnum.Index, name, string.Empty);
+                    queriable.IfExists(Enums.IGNDbObjectTypeEnum.Table, name, string.Empty);
                 }
                 else
                 {
-                    queriable.IfNotExists(Enums.IGNDbObjectTypeEnum.Index, name, string.Empty);
+                    queriable.IfNotExists(Enums.IGNDbObjectTypeEnum.Table, name, string.Empty);
                 }
             }
             return this;

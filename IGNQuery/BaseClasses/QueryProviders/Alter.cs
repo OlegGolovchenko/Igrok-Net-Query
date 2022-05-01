@@ -45,6 +45,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IAddColumn AddColumn(TableColumnConfiguration column, bool existsCheck)
         {
             string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
+            if(queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                operand += " COLUMN";
+            }
             queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), " ");
             if (existsCheck)
             {

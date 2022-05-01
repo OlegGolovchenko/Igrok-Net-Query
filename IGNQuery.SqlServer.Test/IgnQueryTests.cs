@@ -29,8 +29,7 @@ namespace IGNQuery.SqlServer.Test
             };
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Create().
-                Table("ignusers", paramList).
-                IfNotExists().
+                Table("ignusers", true, paramList).
                 Go();
             dataProvider.Execute(query);
         }
@@ -41,7 +40,7 @@ namespace IGNQuery.SqlServer.Test
             var dataProvider = new MsSqlDataDriver("igntest@igrok-net.org");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Delete().
-                From("ignusers").
+                From("ignusers", true).
                 Go();
 
             dataProvider.Execute(query);
@@ -53,45 +52,27 @@ namespace IGNQuery.SqlServer.Test
         {
             var dataProvider = new MsSqlDataDriver("igntest@igrok-net.org");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
-                Alter().
-                Table("ignusers").
-                IfExists().
-                Add().
-                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, string.Empty)).
-                IfNotExists().
-                Add().
-                Column(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, string.Empty)).
-                IfNotExists().
+                Alter("ignusers", true).
+                AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, string.Empty), true).
+                Add(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, string.Empty), true).
                 Go();
             dataProvider.Execute(query);
             query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
-                Alter().
-                Table("ignusers").
-                IfExists().
-                Alter().
-                Column(TableColumnConfiguration.FromConfig("test1", typeof(string), 50, false, false, false, string.Empty)).
-                IfExists().
+                Alter("ignusers", true).
+                AlterColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 50, false, false, false, string.Empty), true).
                 Go();
             dataProvider.Execute(query);
             query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
-                Alter().
-                Table("ignusers").
-                IfExists().
-                Drop("test1").
-                IfExists().
-                Drop("test2").
-                IfExists().
+                Alter("ignusers", true).
+                DropColumn("test1", true).
+                Drop("test2", true).
                 Go();
             dataProvider.Execute(query);
             var dataDriver = new MsSqlDataDriver("igntest@igrok-net.org");
             var column = TableColumnConfiguration.FromConfig("createdOn", typeof(DateTime), 0, false, true, false, string.Empty);
             var altquery = IGNQueriable.Begin("igntest@igrok-net.org", dataDriver).
-                Alter().
-                Table("ignusers").
-                IfExists().
-                Add().
-                Column(column).
-                IfNotExists().
+                Alter("ignusers", true).
+                AddColumn(column, true).
                 Go();
             dataDriver.Execute(altquery);
         }
@@ -102,9 +83,8 @@ namespace IGNQuery.SqlServer.Test
             var dataProvider = new MsSqlDataDriver("igntest@igrok-net.org");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                     Insert().
-                    Into("ignusers", new List<string>() { "mail", "userId" }).
-                    IfExists().
-                    ValuesWithParams(new List<int> { 0, 1 }).
+                    Into("ignusers", new List<string>() { "mail", "userId" }, true).
+                    Values(new List<int> { 0, 1 }).
                     Go();
 
             dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
@@ -120,19 +100,16 @@ namespace IGNQuery.SqlServer.Test
             var dataProvider = new MsSqlDataDriver("igntest@igrok-net.org");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Drop().
-                StoredProcedure("testProc").
-                IfExists().
+                StoredProcedure("testProc", true).
                 Go();
             dataProvider.Execute(query);
             var spQuery = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Select().
-                From("ignusers").
-                IfExists().
+                From("ignusers", true).
                 Go();
             query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Create().
-                StoredProcedure("testProc", spQuery).
-                IfNotExists().
+                StoredProcedure("testProc", true, spQuery, new List<IGNParameter>()).
                 Go();
 
             dataProvider.Execute(query);
@@ -144,8 +121,7 @@ namespace IGNQuery.SqlServer.Test
             var dataProvider = new MsSqlDataDriver("igntest@igrok-net.org");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider).
                 Drop().
-                Table("ignusers").
-                IfExists().
+                Table("ignusers", true).
                 Go();
 
             dataProvider.Execute(query);

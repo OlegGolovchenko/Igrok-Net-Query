@@ -111,7 +111,7 @@ namespace IGNQuery.MySql
 
         public override string GoTerminator()
         {
-            return ";";
+            return " ;";
         }
 
         public override void IfColumnExists(string name, string table, IGNQueriable queriable)
