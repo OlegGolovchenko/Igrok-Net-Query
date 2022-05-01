@@ -25,27 +25,37 @@
 // ############################################
 
 using IGNQuery.Interfaces.QueryProvider;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class Select : Target, ISelect
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal Select(IGNQueriable queriable, bool distinct) : base(queriable)
         {
-            this.queriable = queriable;
+            if (distinct)
+            {
+                operation = "SELECT DISTINCT *";
+            }
+            else
+            {
+                operation = "SELECT *";
+            }
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        internal Select(IGNQueriable queriable, IEnumerable<string> fieldNames, bool distinct) : base(queriable)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            fields = fieldNames.ToArray();
+            string columns = fieldNames == null ? "*" : string.Join(",", fieldNames.Select(x => queriable.SanitizeName(x)));
+            if (distinct) 
+            {
+                operation = $"SELECT DISTINCT {columns}";
+            }
+            else
+            {
+                operation = $"SELECT {columns}";
+            }
         }
     }
 }

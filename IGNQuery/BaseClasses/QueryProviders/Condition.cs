@@ -24,28 +24,33 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class Condition : Groupbale, ICondition
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal Condition(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public ICondition And(IGNConditionWithParameter condition)
         {
-            return new QueryResult(queriable);
+            queriable.AddOperation("AND", $"{condition}", " ");
+            return this;
         }
 
-        public IGNQueriable Go()
+        public ICondition Not(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            queriable.AddOperation("OR", $"{condition}", " ");
+            return this;
+        }
+
+        public ICondition Or(IGNConditionWithParameter condition)
+        {
+            queriable.AddOperation("NOT", $"{condition}", " ");
+            return this;
         }
     }
 }

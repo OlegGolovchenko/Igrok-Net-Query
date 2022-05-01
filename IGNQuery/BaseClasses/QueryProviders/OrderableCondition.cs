@@ -24,28 +24,47 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class OrderableCondition : Condition, IOrderableCondition
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal OrderableCondition(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IOrderable OrderBy(string column, bool descending)
         {
-            return new QueryResult(queriable);
+            queriable.AddOperation("ORDER BY", column, " ");
+            if (descending)
+            {
+                queriable.AddOperation("", "DESC", "");
+            }
+            else
+            {
+                queriable.AddOperation("", "ASC", "");
+            }
+            return this;
         }
 
-        public IGNQueriable Go()
+        IOrderableCondition IOrderableCondition.And(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            base.And(condition);
+            return this;
+        }
+
+        IOrderableCondition IOrderableCondition.Not(IGNConditionWithParameter condition)
+        {
+            base.Not(condition);
+            return this;
+        }
+
+        IOrderableCondition IOrderableCondition.Or(IGNConditionWithParameter condition)
+        {
+            base.Or(condition);
+            return this;
         }
     }
 }

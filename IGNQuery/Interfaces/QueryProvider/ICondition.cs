@@ -24,26 +24,14 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ICondition
+    public interface ICondition : IQueryResult
     {
-        ICondition StringEqualToParam(string column, int paramNb);
-
-        ICondition LongEqualToParam(string column, int paramNb);
-
-        ICondition BoolEqualToParam(string column, int paramNb);
-
-        ICondition StringNotEqualToParam(string column, int paramNb);
-
-        ICondition LongNotEqualToParam(string column, int paramNb);
-
-        ICondition BoolNotEqualToParam(string column, int paramNb);
-
-        ICondition Or();
-
-        ICondition And();
-
-        IQueryResult Go();
+        ICondition And(IGNConditionWithParameter condition);
+        ICondition Or(IGNConditionWithParameter condition);
+        ICondition Not(IGNConditionWithParameter condition);
     }
 }

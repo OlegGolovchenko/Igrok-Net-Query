@@ -25,27 +25,31 @@
 // ############################################
 
 using IGNQuery.Interfaces.QueryProvider;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class ValuesQuery : Select, IValuesQuery, ISelect
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal bool firstValues;
+        internal ValuesQuery(IGNQueriable queriable) : base(queriable, false)
         {
-            this.queriable = queriable;
+            firstValues = true;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IValuesQuery Values(IEnumerable<int> valuesRow)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            if (firstValues)
+            {
+                queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", "");
+                firstValues = false;
+            }
+            else
+            {
+                queriable.AddOperation("", $"({string.Join(",", valuesRow.Select(x => $"@p{x}"))})", ",");
+            }
+            return this;
         }
     }
 }

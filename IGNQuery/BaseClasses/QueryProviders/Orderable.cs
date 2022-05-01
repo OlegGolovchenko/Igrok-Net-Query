@@ -28,24 +28,24 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class Orderable : QueryResult, IOrderable
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal Orderable(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IOrderable ThenBy(string column, bool descending)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            queriable.AddOperation("", column, ",");
+            if (descending)
+            {
+                queriable.AddOperation("", "DESC", "");
+            }
+            else
+            {
+                queriable.AddOperation("", "ASC", "");
+            }
+            return this;
         }
     }
 }

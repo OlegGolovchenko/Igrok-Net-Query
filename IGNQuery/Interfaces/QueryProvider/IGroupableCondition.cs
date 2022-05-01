@@ -24,28 +24,15 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
+using IGNQuery.BaseClasses.Business;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class QueryResult : IQueryResult
+    public interface IGroupableCondition : ICondition
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
-        {
-            this.queriable = queriable;
-        }
-
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
-        }
+        IGroupable GroupBy(string column);
+        new IGroupableCondition And(IGNConditionWithParameter condition);
+        new IGroupableCondition Or(IGNConditionWithParameter condition);
+        new IGroupableCondition Not(IGNConditionWithParameter condition);
     }
 }

@@ -24,28 +24,21 @@
 //
 // ############################################
 
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class Update : SetableColumn, IUpdate
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal Update(IGNQueriable queriable, string table, bool existsCheck) : base(queriable)
         {
-            this.queriable = queriable;
-        }
-
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            this.table = table;
+            queriable.AddOperation("UPDATE", queriable.SanitizeName(table), "");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
+            }
         }
     }
 }

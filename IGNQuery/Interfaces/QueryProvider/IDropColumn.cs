@@ -24,28 +24,10 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class QueryResult : IQueryResult
+    public interface IDropColumn : IQueryResult
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
-        {
-            this.queriable = queriable;
-        }
-
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
-        }
+        IDropColumn Drop(string column, bool existsCheck);
     }
 }

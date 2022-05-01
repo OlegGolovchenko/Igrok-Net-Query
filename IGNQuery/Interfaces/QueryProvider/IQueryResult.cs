@@ -28,8 +28,15 @@ using IGNQuery.BaseClasses.QueryProviders;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Query result representation
+    /// </summary>
     public interface IQueryResult
     {
+        /// <summary>
+        /// Adds 'GO' or ';' terminator to the query
+        /// </summary>
+        /// <returns>resulting query as <see cref="IGNQuery.BaseClasses.QueryProviders.IGNQueriable"/></returns>
         IGNQueriable Go();
     }
 }

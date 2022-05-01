@@ -24,28 +24,26 @@
 //
 // ############################################
 
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class DropColumn : AlterColumn, IDropColumn
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal DropColumn(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        IDropColumn IDropColumn.Drop(string column, bool existsCheck)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            string command = !queriable.HasDropColumnOrSqlServer() ? "DROP COLUMN" : "";
+            queriable.AddOperation(command, queriable.SanitizeName(column), ",");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
+            }
+            return this;
         }
     }
 }

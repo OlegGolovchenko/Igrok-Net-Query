@@ -28,6 +28,7 @@ using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
+using System;
 using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
@@ -37,6 +38,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         private string fullQuery;
         internal readonly IDataDriver dataDriver = null;
         private readonly IGNQueriable subquery = null;
+        internal IDictionary<Type, Type> declaredQueryTypes = null;
 
         private bool exists;
 
@@ -70,6 +72,10 @@ namespace IGNQuery.BaseClasses.QueryProviders
             this.dataDriver = dataDriver;
             canExecute = true;
             exists = true;
+            this.declaredQueryTypes = new Dictionary<Type, Type>
+            {
+                { typeof(IQueryResult), typeof(QueryResult) }
+            };
         }
 
         internal bool HasSetCommand()
@@ -133,47 +139,47 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IQueryResult Use(string dbName)
         {
             AddOperation("USE", SanitizeName(dbName), "");
-            return new QueryResult(this);
+            return QueryResult.Init(this);
         }
 
-        public ICreateQuery Create()
+        public ICreate Create()
         {
-            return new CreateQuery(this);
+            return new Create(this);
         }
 
-        public IAlterQuery Alter()
+        public IAlter Alter(string table, bool existsCheck)
         {
-            return new AlterQuery(this);
+            return new Alter(this, table, existsCheck);
         }
 
-        public IDropQuery Drop()
+        public IDrop Drop()
         {
-            return new DropQuery(this);
+            return new Drop(this);
         }
 
-        public IUpdateQuery Update()
+        public IUpdate Update(string table, bool existsCheck)
         {
-            return new UpdateQuery(this);
+            return new Update(this, table, existsCheck);
         }
 
-        public IInsertQuery Insert()
+        public IInsert Insert()
         {
-            return new InsertQuery(this);
+            return new Insert(this);
         }
 
-        public ISelectQuery Select(IEnumerable<string> columns, bool distinct = false)
+        public ISelect Select(IEnumerable<string> columns, bool distinct = false)
         {
-            return new SelectQuery(this, distinct, columns);
+            return new Select(this, columns, distinct);
         }
 
-        public ISelectQuery Select(bool distinct = false)
+        public ISelect Select(bool distinct = false)
         {
-            return new SelectQuery(this,distinct);
+            return new Select(this, distinct);
         }
 
-        public IDeleteQuery Delete()
+        public IDelete Delete()
         {
-            return new DeleteQuery(this);
+            return new Delete(this);
         }
 
         internal void IfExists(IGNDbObjectTypeEnum objectType,string objectName, string table)

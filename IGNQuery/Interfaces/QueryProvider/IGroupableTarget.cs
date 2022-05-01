@@ -24,28 +24,14 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
-
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class QueryResult : IQueryResult
+    public interface IGroupableTarget: ITarget
     {
-        internal readonly IGNQueriable queriable;
+        new IQueryResult From(string table, bool checkExists);
 
-        internal QueryResult(IGNQueriable queriable)
-        {
-            this.queriable = queriable;
-        }
+        new IGroupedJoinable JoinableFrom(string table, bool checkExists);
 
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
-        }
+        new IGroupedConditional ConditionalFrom(string table, bool checkExists);
     }
 }

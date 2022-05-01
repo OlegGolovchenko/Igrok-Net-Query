@@ -24,28 +24,37 @@
 //
 // ############################################
 
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class SetableColumn : Conditional, ISetableColumn
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal bool isFirstSet = true;
+        internal string table;
+        internal SetableColumn(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public ISetableColumn Set(string column, int param, bool existsCheck)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            if (isFirstSet)
+            {
+                queriable.AddOperation("SET", $"{queriable.SanitizeName(column)} = @p{param}", " ");
+                isFirstSet = false;
+                if (existsCheck)
+                {
+                    queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+                }
+                return this;
+            }
+            queriable.AddOperation("", $"{queriable.SanitizeName(column)} = @p{param}", ", ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+            }
+            return this;
         }
     }
 }

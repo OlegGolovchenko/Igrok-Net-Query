@@ -24,28 +24,28 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class GroupedConditional : Conditional, IGroupedConditional
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal GroupedConditional(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IOrderableCondition Having(IGNConditionWithParameter condition)
         {
-            return new QueryResult(queriable);
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("HAVING", $"{condition}", " ");
+            return this;
         }
-
-        public IGNQueriable Go()
+        public new IGroupableCondition Where(IGNConditionWithParameter condition)
         {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
+            queriable.AddOperation("WHERE", $"{condition}", " ");
+            return this;
         }
     }
 }

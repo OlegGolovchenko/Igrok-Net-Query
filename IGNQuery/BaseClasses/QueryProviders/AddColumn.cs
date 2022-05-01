@@ -24,28 +24,29 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class AddColumn : QueryResult, IAddColumn
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal string table;
+        internal bool isFirstAdd = true;
+        internal AddColumn(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IAddColumn Add(TableColumnConfiguration column, bool existsCheck)
         {
-            return new QueryResult(queriable);
-        }
-
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            string operand = queriable.HasAddColumnOrSqlServer() ? "" : "ADD";
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), ",");
+            if (existsCheck)
+            {
+                queriable.IfNotExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
+            }
+            return this;
         }
     }
 }

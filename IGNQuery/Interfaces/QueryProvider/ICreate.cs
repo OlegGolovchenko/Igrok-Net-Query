@@ -24,28 +24,22 @@
 //
 // ############################################
 
-using IGNQuery.Interfaces.QueryProvider;
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
+using System.Collections.Generic;
 
-namespace IGNQuery.BaseClasses.QueryProviders
+namespace IGNQuery.Interfaces.QueryProvider
 {
-    internal class QueryResult : IQueryResult
+    public interface ICreate
     {
-        internal readonly IGNQueriable queriable;
+        IQueryResult Database(string name, bool existsCheck);
 
-        internal QueryResult(IGNQueriable queriable)
-        {
-            this.queriable = queriable;
-        }
+        IQueryResult Table(string name, bool existsCheck, IEnumerable<TableColumnConfiguration> fields);
 
-        internal static QueryResult Init(IGNQueriable queriable)
-        {
-            return new QueryResult(queriable);
-        }
+        IQueryResult Index(string name, string table, bool unique, bool existsCheck, IEnumerable<string> columns);
 
-        public IGNQueriable Go()
-        {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
-        }
+        IQueryResult View(string name, bool existsCheck, IGNQueriable content);
+
+        IQueryResult StoredProcedure(string name, bool checkExists, IGNQueriable content, IEnumerable<IGNParameter> parameters);
     }
 }

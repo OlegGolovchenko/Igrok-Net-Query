@@ -28,24 +28,32 @@ using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class QueryResult : IQueryResult
+    internal class Drop : DropCreateSelector, IDrop
     {
-        internal readonly IGNQueriable queriable;
-
-        internal QueryResult(IGNQueriable queriable)
+        internal Drop(IGNQueriable queriable) : base(queriable)
         {
-            this.queriable = queriable;
+            isDropQuery = true;
+            sqloperand = "DROP";
         }
 
-        internal static QueryResult Init(IGNQueriable queriable)
+        public IDrop Index(string name, string table, bool existsCheck)
         {
-            return new QueryResult(queriable);
+            return (IDrop)Index(name, table, false, existsCheck, null);
         }
 
-        public IGNQueriable Go()
+        public IDrop StoredProcedure(string name, bool existsCheck)
         {
-            queriable.AddOperation("", queriable.dataDriver.GoTerminator(), "");
-            return queriable;
+            return (IDrop)StoredProcedure(name, existsCheck, null);
+        }
+
+        public IDrop Table(string name, bool existsCheck)
+        {
+            return (IDrop)Table(name, existsCheck, null);
+        }
+
+        public IDrop View(string name, bool existsCheck)
+        {
+            return (IDrop)View(name, existsCheck, null);
         }
     }
 }
