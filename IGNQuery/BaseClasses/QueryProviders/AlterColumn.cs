@@ -38,7 +38,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         IAlterColumn IAlterColumn.Alter(TableColumnConfiguration column, bool existsCheck)
         {
-            queriable.AddOperation("ALTER COLUMN", queriable.FormatFieldOptionals(column), ",");
+            string operand = "ALTER COLUMN";
+            if(queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                operand.Replace("ALTER", "MODIFY");
+            }
+            queriable.AddOperation(operand, queriable.FormatFieldOptionals(column), ",");
             if (existsCheck)
             {
                 queriable.IfExists(IGNDbObjectTypeEnum.Column, column.ColumnName, table);
