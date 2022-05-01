@@ -81,8 +81,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                Database("testdb").
-                IfNotExists().
+                Database("testdb",true).
                 Go();
             var expected = "CREATE DATABASE [testdb] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -96,8 +95,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                Database("testdb").
-                IfNotExists().
+                Database("testdb", true).
                 Go();
             var expected = "CREATE DATABASE [testdb] \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -110,11 +108,14 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             dbDriverMock.Setup(x => x.GetDbAutoGenFor(It.IsAny<Type>(), It.IsAny<int>())).Returns(" IDENTITY(1,1)");
-            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).Create().Table("test", new List<TableColumnConfiguration>()
-            {
-                TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
-                TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
-            }).IfNotExists().Go();
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Create().
+                Table("test", true, new List<TableColumnConfiguration>()
+                {
+                    TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
+                    TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
+                }).
+                Go();
             var expected = "CREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[name] NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY([id]))  \nGO";
             Assert.AreEqual(expected, query.ToString());
         }
@@ -132,10 +133,9 @@ namespace IGNQuery.Test
                Go();
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
+                StoredProcedure("sp_test", true, subquery, new List<IGNParameter>(){
                     IGNParameter.FromConfig(0,typeof(string),255)
                 }).
-                IfNotExists().
                 Go();
             var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -154,10 +154,9 @@ namespace IGNQuery.Test
                 Go();
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                StoredProcedure("sp_test", subquery, new List<IGNParameter>(){
+                StoredProcedure("sp_test", true, subquery, new List<IGNParameter>(){
                     IGNParameter.FromConfig(0,typeof(string),255)
                 }).
-                IfNotExists().
                 Go();
             var expected = "CREATE PROCEDURE [sp_test] @p0 NVARCHAR(255)\nAS\nSELECT * FROM [test] WHERE [name] = @p0 \nGO  \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -172,8 +171,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                View("dm_test", IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = 'test'", "igntest@igrok-net.org", dbDriverMock.Object)).
-                IfNotExists().
+                View("dm_test", true, IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = 'test'", "igntest@igrok-net.org", dbDriverMock.Object)).
                 Go();
             var expected = "CREATE VIEW [dm_test]\nAS \nSELECT * FROM test WHERE name = 'test'  \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -187,8 +185,7 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                View("dm_test", IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = 'test'", "igntest@igrok-net.org", dbDriverMock.Object)).
-                IfNotExists().
+                View("dm_test", true, IGNQueriable.FromQueryString("SELECT * FROM test WHERE name = 'test'", "igntest@igrok-net.org", dbDriverMock.Object)).
                 Go();
             var expected = "CREATE VIEW [dm_test]\nAS \nSELECT * FROM test WHERE name = 'test'  \nGO";
             Assert.AreEqual(expected, query.ToString());
@@ -203,14 +200,13 @@ namespace IGNQuery.Test
             dbDriverMock.Setup(x => x.GetDbAutoGenFor(It.IsAny<Type>(), It.IsAny<int>())).Returns(" IDENTITY(1,1)");
             var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
                 Create().
-                Table("test", new List<TableColumnConfiguration>()
+                Table("test", true, new List<TableColumnConfiguration>()
                 {
                     TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
                     TableColumnConfiguration.FromConfig("userId",typeof(long),0,true,false,false,null),
                     TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null),
                     TableColumnConfiguration.FromConfig("testDate",typeof(DateTime),0,false,false,false,null)
                 }).
-                IfNotExists().
                 Go();
             var expected = "CREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[userId] BIGINT NOT NULL,[name] NVARCHAR(255) NULL,[testDate] DATETIME NULL,CONSTRAINT PK_test PRIMARY KEY([id]))  \nGO";
             Assert.AreEqual(expected, query.ToString());

@@ -74,11 +74,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             exists = true;
             this.declaredQueryTypes = new Dictionary<Type, Type>
             {
-                { typeof(IConditionalQuery), typeof(ConditionalQuery) },
-                { typeof(IQueryResult), typeof(QueryResult) },
-                { typeof(IExistsCheckQuery), typeof(ExistsCheckQuery) },
-                { typeof(INotExistsCheckQuery), typeof(NotExistsCheckQuery) },
-                { typeof(IConditionalJoinable), typeof(ConditionalJoinable) }
+                { typeof(IQueryResult), typeof(QueryResult) }
             };
         }
 
@@ -146,9 +142,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return QueryResult.Init(this);
         }
 
-        public ICreateQuery Create()
+        public ICreate Create()
         {
-            return new CreateQuery(this);
+            return new Create(this);
         }
 
         public IAlter Alter(string table, bool existsCheck)

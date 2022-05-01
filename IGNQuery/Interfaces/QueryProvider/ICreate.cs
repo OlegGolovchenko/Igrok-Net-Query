@@ -24,10 +24,22 @@
 //
 // ############################################
 
+using IGNQuery.BaseClasses.Business;
+using IGNQuery.BaseClasses.QueryProviders;
+using System.Collections.Generic;
+
 namespace IGNQuery.Interfaces.QueryProvider
 {
-    public interface ICreate : IDropCreateSelector
+    public interface ICreate
     {
+        IQueryResult Database(string name, bool existsCheck);
 
+        IQueryResult Table(string name, bool existsCheck, IEnumerable<TableColumnConfiguration> fields);
+
+        IQueryResult Index(string name, string table, bool unique, bool existsCheck, IEnumerable<string> columns);
+
+        IQueryResult View(string name, bool existsCheck, IGNQueriable content);
+
+        IQueryResult StoredProcedure(string name, bool checkExists, IGNQueriable content, IEnumerable<IGNParameter> parameters);
     }
 }

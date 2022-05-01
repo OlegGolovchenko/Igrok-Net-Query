@@ -31,7 +31,7 @@ namespace IGNQuery.Interfaces.QueryProvider
     /// <summary>
     /// Query result representation
     /// </summary>
-    public interface IQueryResult : IQuery
+    public interface IQueryResult
     {
         /// <summary>
         /// Adds 'GO' or ';' terminator to the query

@@ -27,9 +27,20 @@
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.Interfaces.QueryProvider;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
+    internal class Create : DropCreateSelector, ICreate
+    {
+        internal Create(IGNQueriable queriable) : base(queriable)
+        {
+            isDropQuery = false;
+            sqloperand = "CREATE";
+        }
+
+    }
+
     internal class DropCreateSelector : QueryResult, IDropCreateSelector
     {
         internal bool isDropQuery;
@@ -58,14 +69,23 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public IQueryResult Index(string name, string table, bool unique, bool existsCheck, IEnumerable<string> columns = null)
         {
-            if (queriable.dataDriver.Dialect != Enums.DialectEnum.MySQL)
+            if (isDropQuery)
             {
-                queriable.AddOperation($"{sqloperand} {(unique && isDropQuery ? "UNIQUE INDEX" : "INDEX")}", queriable.SanitizeName(name), "");
+                if (queriable.dataDriver.Dialect != Enums.DialectEnum.MySQL)
+                {
+                    queriable.AddOperation($"{sqloperand} {(unique && isDropQuery ? "UNIQUE INDEX" : "INDEX")}", queriable.SanitizeName(name), "");
+                }
+                else
+                {
+                    queriable.AddOperation($"ALTER TABLE", queriable.SanitizeName(table), "");
+                    queriable.AddOperation("DROP INDEX", queriable.SanitizeName(name), "");
+                }
             }
             else
             {
-                queriable.AddOperation($"ALTER TABLE", queriable.SanitizeName(table), "");
-                queriable.AddOperation("DROP INDEX", queriable.SanitizeName(name), "");
+                queriable.AddOperation($"{sqloperand} {(unique && isDropQuery ? "UNIQUE INDEX" : "INDEX")}", queriable.SanitizeName(name), "");
+                queriable.AddOperation("ON", table, " ");
+                queriable.AddOperation($"({string.Join(",", columns.Select(x => queriable.SanitizeName(x)))})", "", "");
             }
             if (existsCheck)
             {
@@ -104,7 +124,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public IQueryResult Table(string name, bool existsCheck, IEnumerable<TableColumnConfiguration> fields = null)
         {
-            queriable.AddOperation("DROP TABLE", queriable.SanitizeName(name), "");
+            queriable.AddOperation($"{sqloperand} TABLE", queriable.SanitizeName(name), "");
             if (!isDropQuery)
             {
                 queriable.AddOperation($"({string.Join(",", queriable.CompileFieldsInfo(name, fields))})", "", "");
