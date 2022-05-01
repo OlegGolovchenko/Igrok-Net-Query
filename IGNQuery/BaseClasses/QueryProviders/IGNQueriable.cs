@@ -139,7 +139,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         public IQueryResult Use(string dbName)
         {
             AddOperation("USE", SanitizeName(dbName), "");
-            return QueryResult.Init(this);
+            return new QueryResult(this);
         }
 
         public ICreate Create()

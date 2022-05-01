@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Select query representation
+    /// </summary>
     public interface ISelect : IGroupableTarget
     {
 

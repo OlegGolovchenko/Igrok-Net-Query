@@ -28,9 +28,29 @@ using System.Collections.Generic;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Insert query representation
+    /// </summary>
     public interface IInsert
     {
+        /// <summary>
+        /// Into operand
+        /// </summary>
+        /// <param name="table">table to insert into</param>
+        /// <param name="fields">fields to insert for</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>values query</returns>
         IValuesQuery Into(string table, IEnumerable<string>fields, bool existsCheck);
+
+        /// <summary>
+        /// Into select operand
+        /// </summary>
+        /// <param name="table">table to insert into</param>
+        /// <param name="fields">fields to insert for</param>
+        /// <param name="selectFields">fields to select</param>
+        /// <param name="distinct">select distinct or not</param>
+        /// <param name="existsCheck">check if exists</param>
+        /// <returns>values query</returns>
         ISelect IntoSelect(string table, IEnumerable<string> fields,
             IEnumerable<string> selectFields, bool distinct, bool existsCheck);
     }

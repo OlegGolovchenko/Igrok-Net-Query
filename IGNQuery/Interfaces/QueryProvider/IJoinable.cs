@@ -26,10 +26,33 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Joinable query
+    /// </summary>
     public interface IJoinable
     {
+        /// <summary>
+        /// Inner join
+        /// </summary>
+        /// <param name="joinedTable"></param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>on operand</returns>
         IJoin InnerJoin(string joinedTable, bool checkExists);
+
+        /// <summary>
+        /// Left outer join
+        /// </summary>
+        /// <param name="joinedTable"></param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>on operand</returns>
         IJoin LeftJoin(string joinedTable, bool checkExists);
+
+        /// <summary>
+        /// Right outer join
+        /// </summary>
+        /// <param name="joinedTable"></param>
+        /// <param name="checkExists">check if exists</param>
+        /// <returns>on operand</returns>
         IJoin RightJoin(string joinedTable, bool checkExists);
     }
 }

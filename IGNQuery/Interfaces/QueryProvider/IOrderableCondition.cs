@@ -28,6 +28,9 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Orderable condition
+    /// </summary>
     public interface IOrderableCondition : ICondition
     {
         IOrderable OrderBy(string column, bool descending);

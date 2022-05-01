@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Target with grouping
+    /// </summary>
     public interface IGroupableTarget: ITarget
     {
         new IQueryResult From(string table, bool checkExists);

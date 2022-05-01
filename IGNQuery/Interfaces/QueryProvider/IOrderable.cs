@@ -26,8 +26,17 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Orderable query
+    /// </summary>
     public interface IOrderable: IQueryResult
     {
+        /// <summary>
+        /// Order by operand
+        /// </summary>
+        /// <param name="column">column to order on</param>
+        /// <param name="descending">ascending or descending</param>
+        /// <returns>next order query</returns>
         IOrderable ThenBy(string column, bool descending);
     }
 }

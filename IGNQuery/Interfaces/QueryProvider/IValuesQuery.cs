@@ -28,8 +28,16 @@ using System.Collections.Generic;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Values query for insert
+    /// </summary>
     public interface IValuesQuery : IQueryResult
     {
+        /// <summary>
+        /// next values line
+        /// </summary>
+        /// <param name="valuesRow">row of parameters to hold values</param>
+        /// <returns>next values query</returns>
         IValuesQuery Values(IEnumerable<int> valuesRow);
     }
 }

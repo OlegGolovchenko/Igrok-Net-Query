@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Delete query representation
+    /// </summary>
     public interface IDelete : ITarget
     {
 

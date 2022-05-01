@@ -26,6 +26,9 @@
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Joinable with grouping
+    /// </summary>
     public interface IGroupedJoinable : IJoinable
     {
         new IGroupableJoin InnerJoin(string joinedTable, bool checkExists);

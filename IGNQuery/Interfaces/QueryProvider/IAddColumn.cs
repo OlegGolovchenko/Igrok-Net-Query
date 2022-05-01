@@ -28,8 +28,17 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Add column query for second and other columns to add
+    /// </summary>
     public interface IAddColumn: IQueryResult
     {
+        /// <summary>
+        /// Add extra 'Add Column' query line
+        /// </summary>
+        /// <param name="column">column to add</param>
+        /// <param name="existsCheck">check if not exists</param>
+        /// <returns>next add column query</returns>
         IAddColumn Add(TableColumnConfiguration column, bool existsCheck);
     }
 }

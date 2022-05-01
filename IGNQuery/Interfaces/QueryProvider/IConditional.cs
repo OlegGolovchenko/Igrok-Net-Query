@@ -28,8 +28,16 @@ using IGNQuery.BaseClasses.Business;
 
 namespace IGNQuery.Interfaces.QueryProvider
 {
+    /// <summary>
+    /// Conditional query
+    /// </summary>
     public interface IConditional
     {
+        /// <summary>
+        /// WHere operator
+        /// </summary>
+        /// <param name="condition">first condition</param>
+        /// <returns>next condition</returns>
         ICondition Where(IGNConditionWithParameter condition);
     }
 }
