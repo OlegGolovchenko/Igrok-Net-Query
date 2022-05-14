@@ -1,6 +1,7 @@
 using IGNQuery.BaseClasses;
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Enums;
 using IGNQuery.Interfaces;
 using Moq;
 using NUnit.Framework;
@@ -496,6 +497,25 @@ namespace IGNQuery.Test
                 Go();
             var expected = "INSERT INTO [tempTest] ([test1],[test2]) SELECT DISTINCT [test],[test2] FROM [test] \nGO";
             Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
+        public void ColumnExistsQueryShouldSucceed()
+        {
+
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Select(false).
+                ConditionalFrom("INFORMATION_SCHEMA.COLUMNS", false).
+                Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0)).
+                And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1)).
+                And(IGNConditionWithParameter.FromConfig("COLUMN_NAME", IGNSqlCondition.Eq, 2)).
+                Go();
+            var expected = $"SELECT * FROM [INFORMATION_SCHEMA].[COLUMNS] WHERE [TABLE_SCHEMA] = @p0 AND [TABLE_NAME] = @p1 AND [COLUMN_NAME] = @p2 \nGO";
+            Assert.AreEqual(expected, query.ToString());
+            Assert.IsTrue(query.CanExecute);
         }
     }
 }
