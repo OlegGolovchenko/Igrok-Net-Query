@@ -136,6 +136,15 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return string.Empty;
         }
 
+        internal string DatabaseNameQuery()
+        {
+            if(this.dataDriver.Dialect == DialectEnum.MSSQL)
+            {
+                return "DB_NAME()";
+            }
+            return "database()";
+        }
+
         public IQueryResult Use(string dbName)
         {
             AddOperation("USE", SanitizeName(dbName), "");

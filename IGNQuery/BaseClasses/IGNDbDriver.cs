@@ -33,6 +33,7 @@ using System.Data;
 using IGNQuery.BaseClasses.Business;
 using System.Linq;
 using IGNActivation.Client.Interfaces;
+using IGNQuery.Interfaces.QueryProvider;
 
 namespace IGNQuery.BaseClasses
 {
@@ -41,6 +42,7 @@ namespace IGNQuery.BaseClasses
         protected readonly string connectionString;
         private readonly string nonSpecDriverErr = 
             "Please use DatabaseSpecificDriver to construct connection string";
+        protected readonly string email;
 
         protected DialectEnum dialect;
         public DialectEnum Dialect
@@ -51,19 +53,22 @@ namespace IGNQuery.BaseClasses
             }
         }
 
-        public IGNDbDriver()
+        public IGNDbDriver(string email)
         {
             this.connectionString = ConstructDefaultConnectionString();
+            this.email = email;
         }
 
-        public IGNDbDriver(string server,int port,string uName, string pwd)
+        public IGNDbDriver(string email, string server, int port, string uName, string pwd)
         {
             this.connectionString = ConstructConnectionString(server, port, uName, pwd);
+            this.email = email;
         }
 
-        public IGNDbDriver(string connectionString)
+        public IGNDbDriver(string email, string connectionString)
         {
             this.connectionString = connectionString;
+            this.email = email;
         }
 
         public virtual void Dispose()
@@ -105,65 +110,225 @@ namespace IGNQuery.BaseClasses
             throw new NotImplementedException(this.nonSpecDriverErr);
         }
 
-        public virtual void IfTableNotExists(string name, IGNQueriable queriable)
+        public void IfTableNotExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetTableExists(name, queriable, ExistsEnum.NotExists);
         }
 
-        public virtual void IfDatabaseNotExists(string name, IGNQueriable queriable)
+        public void IfDatabaseNotExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetDatabaseExists(name, queriable, ExistsEnum.NotExists);
         }
 
         public virtual void IfStoredProcedureNotExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetStoredProcedureExists(name, queriable, ExistsEnum.NotExists);
         }
-        public virtual void IfColumnNotExists(string name, string table, IGNQueriable queriable)
+        public void IfColumnNotExists(string name, string table, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetColumnExists(name, table, queriable, ExistsEnum.NotExists);
         }
-        public virtual void IfViewNotExists(string name, IGNQueriable queriable)
+        public void IfViewNotExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
-        }
-
-        public virtual void IfIndexNotExists(string name, string table, IGNQueriable queriable)
-        {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetViewExists(name, queriable, ExistsEnum.NotExists);
         }
 
-        public virtual void IfTableExists(string name, IGNQueriable queriable)
+        public void IfIndexNotExists(string name, string table, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetIndexExists(name, table, queriable, ExistsEnum.NotExists);
         }
 
-        public virtual void IfDatabaseExists(string name, IGNQueriable queriable)
+        public void IfTableExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetTableExists(name, queriable, ExistsEnum.Exists);
+        }
+
+        public void IfDatabaseExists(string name, IGNQueriable queriable)
+        {
+            SetDatabaseExists(name, queriable, ExistsEnum.Exists);
         }
 
         public virtual void IfStoredProcedureExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetStoredProcedureExists(name, queriable, ExistsEnum.Exists);
         }
-        public virtual void IfColumnExists(string name, string table, IGNQueriable queriable)
+        public void IfColumnExists(string name, string table, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetColumnExists(name, table, queriable, ExistsEnum.Exists);
         }
-        public virtual void IfViewExists(string name, IGNQueriable queriable)
+        public void IfViewExists(string name, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetViewExists(name, queriable, ExistsEnum.Exists);
         }
 
-        public virtual void IfIndexExists(string name, string table, IGNQueriable queriable)
+        public void IfIndexExists(string name, string table, IGNQueriable queriable)
         {
-            throw new NotImplementedException(this.nonSpecDriverErr);
+            SetIndexExists(name, table, queriable, ExistsEnum.Exists);
         }
 
         public virtual string GoTerminator()
         {
             throw new NotImplementedException(this.nonSpecDriverErr);
+        }
+
+        private void SetDatabaseExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var query = IGNQueriable.Begin(this.email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.SHEMATA",false).
+                Where(IGNConditionWithParameter.FromConfig("CATALOG_NAME",IGNSqlCondition.Eq,0)).
+                Go();
+            var result = ReadDataWithParameters(query, 
+                new List<IGNParameterValue> { IGNParameterValue.FromConfig(0, name) });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+        private void SetStoredProcedureExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var firstQueryPart = IGNQueriable.Begin(this.email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.ROUTINES",false);
+            IGroupableCondition query = null;
+            if(this.dialect == DialectEnum.MSSQL)
+            {
+                query = firstQueryPart.
+                    Where(IGNConditionWithParameter.FromConfig("ROUTINE_CATALOG", IGNSqlCondition.Eq, 0));
+            }
+            if (this.dialect == DialectEnum.MySQL)
+            {
+                query = firstQueryPart.
+                    Where(IGNConditionWithParameter.FromConfig("ROUTINE_SCHEMA", IGNSqlCondition.Eq, 0));
+            }
+            query = query.And(IGNConditionWithParameter.FromConfig("ROUTINE_NAME", IGNSqlCondition.Eq, 1));
+            var checkQuery = query.Go();
+            var result = ReadDataWithParameters(checkQuery, new List<IGNParameterValue> 
+            {
+                IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                IGNParameterValue.FromConfig(1, name)
+            });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+        private void SetIndexExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            IGNQueriable checkQuery = null;
+            DataTable result = null;
+            if(Dialect == DialectEnum.MySQL)
+            {
+                checkQuery = IGNQueriable.Begin(email, this).
+                    Select(false).
+                    ConditionalFrom("INFROMATION_SCHEMA.STATISTICS", false).
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0)).
+                    And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1)).
+                    And(IGNConditionWithParameter.FromConfig("INDEX_NAME", IGNSqlCondition.Eq, 2)).
+                    Go();
+                result = ReadDataWithParameters(checkQuery, new List<IGNParameterValue>
+                {
+                    IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                    IGNParameterValue.FromConfig(1, table),
+                    IGNParameterValue.FromConfig(2, name)
+                });
+            }
+            if(Dialect == DialectEnum.MSSQL)
+            {
+                checkQuery = IGNQueriable.Begin(email, this).
+                    Select(false).
+                    ConditionalFrom("sysindexes", false).
+                    Where(IGNConditionWithParameter.FromConfig("name", IGNSqlCondition.Eq, 0)).
+                    Go();
+                result = ReadDataWithParameters(checkQuery, new List<IGNParameterValue>
+                {
+                    IGNParameterValue.FromConfig(0, name)
+                });
+            }
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+        private void SetTableExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var firstPartQuery = IGNQueriable.Begin(email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.TABLES", false);
+            IGroupableCondition partialQuery = null;
+            if (this.dialect == DialectEnum.MSSQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_CATALOG", IGNSqlCondition.Eq, 0));
+            }
+            if (this.dialect == DialectEnum.MySQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0));
+            }
+            partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1));
+            var query = partialQuery.Go();
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>
+            {
+                IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                IGNParameterValue.FromConfig(1, name)
+            });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+
+        private void SetViewExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var firstPartQuery = IGNQueriable.Begin(email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.VIEWS", false);
+            IGroupableCondition partialQuery = null;
+            if (this.dialect == DialectEnum.MSSQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_CATALOG", IGNSqlCondition.Eq, 0));
+            }
+            if (this.dialect == DialectEnum.MySQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0));
+            }
+            partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1));
+            var query = partialQuery.Go();
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>
+            {
+                IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                IGNParameterValue.FromConfig(1, name)
+            });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+        private void SetColumnExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var firstPartQuery = IGNQueriable.Begin(email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.COLUMNS", false);
+            IGroupableCondition partialQuery = null;
+            if (this.dialect == DialectEnum.MSSQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_CATALOG", IGNSqlCondition.Eq, 0));
+            }
+            if (this.dialect == DialectEnum.MySQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0));
+            }
+            partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1)).
+                And(IGNConditionWithParameter.FromConfig("COLUMN_NAME", IGNSqlCondition.Eq, 2));
+            var query = partialQuery.Go();
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>
+            {
+                IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                IGNParameterValue.FromConfig(1, table),
+                IGNParameterValue.FromConfig(2, name)
+            });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
         public void Execute(IGNQueriable query)
@@ -262,6 +427,22 @@ namespace IGNQuery.BaseClasses
         public void AssignActivator(string email, string key = null)
         {
             Activation.Activate(email, key);
+        }
+
+        public string GetDatabaseName(string dbFunction)
+        {
+            var query = IGNQueriable.FromQueryString($"SELECT {dbFunction}{GoTerminator()}", email, this);
+            var result = ReadData(query);
+            if(result.Rows.Count > 0)
+            {
+                var row = result.Select().FirstOrDefault();
+                if(row != null && !row.IsNull(0))
+                {
+                    return row[0].ToString();
+                }
+                return string.Empty;
+            }
+            return string.Empty;
         }
     }
 }

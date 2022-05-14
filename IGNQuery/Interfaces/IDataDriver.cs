@@ -81,5 +81,7 @@ namespace IGNQuery.Interfaces
         string GoTerminator();
 
         string GetDbAutoGenFor(Type clrType, int length);
+
+        string GetDatabaseName(string dbFunction);
     }
 }

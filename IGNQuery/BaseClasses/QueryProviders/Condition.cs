@@ -37,18 +37,21 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public ICondition And(IGNConditionWithParameter condition)
         {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
             queriable.AddOperation("AND", $"{condition}", " ");
             return this;
         }
 
         public ICondition Not(IGNConditionWithParameter condition)
         {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
             queriable.AddOperation("OR", $"{condition}", " ");
             return this;
         }
 
         public ICondition Or(IGNConditionWithParameter condition)
         {
+            condition.SetSanitizedName(queriable.SanitizeName(condition.ColumnName));
             queriable.AddOperation("NOT", $"{condition}", " ");
             return this;
         }
