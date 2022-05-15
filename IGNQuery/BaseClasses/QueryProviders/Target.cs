@@ -33,32 +33,48 @@ namespace IGNQuery.BaseClasses.QueryProviders
     {
         internal string operation;
         internal string[] fields;
+
         internal Target(IGNQueriable queriable) : base(queriable)
         {
         }
 
         public IConditional ConditionalFrom(string table, bool checkExists)
         {
-            source = table;
-            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
-            if (checkExists)
-            {
-                if(fields != null)
-                {
-                    foreach (var field in fields)
-                    {
-                        queriable.IfExists(IGNDbObjectTypeEnum.Column, field, table);
-                    }
-                }
-                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
-            }
-            return this;
+            return ConditionalFromInto(table, string.Empty, checkExists, string.Empty);
+        }
+
+        public IConditional ConditionalFromInto(string table, string targetTable, bool checkExists, string databaseName = null)
+        {
+            return (IConditional)this.FromInto(table, targetTable, checkExists, databaseName);
         }
 
         public IQueryResult From(string table, bool checkExists)
         {
+            return FromInto(table, string.Empty, checkExists, string.Empty);
+        }
+
+        public IQueryResult FromInto(string table, string targetTable, bool checkExists, string databaseName = null)
+        {
             source = table;
-            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
+            string fromQuery = $"{operation} FROM";
+            if (!string.IsNullOrWhiteSpace(targetTable))
+            {
+                queriable.AddOperation($"{operation} INTO", queriable.SanitizeName(targetTable), "");
+                if (checkExists)
+                {
+                    queriable.IfExists(IGNDbObjectTypeEnum.Table, targetTable, "");
+                }
+                if (!string.IsNullOrWhiteSpace(databaseName))
+                {
+                    queriable.AddOperation("IN", queriable.SanitizeName(databaseName), " ");
+                    if (checkExists)
+                    {
+                        queriable.IfExists(IGNDbObjectTypeEnum.Database, databaseName, "");
+                    }
+                }
+                fromQuery = " FROM";
+            }
+            queriable.AddOperation(fromQuery, queriable.SanitizeName(table), "");
             if (checkExists)
             {
                 if (fields != null)
@@ -75,20 +91,12 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public IJoinable JoinableFrom(string table, bool checkExists)
         {
-            source = table;
-            queriable.AddOperation($"{operation} FROM", queriable.SanitizeName(table), "");
-            if (checkExists)
-            {
-                if (fields != null)
-                {
-                    foreach (var field in fields)
-                    {
-                        queriable.IfExists(IGNDbObjectTypeEnum.Column, field, table);
-                    }
-                }
-                queriable.IfExists(IGNDbObjectTypeEnum.Table, table, "");
-            }
-            return this;
+            return JoinableFromInto(table, string.Empty, checkExists, string.Empty);
+        }
+
+        public IJoinable JoinableFromInto(string table, string targetTable, bool checkExists, string databaseName = null)
+        {
+            return (IJoinable)this.FromInto(table, targetTable, checkExists, databaseName);
         }
 
         IGroupedConditional IGroupableTarget.ConditionalFrom(string table, bool checkExists)
@@ -96,9 +104,19 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return (IGroupedConditional)this.ConditionalFrom(table, checkExists);
         }
 
+        IGroupedConditional IGroupableTarget.ConditionalFromInto(string table, string targetTable, bool checkExists, string databaseName)
+        {
+            return (IGroupedConditional)this.ConditionalFromInto(table, targetTable, checkExists, databaseName);
+        }
+
         IGroupedJoinable IGroupableTarget.JoinableFrom(string table, bool checkExists)
         {
             return (IGroupedJoinable)this.JoinableFrom(table, checkExists);
+        }
+
+        IGroupedJoinable IGroupableTarget.JoinableFromInto(string table, string targetTable, bool checkExists, string databaseName)
+        {
+            return (IGroupedJoinable)this.JoinableFromInto(table, targetTable, checkExists, databaseName);
         }
     }
 }

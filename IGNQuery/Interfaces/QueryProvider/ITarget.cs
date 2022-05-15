@@ -40,6 +40,16 @@ namespace IGNQuery.Interfaces.QueryProvider
         IQueryResult From(string table, bool checkExists);
 
         /// <summary>
+        /// From Into operand
+        /// </summary>
+        /// <param name="table">table to select from</param>
+        /// <param name="targetTable">table to select into</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <param name="databaseName">name of database for target table</param>
+        /// <returns>quqry result</returns>
+        IQueryResult FromInto(string table, string targetTable, bool checkExists, string databaseName = null);
+
+        /// <summary>
         /// From operand with join
         /// </summary>
         /// <param name="table">table to select/delete from</param>
@@ -48,11 +58,31 @@ namespace IGNQuery.Interfaces.QueryProvider
         IJoinable JoinableFrom(string table, bool checkExists);
 
         /// <summary>
+        /// From into operand with join
+        /// </summary>
+        /// <param name="table">table to select from</param>
+        /// <param name="targetTable">table to select into</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <param name="databaseName">name of database for target table</param>
+        /// <returns>joinable query</returns>
+        IJoinable JoinableFromInto(string table, string targetTable, bool checkExists, string databaseName = null);
+
+        /// <summary>
         /// From operand with condition
         /// </summary>
         /// <param name="table">table to select/delete from</param>
         /// <param name="checkExists">check if exists</param>
         /// <returns>conditional query</returns>
         IConditional ConditionalFrom(string table, bool checkExists);
+
+        /// <summary>
+        /// From operand with condition
+        /// </summary>
+        /// <param name="table">table to select from</param>
+        /// <param name="targetTable">table to select into</param>
+        /// <param name="checkExists">check if exists</param>
+        /// <param name="databaseName">name of database for target table</param>
+        /// <returns>conditional query</returns>
+        IConditional ConditionalFromInto(string table, string targetTable,  bool checkExists, string databaseName = null);
     }
 }

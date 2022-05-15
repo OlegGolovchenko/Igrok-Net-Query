@@ -33,8 +33,14 @@ namespace IGNQuery.Interfaces.QueryProvider
     {
         new IQueryResult From(string table, bool checkExists);
 
+        new IQueryResult FromInto(string table, string targetTable, bool checkExists, string databaseName = null);
+
         new IGroupedJoinable JoinableFrom(string table, bool checkExists);
 
+        new IGroupedJoinable JoinableFromInto(string table, string targetTable, bool checkExists, string databaseName = null);
+
         new IGroupedConditional ConditionalFrom(string table, bool checkExists);
+
+        new IGroupedConditional ConditionalFromInto(string table, string targetTable, bool checkExists, string databaseName = null);
     }
 }
