@@ -292,6 +292,22 @@ namespace IGNQuery.Test
         }
 
         [Test]
+        public void SelectIntoQueryShouldHaveCorrectSyntax()
+        {
+            var dbDriverMock = new Mock<IDataDriver>();
+            dbDriverMock.Setup(x => x.Dialect).Returns(Enums.DialectEnum.MSSQL);
+            dbDriverMock.Setup(x => x.GoTerminator()).Returns("\nGO");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dbDriverMock.Object).
+                Select(new List<string> { "test.id", "test2.test", "test.test" }, false).
+                JoinableFromInto("test","test3", true, "testdb2").
+                InnerJoin("test2", true).
+                On("test2id", "id", true).
+                Go();
+            var expected = "SELECT [test].[id],[test2].[test],[test].[test] INTO [test3] IN [testdb2] FROM [test] INNER JOIN [test2] ON [test].[test2id] = [test2].[id] \nGO";
+            Assert.AreEqual(expected, query.ToString());
+        }
+
+        [Test]
         public void UpdateQueryWithConditionShouldHaveCorrectSyntax()
         {
             var dbDriverMock = new Mock<IDataDriver>();
