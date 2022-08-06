@@ -37,6 +37,7 @@ namespace IGNQuery.Enums
         View = 4,
         Index = 5,
         UniqueIndex = 6,
-        Column = 7
+        Column = 7,
+        PrimaryKey = 8
     }
 }

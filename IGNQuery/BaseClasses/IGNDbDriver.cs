@@ -138,6 +138,11 @@ namespace IGNQuery.BaseClasses
             SetIndexExists(name, table, queriable, ExistsEnum.NotExists);
         }
 
+        public void IfPrimaryKeyNotExists(string name, string table, IGNQueriable queriable)
+        {
+            SetPrimaryKeyExists(name, table, queriable, ExistsEnum.NotExists);
+        }
+
         public void IfTableExists(string name, IGNQueriable queriable)
         {
             SetTableExists(name, queriable, ExistsEnum.Exists);
@@ -164,6 +169,11 @@ namespace IGNQuery.BaseClasses
         public void IfIndexExists(string name, string table, IGNQueriable queriable)
         {
             SetIndexExists(name, table, queriable, ExistsEnum.Exists);
+        }
+
+        public void IfPrimaryKeyExists(string name, string table, IGNQueriable queriable)
+        {
+            SetPrimaryKeyExists(name, table, queriable, ExistsEnum.Exists);
         }
 
         public virtual string GoTerminator()
@@ -320,6 +330,35 @@ namespace IGNQuery.BaseClasses
             }
             partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1)).
                 And(IGNConditionWithParameter.FromConfig("COLUMN_NAME", IGNSqlCondition.Eq, 2));
+            var query = partialQuery.Go();
+            var result = ReadDataWithParameters(query, new List<IGNParameterValue>
+            {
+                IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
+                IGNParameterValue.FromConfig(1, table),
+                IGNParameterValue.FromConfig(2, name)
+            });
+            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetCanExecute(existsFunc, queriable);
+        }
+
+        private void SetPrimaryKeyExists(string name, string table, IGNQueriable queriable, ExistsEnum existsFunc)
+        {
+            var firstPartQuery = IGNQueriable.Begin(email, this).
+                Select().
+                ConditionalFrom("INFORMATION_SCHEMA.TABLE_CONSTRAINTS", false);
+            IGroupableCondition partialQuery = null;
+            if (this.dialect == DialectEnum.MSSQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_CATALOG", IGNSqlCondition.Eq, 0));
+            }
+            if (this.dialect == DialectEnum.MySQL)
+            {
+                partialQuery = firstPartQuery.
+                    Where(IGNConditionWithParameter.FromConfig("TABLE_SCHEMA", IGNSqlCondition.Eq, 0));
+            }
+            partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1)).
+                And(IGNConditionWithParameter.FromConfig("CONSTRAINT_NAME", IGNSqlCondition.Eq, 2));
             var query = partialQuery.Go();
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>
             {

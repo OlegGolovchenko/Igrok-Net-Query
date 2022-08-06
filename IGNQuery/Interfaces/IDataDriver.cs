@@ -66,6 +66,8 @@ namespace IGNQuery.Interfaces
 
         void IfColumnNotExists(string name, string table, IGNQueriable queriable);
 
+        void IfPrimaryKeyNotExists(string name, string table, IGNQueriable queriable);
+
         void IfTableExists(string name, IGNQueriable queriable);
 
         void IfDatabaseExists(string name, IGNQueriable queriable);
@@ -77,6 +79,8 @@ namespace IGNQuery.Interfaces
         void IfIndexExists(string name, string table, IGNQueriable queriable);
 
         void IfColumnExists(string name, string table, IGNQueriable queriable);
+
+        void IfPrimaryKeyExists(string name, string table, IGNQueriable queriable);
 
         string GoTerminator();
 
