@@ -12,17 +12,17 @@ namespace IGNQuery.SqlServer
 {
     public class MsSqlDataDriver : IGNDbDriver
     {
-        public MsSqlDataDriver(string email, string server, int port,string user,string password):base(email, server,port,user,password)
+        public MsSqlDataDriver(string email, string server, int port, string user, string password, string key) : base(email, server, port, user, password, key)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
         }
 
-        public MsSqlDataDriver(string email) : base(email)
+        public MsSqlDataDriver(string email, string key) : base(email, key)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
         }
 
-        public MsSqlDataDriver(string email, string connectionString):base(email, connectionString)
+        public MsSqlDataDriver(string email, string connectionString, string key):base(email, connectionString, key)
         {
             this.dialect = Enums.DialectEnum.MSSQL;
         }

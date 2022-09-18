@@ -12,17 +12,17 @@ namespace IGNQuery
             _activationClient = activationClient;
         }
 
-        public static void Activate(string email, string key = null)
+        public static void Activate(string email, string key)
         {
             if (_activationClient == null)
             {
                 _activationClient = new ActivationClient();
             }
+            _activationClient.Init(email, key);
             if (!_activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery))
             {
-                _activationClient.Init(email, key);
+                _activationClient.Register((ushort)ProductsEnum.IGNQuery, key);
             }
-            _activationClient.Register((ushort)ProductsEnum.IGNQuery);
         }
 
         public static bool IsActive 

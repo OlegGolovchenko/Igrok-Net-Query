@@ -38,9 +38,9 @@ namespace IGNQuery.Interfaces
     {
         DialectEnum Dialect { get; }
 
-        void AssignActivator(IActivationClient activator, string email);
+        void AssignActivator(IActivationClient activator, string email, string key);
 
-        void AssignActivator(string email, string key=null);
+        void AssignActivator(string email, string key);
 
         void Execute(IGNQueriable query);
 

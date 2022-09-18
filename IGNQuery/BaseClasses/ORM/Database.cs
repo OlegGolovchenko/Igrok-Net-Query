@@ -37,18 +37,20 @@ namespace IGNQuery.BaseClasses.ORM
         internal IList<Tuple<Type,TableConfiguration>> knownConfigs;
         internal IDataDriver dbDriver;
         internal string email;
-        public Database(string email, IDataDriver dbDriver)
+        internal string key;
+        public Database(string email, IDataDriver dbDriver, string key)
         {
             this.knownConfigs = new List<Tuple<Type,TableConfiguration>>();
             this.dbDriver = dbDriver;
             this.email = email;
+            this.key = key;
         }
 
         public void CreateTable<T>() where T : IEntity
         {
             var config = TableConfiguration.FromEntity(typeof(T));
             this.knownConfigs.Add(Tuple.Create(typeof(T), config));
-            IGNQueriable.Begin(email, dbDriver).
+            IGNQueriable.Begin(email, dbDriver, key).
                          Create().
                          Table(nameof(T).ToLower(), true, config.knownConfigs);
         }
