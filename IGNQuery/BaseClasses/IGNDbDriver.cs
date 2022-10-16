@@ -34,6 +34,7 @@ using IGNQuery.BaseClasses.Business;
 using System.Linq;
 using IGNActivation.Client.Interfaces;
 using IGNQuery.Interfaces.QueryProvider;
+using IGNActivation.Client;
 
 namespace IGNQuery.BaseClasses
 {
@@ -44,6 +45,7 @@ namespace IGNQuery.BaseClasses
             "Please use DatabaseSpecificDriver to construct connection string";
         protected readonly string email;
         protected readonly string key;
+        private IActivationClient activationClient = null;
 
         protected DialectEnum dialect;
         public DialectEnum Dialect
@@ -56,6 +58,10 @@ namespace IGNQuery.BaseClasses
 
         public IGNDbDriver(string email, string key)
         {
+            this.activationClient = new ActivationClient();
+            this.activationClient.Init(email, key);
+            if (this.activationClient == null || !this.activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery))
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             this.connectionString = ConstructDefaultConnectionString();
             this.email = email;
             this.key = key;
@@ -63,6 +69,10 @@ namespace IGNQuery.BaseClasses
 
         public IGNDbDriver(string email, string server, int port, string uName, string pwd, string key)
         {
+            this.activationClient = new ActivationClient();
+            this.activationClient.Init(email, key);
+            if (this.activationClient == null || !this.activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery))
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             this.connectionString = ConstructConnectionString(server, port, uName, pwd);
             this.email = email;
             this.key = key;
@@ -70,6 +80,10 @@ namespace IGNQuery.BaseClasses
 
         public IGNDbDriver(string email, string connectionString, string key)
         {
+            this.activationClient = new ActivationClient();
+            this.activationClient.Init(email, key);
+            if (this.activationClient == null || !this.activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery))
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             this.connectionString = connectionString;
             this.email = email;
             this.key = key;
@@ -459,17 +473,6 @@ namespace IGNQuery.BaseClasses
                 }
             }
             return result;
-        }
-
-        public void AssignActivator(IActivationClient activator, string email, string key)
-        {
-            Activation.Init(activator);
-            Activation.Activate(email, key);
-        }
-
-        public void AssignActivator(string email, string key)
-        {
-            Activation.Activate(email, key);
         }
 
         public string GetDatabaseName(string dbFunction)

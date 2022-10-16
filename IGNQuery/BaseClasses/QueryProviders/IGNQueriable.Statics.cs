@@ -38,33 +38,17 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         public static IGNQueriable Begin(string email, IDataDriver dataDriver, string key)
         {
-            Activation.Activate(email, key);
-            if (Activation.IsActive)
-            {
-                return new IGNQueriable(dataDriver);
-            }
-            else
-            {
-                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            }
+            return new IGNQueriable(dataDriver, email, key);
         }
 
         public static IGNQueriable FromQueryString(string query, string email, IDataDriver dataDriver, string key)
         {
-            Activation.Activate(email, key);
-            if (Activation.IsActive)
+            return new IGNQueriable(dataDriver, email, key)
             {
-                return new IGNQueriable(dataDriver)
-                {
-                    fullQuery = query,
-                    exists = true,
-                    canExecute = true
-                };
-            }
-            else
-            {
-                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
-            }
+                fullQuery = query,
+                exists = true,
+                canExecute = true
+            };
         }
 
         public static void SetExists(bool exists, IGNQueriable queriable)

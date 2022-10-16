@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IGNQuery" Version="1.2.0.9" />
+    <PackageReference Include="IGNQuery" Version="1.2.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
