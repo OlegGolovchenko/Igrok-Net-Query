@@ -24,20 +24,17 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using IGNQuery.Interfaces.QueryProvider;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.QueryProviders
 {
-    public enum IGNDbObjectTypeEnum
+    internal class Create : DropCreateSelector, ICreate
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        internal Create(IGNQueriable queriable) : base(queriable)
+        {
+            isDropQuery = false;
+            sqloperand = "CREATE";
+        }
+
     }
 }

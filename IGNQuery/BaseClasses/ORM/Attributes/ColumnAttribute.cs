@@ -24,20 +24,18 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using System;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.ORM.Attributes
 {
-    public enum IGNDbObjectTypeEnum
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ColumnAttribute : Attribute
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        public string ColumnName { get; private set; }
+
+        public ColumnAttribute(string columnName)
+        {
+            ColumnName = columnName;
+        }
     }
 }

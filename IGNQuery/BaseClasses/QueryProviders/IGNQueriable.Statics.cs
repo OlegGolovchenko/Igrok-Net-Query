@@ -36,7 +36,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
     public partial class IGNQueriable
     {
 
-        public static IGNQueriable Begin(string email, IDataDriver dataDriver, string key = null)
+        public static IGNQueriable Begin(string email, IDataDriver dataDriver, string key)
         {
             Activation.Activate(email, key);
             if (Activation.IsActive)
@@ -49,7 +49,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
         }
 
-        public static IGNQueriable FromQueryString(string query, string email, IDataDriver dataDriver, string key = null)
+        public static IGNQueriable FromQueryString(string query, string email, IDataDriver dataDriver, string key)
         {
             Activation.Activate(email, key);
             if (Activation.IsActive)

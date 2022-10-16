@@ -216,6 +216,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 case IGNDbObjectTypeEnum.Column:
                     dataDriver.IfColumnExists(objectName, table, this);
                     break;
+                case IGNDbObjectTypeEnum.PrimaryKey:
+                    dataDriver.IfPrimaryKeyExists(objectName, table, this);
+                    break;
             }
         }
 
@@ -243,6 +246,9 @@ namespace IGNQuery.BaseClasses.QueryProviders
                     break;
                 case IGNDbObjectTypeEnum.Column:
                     dataDriver.IfColumnNotExists(objectName, table, this);
+                    break;
+                case IGNDbObjectTypeEnum.PrimaryKey:
+                    dataDriver.IfPrimaryKeyNotExists(objectName, table, this);
                     break;
             }
         }

@@ -24,20 +24,40 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using IGNQuery.BaseClasses.QueryProviders;
+using IGNQuery.Interfaces;
+using IGNQuery.Interfaces.ORM;
+using System;
+using System.Collections.Generic;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.ORM
 {
-    public enum IGNDbObjectTypeEnum
+    public class Database : IDatabase
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        internal IList<Tuple<Type,TableConfiguration>> knownConfigs;
+        internal IDataDriver dbDriver;
+        internal string email;
+        internal string key;
+        public Database(string email, IDataDriver dbDriver, string key)
+        {
+            this.knownConfigs = new List<Tuple<Type,TableConfiguration>>();
+            this.dbDriver = dbDriver;
+            this.email = email;
+            this.key = key;
+        }
+
+        public void CreateTable<T>() where T : IEntity
+        {
+            var config = TableConfiguration.FromEntity(typeof(T));
+            this.knownConfigs.Add(Tuple.Create(typeof(T), config));
+            IGNQueriable.Begin(email, dbDriver, key).
+                         Create().
+                         Table(nameof(T).ToLower(), true, config.knownConfigs);
+        }
+
+        public ITable<T> Table<T>() where T : IEntity
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

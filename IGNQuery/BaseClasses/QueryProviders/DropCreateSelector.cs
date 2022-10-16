@@ -31,16 +31,6 @@ using System.Linq;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
-    internal class Create : DropCreateSelector, ICreate
-    {
-        internal Create(IGNQueriable queriable) : base(queriable)
-        {
-            isDropQuery = false;
-            sqloperand = "CREATE";
-        }
-
-    }
-
     internal class DropCreateSelector : QueryResult, IDropCreateSelector
     {
         internal bool isDropQuery;

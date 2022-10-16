@@ -27,6 +27,7 @@
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces.QueryProvider;
+using System.Collections.Generic;
 
 namespace IGNQuery.BaseClasses.QueryProviders
 {
@@ -57,6 +58,49 @@ namespace IGNQuery.BaseClasses.QueryProviders
             return this;
         }
 
+        public IQueryResult AddDefault(string column, string name, int index, bool existsCheck)
+        {
+            string operand = "ALTER COLUMN";
+            if (queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                operand = "ALTER";
+            }
+            queriable.AddOperation(operand, queriable.SanitizeName(column), " ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
+            }
+            if (queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                string defOperand = "SET DEFAULT";
+                queriable.AddOperation(defOperand, $"@p{index}", " ");
+            }
+            else
+            {
+                queriable.AddOperation("ADD CONSTRAINT", $"DF_{name}", " ");
+                queriable.AddOperation("DEFAULT", $"@p{index}", " ");
+            }
+            return this;
+        }
+
+        public IQueryResult AddForeignKey(string name, string sourceColumn, string targetTable, string column, bool existsCheck)
+        {
+            string fkName = $"FK_{name}";
+            queriable.AddOperation("ADD CONSTRAINT", fkName, " ");
+            queriable.IfNotExists(IGNDbObjectTypeEnum.PrimaryKey, fkName, "");
+            queriable.AddOperation("FOREIGN KEY", $"({queriable.SanitizeName(sourceColumn)}) REFERENCES {queriable.SanitizeName(targetTable)}({queriable.SanitizeName(column)})", " ");
+            return this;
+        }
+
+        public IAlter AddPrimaryKey(string name, IList<string> columns, bool existsCheck)
+        {
+            string pkName = $"PK_{name}";
+            queriable.AddOperation("ADD CONSTRAINT", pkName, " ");
+            queriable.IfNotExists(IGNDbObjectTypeEnum.PrimaryKey, pkName, "");
+            queriable.AddOperation("PRIMARY KEY", $"({string.Join(",", columns)})", " ");
+            return this;
+        }
+
         public IAlterColumn AlterColumn(TableColumnConfiguration column, bool existsCheck)
         {
             string operand = "ALTER COLUMN";
@@ -80,6 +124,56 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
             }
+            return this;
+        }
+
+        public IQueryResult DropDefault(string column, bool existsCheck)
+        {
+            string operand = "ALTER COLUMN";
+            if (queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                operand = "ALTER";
+            }
+            queriable.AddOperation(operand, queriable.SanitizeName(column), " ");
+            if (existsCheck)
+            {
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
+            }
+            queriable.AddOperation("DROP DEFAULT", string.Empty, " ");
+            return this;
+        }
+
+        public IQueryResult DropForeignKey(string name, bool checkExists)
+        {
+            string fkName = $"FK_{name}";
+            string commmand = "DROP CONSTRAINT";
+            if (this.queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                commmand = "DROP FOREIGN KEY";
+                queriable.AddOperation(commmand, fkName, " ");
+            }
+            else
+            {
+                queriable.AddOperation(commmand, fkName, " ");
+            }
+            queriable.IfExists(IGNDbObjectTypeEnum.PrimaryKey, fkName, "");
+            return this;
+        }
+
+        public IAlter DropPrimaryKey(string name, bool existsCheck)
+        {
+            string pkName = $"PK_{name}";
+            string commmand = "DROP CONSTRAINT";
+            if(this.queriable.dataDriver.Dialect == DialectEnum.MySQL)
+            {
+                commmand = "DROP PRIMARY KEY";
+                queriable.AddOperation(commmand, "", " ");
+            }
+            else
+            {
+                queriable.AddOperation(commmand, pkName, " ");
+            }
+            queriable.IfExists(IGNDbObjectTypeEnum.PrimaryKey, pkName, "");
             return this;
         }
     }

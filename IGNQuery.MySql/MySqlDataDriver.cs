@@ -29,17 +29,17 @@ namespace IGNQuery.MySql
 {
     public class MySqlDataDriver : IGNDbDriver
     {
-        public MySqlDataDriver(string email, string connectionString):base(email, connectionString)
+        public MySqlDataDriver(string email, string connectionString, string key) : base(email, connectionString, key)
         {
             this.dialect = Enums.DialectEnum.MySQL;
         }
 
-        public MySqlDataDriver(string email, string server, int port, string uName, string pwd) : base(email, server, port, uName, pwd)
+        public MySqlDataDriver(string email, string server, int port, string uName, string pwd, string key) : base(email, server, port, uName, pwd, key)
         {
             this.dialect = Enums.DialectEnum.MySQL;
         }
 
-        public MySqlDataDriver(string email) : base(email)
+        public MySqlDataDriver(string email, string key) : base(email, key)
         {
             this.dialect = Enums.DialectEnum.MySQL;
         }

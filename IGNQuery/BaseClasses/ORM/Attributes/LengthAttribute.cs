@@ -24,20 +24,25 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using System;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.ORM.Attributes
 {
-    public enum IGNDbObjectTypeEnum
+    [AttributeUsage(AttributeTargets.Property)]
+    public class LengthAttribute : Attribute
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        public int Length { get; private set; }
+        public int DecimalPlaces { get; private set; }
+
+        public LengthAttribute(int length)
+        {
+            Length = length;
+            DecimalPlaces = 0;
+        }
+
+        public LengthAttribute(int length, int decimalPlaces) : this(length)
+        {
+            DecimalPlaces = decimalPlaces;
+        }
     }
 }

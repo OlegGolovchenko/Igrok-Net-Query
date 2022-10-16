@@ -21,8 +21,8 @@ We will not send you emails except for service emails (account activation, any r
 ### Create table query exemple:
 
 ``` csharp
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
                 Create().
                 Table("test", true, new List<TableColumnConfiguration>()
                 {
@@ -38,8 +38,8 @@ dataProvider.Execute(query);
 ### Create database query exemple:
 
 ``` csharp
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
                 Create().
                 Database("testdb", true).
                 Go()
@@ -49,26 +49,26 @@ dataProvider.Execute(query);
 ### Alter query exemples:
 
 ``` csharp
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Alter("ignusers", true).
     AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
     AddColumn(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, ""),true).
     Go();
 dataProvider.Execute(query);
-query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Alter("ignusers", true).
     AlterColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
     Go();
 dataProvider.Execute(query);
-query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Alter("ignusers", true).
     DropColumn("test1", true).
     Drop("test2", true).
     Go();
 dataProvider.Execute(query);
-var dataDriver = new MySqlDataDriver("youremail@domain.com");
-var altquery = IGNQueriable.Begin("youremail@domain.com", dataDriver).
+var dataDriver = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var altquery = IGNQueriable.Begin("youremail@domain.com", dataDriver, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Alter("ignusers", true).
     AddColumn(TableColumnConfiguration.FromConfig("test1", typeof(string), 25, false, false, false, ""),true).
     Add(TableColumnConfiguration.FromConfig("test2", typeof(string), 25, false, false, false, ""),true).
@@ -80,8 +80,8 @@ dataDriver.Execute(altquery);
 
 ``` csharp
 
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Delete().
     From("ignusers", true).
     Go();
@@ -92,8 +92,8 @@ dataProvider.Execute(query);
 ### Insert query exemple:
 
 ``` csharp
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
         Insert().
         Into("ignusers", new List<string>() { "mail" }, true).
         Values(new List<int> { 0 }).
@@ -108,8 +108,8 @@ dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
 ### Drop query exemple:
 
 ``` csharp
-var dataProvider = new MySqlDataDriver("youremail@domain.com");
-var query = IGNQueriable.Begin("youremail@domain.com", dataProvider).
+var dataProvider = new MySqlDataDriver("youremail@domain.com", "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX");
+var query = IGNQueriable.Begin("youremail@domain.com", dataProvider, "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").
     Drop().
     Table("ignusers", true).
     Go();

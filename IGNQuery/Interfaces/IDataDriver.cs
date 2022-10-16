@@ -38,9 +38,9 @@ namespace IGNQuery.Interfaces
     {
         DialectEnum Dialect { get; }
 
-        void AssignActivator(IActivationClient activator, string email);
+        void AssignActivator(IActivationClient activator, string email, string key);
 
-        void AssignActivator(string email, string key=null);
+        void AssignActivator(string email, string key);
 
         void Execute(IGNQueriable query);
 
@@ -66,6 +66,8 @@ namespace IGNQuery.Interfaces
 
         void IfColumnNotExists(string name, string table, IGNQueriable queriable);
 
+        void IfPrimaryKeyNotExists(string name, string table, IGNQueriable queriable);
+
         void IfTableExists(string name, IGNQueriable queriable);
 
         void IfDatabaseExists(string name, IGNQueriable queriable);
@@ -77,6 +79,8 @@ namespace IGNQuery.Interfaces
         void IfIndexExists(string name, string table, IGNQueriable queriable);
 
         void IfColumnExists(string name, string table, IGNQueriable queriable);
+
+        void IfPrimaryKeyExists(string name, string table, IGNQueriable queriable);
 
         string GoTerminator();
 

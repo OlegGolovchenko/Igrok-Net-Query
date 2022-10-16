@@ -24,20 +24,12 @@
 //
 // ############################################
 
-using System.ComponentModel;
-
-namespace IGNQuery.Enums
+namespace IGNQuery.Interfaces.ORM
 {
-    public enum IGNDbObjectTypeEnum
+    public interface IDatabase
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        ITable<T> Table<T>() where T : IEntity;
+
+        void CreateTable<T>() where T : IEntity;
     }
 }

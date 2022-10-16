@@ -24,20 +24,14 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using System.Collections.Generic;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.Interfaces.ORM
 {
-    public enum IGNDbObjectTypeEnum
+    public interface IView<T> where T : IEntity
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        IList<T> FindAll();
+
+        T Find();
     }
 }

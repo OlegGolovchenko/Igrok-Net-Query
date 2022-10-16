@@ -24,20 +24,42 @@
 //
 // ############################################
 
-using System.ComponentModel;
+using IGNQuery.Interfaces.ORM;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace IGNQuery.Enums
+namespace IGNQuery.BaseClasses.ORM
 {
-    public enum IGNDbObjectTypeEnum
+    internal class Table<T> : ITable<T> where T : IEntity
     {
-        None = 0,
-        Database = 1,
-        Table = 2,
-        StoredProcedure = 3,
-        View = 4,
-        Index = 5,
-        UniqueIndex = 6,
-        Column = 7,
-        PrimaryKey = 8
+        private Database database;
+        private TableConfiguration configuration;
+
+        internal Table(Database database)
+        {
+            this.database = database;
+            this.configuration = this.database.knownConfigs.SingleOrDefault(cfg => cfg.Item1 == typeof(T)).Item2;
+        }
+
+        public void Delete(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Find()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<T> FindAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveOrUpdate(T entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
