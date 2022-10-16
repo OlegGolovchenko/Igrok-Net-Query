@@ -5,8 +5,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Common;
 
-namespace IGNQuery.SqlServer.Test
+namespace IGNQuery.MySql.Test
 {
     public class Tests
     {
@@ -69,13 +70,18 @@ namespace IGNQuery.SqlServer.Test
                 Drop("test2", true).
                 Go();
             dataProvider.Execute(query);
-            var dataDriver = new MySqlDataDriver("igntest@igrok-net.org", "08303-8981D-B1B8C-00007-5024D");
             var column = TableColumnConfiguration.FromConfig("createdOn", typeof(DateTime), 0, false, true, false, string.Empty);
-            var altquery = IGNQueriable.Begin("igntest@igrok-net.org", dataDriver, "08303-8981D-B1B8C-00007-5024D").
+            var altquery = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider, "08303-8981D-B1B8C-00007-5024D").
                 Alter("ignusers", true).
                 AddColumn(column, true).
                 Go();
-            dataDriver.Execute(altquery);
+            dataProvider.Execute(altquery);
+            var boolColumn = TableColumnConfiguration.FromConfig("isConfirmed", typeof(bool), 0, false, true, false, false);
+            var boolAltquery = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider, "08303-8981D-B1B8C-00007-5024D").
+                Alter("ignusers", true).
+                AddColumn(boolColumn, true).
+                Go();
+            dataProvider.Execute(boolAltquery);
         }
 
         [Test]
@@ -93,6 +99,30 @@ namespace IGNQuery.SqlServer.Test
                     IGNParameterValue.FromConfig(0, "igntest@igrok-net.org"),
                     IGNParameterValue.FromConfig(1, -1)
                 });
+        }
+
+        [Test]
+        public void BUpdateUserIfNotExists()
+        {
+            var dataProvider = new MySqlDataDriver("igntest@igrok-net.org", "08303-8981D-B1B8C-00007-5024D");
+            var query = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider, "08303-8981D-B1B8C-00007-5024D").
+                    Update("ignusers", true).
+                    Set("isConfirmed", 0, true).
+                    Go();
+
+            dataProvider.ExecuteWithParameters(query, new List<IGNParameterValue>
+                {
+                    IGNParameterValue.FromConfig(0, true)
+                });
+
+            var selectQuery = IGNQueriable.Begin("igntest@igrok-net.org", dataProvider, "08303-8981D-B1B8C-00007-5024D").
+                Select(true).
+                From("ignusers",true).
+                Go();
+            var result = dataProvider.ReadData(selectQuery);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Rows.Count, 1);
+            Assert.IsTrue((ulong)result.Rows[0]["isConfirmed"] == 1);
         }
 
         [Test]

@@ -45,14 +45,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 isFirstSet = false;
                 if (existsCheck)
                 {
-                    queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+                    queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
                 }
                 return this;
             }
             queriable.AddOperation("", $"{queriable.SanitizeName(column)} = @p{param}", ", ");
             if (existsCheck)
             {
-                queriable.IfExists(IGNDbObjectTypeEnum.Table, column, table);
+                queriable.IfExists(IGNDbObjectTypeEnum.Column, column, table);
             }
             return this;
         }
