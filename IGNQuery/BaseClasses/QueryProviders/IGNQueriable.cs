@@ -24,6 +24,8 @@
 //
 // ############################################
 
+using IGNActivation.Client;
+using IGNActivation.Client.Interfaces;
 using IGNQuery.BaseClasses.Business;
 using IGNQuery.Enums;
 using IGNQuery.Interfaces;
@@ -39,6 +41,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         internal readonly IDataDriver dataDriver = null;
         private readonly IGNQueriable subquery = null;
         internal IDictionary<Type, Type> declaredQueryTypes = null;
+        internal IActivationClient activationClient = null;
 
         private bool exists;
 
@@ -66,8 +69,13 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
         }
 
-        internal IGNQueriable(IDataDriver dataDriver)
+        internal IGNQueriable(IDataDriver dataDriver, string email, string key)
         {
+            this.activationClient = new ActivationClient();
+            this.activationClient.Init(email, key);
+            this.activationClient.Register((ushort)ProductsEnum.IGNQuery, key);
+            if (this.activationClient == null || !this.activationClient.IsRegistered((ushort)ProductsEnum.IGNQuery)) 
+                throw new Exception("Please activate your copy of ignquery it's free of charge you just need to pass your email in constructor");
             paramValues = new List<IGNParameterValue>();
             this.dataDriver = dataDriver;
             canExecute = true;
