@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp31;net40;netstandard20;</TargetFrameworks>
+    <TargetFrameworks>net60;net40;netstandard20;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>IGNQuery Implementation for MS SQL Server</Description>
@@ -9,10 +9,13 @@
     <PackageProjectUrl>https://igrok-net.org/products</PackageProjectUrl>
     <RepositoryUrl>https://github.com/OlegGolovchenko/Igrok-Net-Query</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.2.1.0</Version>
+    <Version>1.2.2.0</Version>
     <Authors>Oleg Golovchenko</Authors>
     <Company>Igrok-Net</Company>
     <PackageIcon>IGNQuery-1.png</PackageIcon>
+    <Copyright>Oleg Golovchenko</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageTags>IgRok-Net query driver MSSQL</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -20,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IGNQuery" Version="1.2.1.1" />
+    <PackageReference Include="IGNQuery" Version="1.2.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -28,12 +31,12 @@
     <Reference Include="System.Data.Entity" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp31'">
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net60'">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20'">
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +45,10 @@
     </None>
     <None Update="LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
     <None Include="icons\IGNQuery-1.png">
       <Pack>True</Pack>
