@@ -14,6 +14,8 @@ Otherwise you may run into problems with package versions.
 
 If you need to use this package it is advisable to use official nuget packages from NuGet.org
 
+To be able to run this software from version 1.2.2 and up you need to have java 6 or higher installed on your machine
+
 ## How to use
 Disclaimer:
 We will not send you emails except for service emails (account activation, any resets or any emails that are resulting from actions you do on https://igrok-net.org), email is just used to identify if user have right to use this library.
