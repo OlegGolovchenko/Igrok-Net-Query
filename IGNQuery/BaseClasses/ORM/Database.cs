@@ -57,7 +57,7 @@ namespace IGNQuery.BaseClasses.ORM
 
         public ITable<T> Table<T>() where T : IEntity
         {
-            throw new System.NotImplementedException();
+            return new Table<T>(this);
         }
     }
 }

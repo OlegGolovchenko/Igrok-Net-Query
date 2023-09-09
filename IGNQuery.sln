@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery", "IGNQuery\IGNQuery.csproj", "{19BD048C-7980-4A4F-B960-93F5815C2239}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.SqlServer.Test", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.Test", "IGNQuery.Test\IGNQuery.Test.csproj", "{A41B1C9C-E522-4AE6-B510-EDDB51CE47B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IGNQuery.MySql.Test", "IGNQuery.MySql.Test\IGNQuery.MySql.Test.csproj", "{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IGNQuery.MySql.Test", "IGNQuery.MySql.Test\IGNQuery.MySql.Test.csproj", "{3EE82204-1B0F-4689-8024-BBDCD8BD2F1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
