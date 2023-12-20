@@ -118,9 +118,9 @@ namespace IGNQuery.SqlServer.Test
                 From("ignusers", true).
                 Go();
             var result = dataProvider.ReadData(selectQuery);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Rows.Count, 1);
-            Assert.IsTrue((bool)result.Rows[0]["isConfirmed"]);
+            Assert.That(result is not null);
+            Assert.That(result.Rows.Count == 1);
+            Assert.That((bool)result.Rows[0]["isConfirmed"]);
         }
 
         [Test]
