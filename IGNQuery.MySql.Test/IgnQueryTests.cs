@@ -120,9 +120,9 @@ namespace IGNQuery.MySql.Test
                 From("ignusers",true).
                 Go();
             var result = dataProvider.ReadData(selectQuery);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Rows.Count, 1);
-            Assert.IsTrue((ulong)result.Rows[0]["isConfirmed"] == 1);
+            Assert.That(result is not null);
+            Assert.That(result.Rows.Count == 1);
+            Assert.That((ulong)result.Rows[0]["isConfirmed"] == 1);
         }
 
         [Test]
