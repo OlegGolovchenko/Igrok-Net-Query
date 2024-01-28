@@ -203,7 +203,7 @@ namespace IGNQuery.BaseClasses
         {
             var query = IGNQueriable.Begin(this.email, this, this.key).
                 Select().
-                ConditionalFrom("INFORMATION_SCHEMA.SHEMATA",false).
+                ConditionalFrom("INFORMATION_SCHEMA.SCHEMATA",false).
                 Where(IGNConditionWithParameter.FromConfig("CATALOG_NAME",IGNSqlCondition.Eq,0)).
                 Go();
             var result = ReadDataWithParameters(query, 
