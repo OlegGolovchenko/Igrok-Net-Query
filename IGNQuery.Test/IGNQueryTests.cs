@@ -128,10 +128,10 @@ namespace IGNQuery.Test
                 Table("test", true, new List<TableColumnConfiguration>()
                 {
                     TableColumnConfiguration.FromConfig("id",typeof(long),0,true,true,true,null),
-                    TableColumnConfiguration.FromConfig("name",typeof(string),255,false,false,false,null)
+                    TableColumnConfiguration.FromConfig("name",typeof(string),255,true,false,false,"test")
                 }).
                 Go();
-            var expected = "CREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[name] NVARCHAR(255) NULL,CONSTRAINT PK_test PRIMARY KEY([id]))  \nGO";
+            var expected = "CREATE TABLE [test]([id] BIGINT NOT NULL IDENTITY(1,1),[name] NVARCHAR(255) NOT NULL DEFAULT ('test'),CONSTRAINT PK_test PRIMARY KEY([id]))  \nGO";
             Assert.That(expected == query.ToString());
         }
 

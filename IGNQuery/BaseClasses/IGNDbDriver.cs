@@ -201,10 +201,17 @@ namespace IGNQuery.BaseClasses
 
         private void SetDatabaseExists(string name, IGNQueriable queriable, ExistsEnum existsFunc)
         {
+            var table = "INFORMATION_SCHEMA.SCHEMATA";
+            var column = "CATALOG_NAME";
+            if(this.dialect == DialectEnum.MSSQL)
+            {
+                table = "sys.databases";
+                column = "name";
+            }
             var query = IGNQueriable.Begin(this.email, this, this.key).
                 Select().
-                ConditionalFrom("INFORMATION_SCHEMA.SCHEMATA",false).
-                Where(IGNConditionWithParameter.FromConfig("CATALOG_NAME",IGNSqlCondition.Eq,0)).
+                ConditionalFrom(table,false).
+                Where(IGNConditionWithParameter.FromConfig(column,IGNSqlCondition.Eq,0)).
                 Go();
             var result = ReadDataWithParameters(query, 
                 new List<IGNParameterValue> { IGNParameterValue.FromConfig(0, name) });
@@ -293,6 +300,10 @@ namespace IGNQuery.BaseClasses
             }
             partialQuery = partialQuery.And(IGNConditionWithParameter.FromConfig("TABLE_NAME", IGNSqlCondition.Eq, 1));
             var query = partialQuery.Go();
+            if(this.dialect == DialectEnum.MSSQL)
+            {
+                query = IGNQueriable.FromQueryString($"SELECT OBJECT_ID(CONCAT(@p0,'.',@p1)), 'U')", email, this, this.key);
+            }
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>
             {
                 IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),

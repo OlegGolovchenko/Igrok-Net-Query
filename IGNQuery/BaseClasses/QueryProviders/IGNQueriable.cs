@@ -42,6 +42,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
         private readonly IGNQueriable subquery = null;
         internal IDictionary<Type, Type> declaredQueryTypes = null;
         internal IActivationClient activationClient = null;
+        internal string usedDbName;
 
         private bool exists;
 
@@ -69,6 +70,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
             }
         }
 
+        internal bool IsDifferentDbUsed
+        {
+            get
+            {
+                return !string.IsNullOrWhiteSpace(usedDbName);
+            }
+        }
+
         internal IGNQueriable(IDataDriver dataDriver, string email, string key)
         {
             this.activationClient = new ActivationClient();
@@ -84,6 +93,7 @@ namespace IGNQuery.BaseClasses.QueryProviders
             {
                 { typeof(IQueryResult), typeof(QueryResult) }
             };
+            this.usedDbName = string.Empty;
         }
 
         internal bool HasSetCommand()
@@ -146,16 +156,22 @@ namespace IGNQuery.BaseClasses.QueryProviders
 
         internal string DatabaseNameQuery()
         {
-            if(this.dataDriver.Dialect == DialectEnum.MSSQL)
+            if (!this.IsDifferentDbUsed)
             {
-                return "DB_NAME()";
+                if (this.dataDriver.Dialect == DialectEnum.MSSQL)
+                {
+                    return "DB_NAME()";
+                }
+                return "database()";
             }
-            return "database()";
+            return this.usedDbName;
         }
 
         public IQueryResult Use(string dbName)
         {
-            AddOperation("USE", SanitizeName(dbName), "");
+            var sanitizedDbName = SanitizeName(dbName);
+            AddOperation("USE", sanitizedDbName, "");
+            this.usedDbName = sanitizedDbName;
             return new QueryResult(this);
         }
 

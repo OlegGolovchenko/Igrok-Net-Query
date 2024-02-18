@@ -84,10 +84,6 @@ namespace IGNQuery.BaseClasses.QueryProviders
         {
             var valQuotesFormat = "('{0}')";
             var valNoQuotesFormat = "({0})";
-            if (dialect == Enums.DialectEnum.MSSQL)
-            {
-                valQuotesFormat = "''{0}''";
-            }
             var defVal = defValue?.ToString();
             if (defValue is bool boolean)
             {
