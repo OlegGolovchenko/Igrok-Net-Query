@@ -164,14 +164,14 @@ namespace IGNQuery.BaseClasses.QueryProviders
                 }
                 return "database()";
             }
-            return this.usedDbName;
+            return $"'{this.usedDbName}'";
         }
 
         public IQueryResult Use(string dbName)
         {
             var sanitizedDbName = SanitizeName(dbName);
             AddOperation("USE", sanitizedDbName, "");
-            this.usedDbName = sanitizedDbName;
+            this.usedDbName = dbName;
             return new QueryResult(this);
         }
 

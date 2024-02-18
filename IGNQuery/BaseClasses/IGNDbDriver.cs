@@ -302,14 +302,14 @@ namespace IGNQuery.BaseClasses
             var query = partialQuery.Go();
             if(this.dialect == DialectEnum.MSSQL)
             {
-                query = IGNQueriable.FromQueryString($"SELECT OBJECT_ID(CONCAT(@p0,'.',@p1)), 'U')", email, this, this.key);
+                query = IGNQueriable.FromQueryString($"SELECT OBJECT_ID(CONCAT(@p0,'.dbo.',@p1), 'U')", email, this, this.key);
             }
             var result = ReadDataWithParameters(query, new List<IGNParameterValue>
             {
                 IGNParameterValue.FromConfig(0, GetDatabaseName(queriable.DatabaseNameQuery())),
                 IGNParameterValue.FromConfig(1, name)
             });
-            IGNQueriable.SetExists(result.Rows.Count > 0, queriable);
+            IGNQueriable.SetExists(result.Rows.Count > 0 && (!result.Rows[0].IsNull(0)), queriable);
             IGNQueriable.SetCanExecute(existsFunc, queriable);
         }
 
